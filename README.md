@@ -1,5 +1,7 @@
 # 词途 · 背单词打卡
 
+在线使用：**https://logic77lhl.github.io/word-checkin/**
+
 一个参考 [HF 探索打卡](https://logic77lhl.github.io/hf-quest/) 做的单页背单词打卡应用：暗色界面、每日打卡、连续天数、热力图、间隔复习、10 题小测和徽章。没有后端，数据只存在浏览器 `localStorage` 里。
 
 ## 功能
