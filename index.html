@@ -180,6 +180,43 @@ kbd{font:11px var(--mono);background:var(--bg);border:1px solid var(--line2);bor
 .qword{font:700 34px/1.2 var(--serif);margin:6px 0 2px}
 .qmeta{font-size:12px;color:var(--dim2);margin-bottom:16px}
 
+/* ── listen / shadow ── */
+.listen-stage{text-align:center;padding:14px 0 6px}
+.audio-big{width:84px;height:84px;border-radius:50%;border:1px solid rgba(255,210,30,.45);
+  background:radial-gradient(circle at 50% 35%,rgba(255,210,30,.2),rgba(23,32,45,.92) 70%);
+  color:var(--acc);font-size:34px;cursor:pointer;display:inline-grid;place-items:center;
+  transition:.15s;box-shadow:0 0 24px rgba(255,210,30,.12)}
+.audio-big:hover{transform:translateY(-2px);border-color:var(--acc);box-shadow:0 0 30px rgba(255,210,30,.25)}
+.audio-big:active{transform:scale(.97)}
+.dict-row{display:flex;gap:10px;max-width:520px;margin:20px auto 0}
+.dict-row input{flex:1;min-width:0;font:600 22px/1.2 var(--mono);text-align:center;letter-spacing:1.5px;padding:13px 14px;text-transform:lowercase}
+.dict-row input::placeholder{font-weight:400;font-size:14px;letter-spacing:0;color:var(--dim2)}
+.dict-feedback{max-width:560px;margin:16px auto 0;border:1px solid var(--line);border-radius:13px;padding:15px 16px;text-align:left;background:var(--bg2)}
+.dict-feedback.ok{border-color:rgba(52,211,153,.42);background:rgba(52,211,153,.07)}
+.dict-feedback.bad{border-color:rgba(251,113,133,.42);background:rgba(251,113,133,.07)}
+.dict-feedback .big{font:700 26px/1.2 var(--serif)}
+.dict-feedback .ph{font:12.5px/1.5 var(--mono);color:var(--dim2);margin-top:3px}
+.dict-feedback .mean{font-size:13.5px;margin-top:8px;color:var(--dim)}
+.dict-feedback .verdict{font-size:12px;margin-top:6px;color:var(--dim2)}
+.dict-feedback .verdict b{color:var(--tx)}
+.choice-list{max-width:620px;margin:18px auto 0;text-align:left}
+.shadow-stage{text-align:center;padding:8px 0 4px}
+.shadow-word{font:700 clamp(38px,7vw,58px)/1.2 var(--serif);letter-spacing:-.3px;margin-top:10px;word-break:break-word}
+.shadow-ph{font:13px/1.5 var(--mono);color:var(--dim2);margin-top:4px}
+.rec-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.rec-btn{min-width:150px}
+.rec-btn.recording{border-color:var(--rose);color:var(--rose);background:rgba(251,113,133,.1);animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(251,113,133,.25)}50%{box-shadow:0 0 0 8px rgba(251,113,133,0)}}
+.rec-audio{width:100%;max-width:420px;margin:14px auto 0;display:block}
+.asr-box{max-width:560px;margin:14px auto 0;border:1px solid var(--line);border-radius:12px;padding:13px 15px;background:var(--bg2);text-align:left}
+.asr-box .t{font-size:12px;color:var(--dim2)}
+.asr-box .q{font:600 17px/1.5 var(--serif);margin-top:4px}
+.asr-box.ok{border-color:rgba(52,211,153,.35)}
+.asr-box.bad{border-color:rgba(251,113,133,.35)}
+.skill-stat{margin-bottom:12px}
+.skill-stat .row{display:flex;justify-content:space-between;font-size:12.5px;color:var(--dim);margin-bottom:5px}
+.skill-stat .bar{width:100%;height:7px}
+
 /* ── books ── */
 .books{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
 .book{border:1px solid var(--line);border-radius:14px;padding:15px;background:var(--bg2);transition:.2s}
@@ -267,6 +304,9 @@ footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:v
   .grade-row{gap:6px}
   .grade{padding:12px 4px}
   .grade small{font-size:10px}
+  .audio-big{width:72px;height:72px;font-size:30px}
+  .dict-row input{font-size:19px;letter-spacing:1px}
+  .listen-start,.shadow-start{width:100%;margin-top:8px}
   td.m{font-size:12px}
   .heat i{width:10px;height:10px}
 }
@@ -288,11 +328,12 @@ footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:v
       <div class="ring" id="hRing" title="今日新词目标完成度"><span id="hPct">0%</span></div>
     </div>
     <nav class="tabs" id="tabs" role="tablist" aria-label="主导航">
-      <button class="tab" role="tab" data-act="tab" data-view="today" aria-selected="true">今日打卡</button>
+      <button class="tab" role="tab" data-act="tab" data-view="today" aria-selected="true">今日</button>
       <button class="tab" role="tab" data-act="tab" data-view="study" aria-selected="false">背单词</button>
       <button class="tab" role="tab" data-act="tab" data-view="review" aria-selected="false">复习</button>
-      <button class="tab" role="tab" data-act="tab" data-view="books" aria-selected="false">词库与计划</button>
-      <button class="tab" role="tab" data-act="tab" data-view="stats" aria-selected="false">统计与徽章</button>
+      <button class="tab" role="tab" data-act="tab" data-view="books" aria-selected="false">词库</button>
+      <button class="tab" role="tab" data-act="tab" data-view="listen" aria-selected="false">听说</button>
+      <button class="tab" role="tab" data-act="tab" data-view="stats" aria-selected="false">统计</button>
     </nav>
   </div>
 </header>
@@ -341,8 +382,13 @@ footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:v
             <span>待复习 <b id="planDue" style="color:var(--blue)">0</b></span>
             <span>词库剩余 <b id="planLeft" style="color:var(--dim)">0</b></span>
           </div>
+          <div class="row" style="justify-content:space-between;font-size:12px;color:var(--dim2);margin-top:6px">
+            <span>听写 <b id="planListen" style="color:var(--violet)">0</b></span>
+            <span>跟读 <b id="planSpeak" style="color:var(--rose)">0</b></span>
+          </div>
           <div class="hr"></div>
           <button class="btn primary" style="width:100%" data-act="quick-start">开始今日学习 →</button>
+          <button class="btn sm ghost" style="width:100%;margin-top:8px" data-act="go-listen">🎧 听写 / 跟读</button>
           <p class="note" style="margin:10px 0 0">先复习到期的词，再学新词。每轮约 5–10 分钟。</p>
         </div>
       </div>
@@ -477,6 +523,110 @@ footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:v
       </div>
     </section>
 
+    <!-- ══════════ 听说 ══════════ -->
+    <section id="v-listen" class="hide">
+      <div class="grid2" id="listenSetup">
+        <div class="card">
+          <h2><span class="n">LISTEN</span>听写</h2>
+          <p class="sub">听发音，把单词写出来。练「听音辨词 + 拼写」。</p>
+          <div class="row" style="margin-bottom:12px">
+            <div class="seg" id="listenModeSeg">
+              <button data-act="listen-mode" data-mode="write" aria-pressed="true">听音写词</button>
+              <button data-act="listen-mode" data-mode="choice" aria-pressed="false">听音选义</button>
+            </div>
+            <div class="seg" id="listenCountSeg">
+              <button data-act="listen-count" data-n="10" aria-pressed="true">10</button>
+              <button data-act="listen-count" data-n="20" aria-pressed="false">20</button>
+            </div>
+            <div class="sp"></div>
+            <button class="btn primary listen-start" data-act="start-listen">开始听写</button>
+          </div>
+          <div class="note" id="listenPoolNote">—</div>
+          <div class="hr"></div>
+          <p class="note" style="margin:0">快捷键：<kbd>Enter</kbd> 提交 / 下一题 · <kbd>R</kbd> 重播。答对 +3 XP，答错也算练过。</p>
+        </div>
+
+        <div class="card">
+          <h2><span class="n">SPEAK</span>跟读</h2>
+          <p class="sub">听一遍，跟着读，录下来回放。浏览器支持时自动识别，给词级反馈。</p>
+          <div class="row" style="margin-bottom:12px">
+            <div class="seg" id="shadowCountSeg">
+              <button data-act="shadow-count" data-n="10" aria-pressed="true">10</button>
+              <button data-act="shadow-count" data-n="20" aria-pressed="false">20</button>
+            </div>
+            <div class="sp"></div>
+            <button class="btn primary shadow-start" data-act="start-shadow">开始跟读</button>
+          </div>
+          <div class="note" id="shadowPoolNote">—</div>
+          <div class="hr"></div>
+          <p class="note" style="margin:0">首次录音会请求麦克风权限。识别由浏览器 / 系统语音服务完成，不上传到本站。</p>
+        </div>
+      </div>
+
+      <div class="card hide" id="listenCard">
+        <div class="sess-top">
+          <span class="tag" id="listenTag">听写</span>
+          <span id="listenKind">听音写词</span>
+          <div class="sp"></div>
+          <span id="listenProg">0 / 0</span>
+          <button class="btn sm ghost" data-act="quit-listen">结束</button>
+        </div>
+        <div class="bar" style="margin-bottom:4px"><i id="listenBar" style="width:0%"></i></div>
+        <div class="listen-stage">
+          <div class="row" style="justify-content:center;gap:10px;margin:18px 0 6px">
+            <button class="audio-big" data-act="listen-play" title="播放发音">🔊</button>
+            <button class="btn sm" data-act="listen-slow">🐢 慢速</button>
+          </div>
+          <div class="hint" id="listenHint">听发音，写出单词</div>
+          <div id="listenAnswerArea"></div>
+        </div>
+      </div>
+      <div class="card hide" id="listenSummary"></div>
+
+      <div class="card hide" id="shadowCard">
+        <div class="sess-top">
+          <span class="tag blue">跟读</span>
+          <span>听 → 读 → 录 → 回放</span>
+          <div class="sp"></div>
+          <span id="shadowProg">0 / 0</span>
+          <button class="btn sm ghost" data-act="quit-shadow">结束</button>
+        </div>
+        <div class="bar" style="margin-bottom:4px"><i id="shadowBar" style="width:0%"></i></div>
+        <div class="shadow-stage">
+          <div class="shadow-word" id="shadowWord">—</div>
+          <div class="shadow-ph" id="shadowPh"></div>
+          <div class="row" style="justify-content:center;gap:10px;margin-top:14px">
+            <button class="audio-big" data-act="shadow-play" title="播放发音">🔊</button>
+            <button class="btn sm" data-act="shadow-slow">🐢 慢速</button>
+          </div>
+          <div class="rec-row">
+            <button class="btn primary rec-btn" data-act="shadow-record" id="shadowRecBtn">🎙 开始录音</button>
+            <button class="btn rec-btn" data-act="shadow-stop" id="shadowStopBtn">停止</button>
+          </div>
+          <div id="shadowResult"></div>
+          <div class="row" style="justify-content:center;margin-top:16px">
+            <button class="btn ghost" data-act="shadow-next">下一个 →</button>
+          </div>
+        </div>
+      </div>
+      <div class="card hide" id="shadowSummary"></div>
+
+      <div class="card">
+        <h2><span class="n">HOW</span>怎么练</h2>
+        <div class="grid2e">
+          <p class="note" style="margin:0">
+            <b>听写</b>：不要先看词。听 1–3 遍，写下你听到的；提交后看拼写和释义。<br>
+            听不出来就点慢速，再不行就看答案——错一次比猜十次有用。
+          </p>
+          <p class="note" style="margin:0">
+            <b>跟读</b>：先听正常速度，再听慢速；录音后回放，对比重音和尾音。<br>
+            浏览器不支持自动识别时，用回放自评；点「读对了」也会计入统计。
+          </p>
+        </div>
+        <p class="note" style="margin:14px 0 0">下一步：句子听写、影子跟读（逐句循环）、阅读点词、写作批改。</p>
+      </div>
+    </section>
+
     <!-- ══════════ 词库与计划 ══════════ -->
     <section id="v-books" class="hide">
       <div class="card">
@@ -551,7 +701,7 @@ footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:v
           <div class="row"><span>当前词库进度</span><span id="curProgTxt" class="mini">—</span></div>
           <div class="bar ok"><i id="curProg" style="width:0%"></i></div>
         </div>
-        <p class="note" style="margin:0">XP 来源：新词 +8 · 复习 +3 · 小测答对 +2 · 小测满分 +10</p>
+        <p class="note" style="margin:0">XP 来源：新词 +8 · 复习 +3 · 小测答对 +2 · 听写答对 +3 · 跟读通过 +5</p>
       </div>
 
       <div class="grid2">
@@ -572,6 +722,22 @@ footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:v
           <div class="hr"></div>
           <div id="bookProgress"></div>
         </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="n">SKILL</span>四技能训练</h2>
+        <p class="sub">听写与跟读的记录。阅读、写作下一步接入。</p>
+        <div class="grid2e">
+          <div class="skill-stat">
+            <div class="row"><span>听写 · 正确率</span><span id="listenStatTxt" class="mini">—</span></div>
+            <div class="bar"><i id="listenStatBar" style="width:0%;background:var(--violet)"></i></div>
+          </div>
+          <div class="skill-stat">
+            <div class="row"><span>跟读 · 通过率</span><span id="speakStatTxt" class="mini">—</span></div>
+            <div class="bar"><i id="speakStatBar" style="width:0%;background:var(--rose)"></i></div>
+          </div>
+        </div>
+        <p class="note" style="margin:0">听写答对 +3 XP，跟读通过 +5 XP；读错 / 写错也会记一次练习。</p>
       </div>
 
       <div class="card">
@@ -649,6 +815,9 @@ const BADGES = [
   { id: "night",    icon: "🌙", name: "夜猫子",   desc: "晚上 23 点后打卡", test: (c) => c.night },
   { id: "bookdone", icon: "👑", name: "词库通关", desc: "背完任意一本词库", test: (c) => c.bookDone },
   { id: "xp1000",   icon: "⭐", name: "千经验",   desc: "累计获得 1000 XP", test: (c) => c.xp >= 1000 },
+  { id: "listen100", icon: "🎧", name: "听力耳朵", desc: "听写答对 100 次", test: (c) => c.listenOk >= 100 },
+  { id: "speak50",  icon: "🎙", name: "开口 50 次", desc: "跟读 50 次", test: (c) => c.speakSeen >= 50 },
+  { id: "speak10",  icon: "🗣", name: "读得不错", desc: "跟读通过 10 次", test: (c) => c.speakOk >= 10 },
 ];
 
 /* ═══════════════════ 工具 ═══════════════════ */
@@ -673,6 +842,7 @@ function defaultState() {
     days: {},
     xp: 0,
     badges: {},
+    skills: { listen: { seen: 0, ok: 0 }, speak: { seen: 0, ok: 0 } },
     custom: [],
     quizPerfect: false,
     createdAt: Date.now(),
@@ -690,6 +860,10 @@ function loadState() {
       ...d, ...o,
       settings: { ...d.settings, ...(o.settings || {}) },
       words: o.words || {}, days: o.days || {}, badges: o.badges || {},
+      skills: {
+        listen: { seen: 0, ok: 0, ...((o.skills && o.skills.listen) || {}) },
+        speak: { seen: 0, ok: 0, ...((o.skills && o.skills.speak) || {}) },
+      },
       custom: Array.isArray(o.custom) ? o.custom : [],
     };
   } catch (e) {
@@ -749,8 +923,9 @@ async function loadCurrent() {
 /* ═══════════════════ 日期 / 统计 ═══════════════════ */
 function todayStat(create = false) {
   const d = today();
-  if (!S.days[d] && create) S.days[d] = { learned: 0, reviewed: 0, correct: 0, total: 0, checkin: false };
-  return S.days[d] || { learned: 0, reviewed: 0, correct: 0, total: 0, checkin: false };
+  const blank = () => ({ learned: 0, reviewed: 0, correct: 0, total: 0, listen: 0, speak: 0, checkin: false });
+  if (!S.days[d] && create) S.days[d] = blank();
+  return S.days[d] || blank();
 }
 function checkinDates() { return Object.keys(S.days).filter((d) => S.days[d].checkin).sort(); }
 function calcStreak() {
@@ -830,19 +1005,28 @@ function nextToast() {
 
 /* ═══════════════════ 发音 ═══════════════════ */
 let lastSpoken = "";
-function speak(text) {
+function speak(text, rate = 0.88) {
   if (!("speechSynthesis" in window)) { toast("这个浏览器不支持语音合成"); return; }
   try {
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = "en-US"; u.rate = 0.88;
+    u.lang = "en-US"; u.rate = rate;
     window.speechSynthesis.speak(u);
   } catch (e) { /* 忽略 */ }
 }
 
 /* ═══════════════════ 路由 / 渲染 ═══════════════════ */
-const VIEWS = ["today", "study", "review", "books", "stats"];
+const VIEWS = ["today", "study", "review", "listen", "books", "stats"];
 let view = "today";
+let listenMode = "write";
+let listenCount = 10;
+let shadowCount = 10;
+let listenSession = null;
+let shadowSession = null;
+let recStream = null;
+let recorder = null;
+let recChunks = [];
+let asr = null;
 let studyMode = "new";
 let studyCount = 20;
 let wordFilter = "all";
@@ -850,6 +1034,7 @@ let wordLimit = 60;
 
 function switchView(v) {
   if (!VIEWS.includes(v)) v = "today";
+  if (v !== "listen" && shadowSession && (shadowSession.recording || shadowSession.listening)) stopShadowRecording();
   view = v;
   VIEWS.forEach((x) => $("#v-" + x).classList.toggle("hide", x !== v));
   $$("#tabs .tab").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.view === v)));
@@ -866,6 +1051,7 @@ function renderAll() {
   renderToday();
   renderStudy();
   renderReview();
+  renderListen();
   renderBooks();
   renderStats();
 }
@@ -917,6 +1103,8 @@ function renderToday() {
   $("#planSub").textContent = `${bookName(S.settings.book)} · 今天复习 ${st.reviewed || 0} 次`;
   $("#planDue").textContent = dueList().length;
   $("#planLeft").textContent = newRemaining();
+  $("#planListen").textContent = st.listen || 0;
+  $("#planSpeak").textContent = st.speak || 0;
 
   // 热力图：最近 12 周，周一开始
   const heat = $("#heat");
@@ -1312,6 +1500,459 @@ function nextQuestion() {
   renderQuiz();
 }
 
+/* ── 听说：听写 / 跟读 ── */
+function skillPool(n) {
+  const recs = Object.values(S.words).filter((r) => r.bk === S.settings.book && r.b >= 1);
+  if (!recs.length) return [];
+  const due = recs.filter((r) => r.due <= today()).sort((a, b) => (a.due || "").localeCompare(b.due || ""));
+  const rest = shuffle(recs.filter((r) => r.due > today()));
+  return [...due, ...rest].slice(0, n).map((r) => ({ bk: r.bk || S.settings.book, w: r.w, t: r.t, p: r.p }));
+}
+
+function listenOptions(item) {
+  const all = (currentWords || []).map((x) => x[1]).filter((t) => t && t !== item.t);
+  const opts = [item.t];
+  for (const t of shuffle(all)) {
+    if (opts.length >= 4) break;
+    if (!opts.includes(t)) opts.push(t);
+  }
+  while (opts.length < 4) opts.push("以上都不是");
+  return shuffle(opts);
+}
+
+function listenItem() { return listenSession && !listenSession.done ? listenSession.queue[listenSession.i] : null; }
+function shadowItem() { return shadowSession && !shadowSession.done ? shadowSession.queue[shadowSession.i] : null; }
+function hasASR() { return !!(window.SpeechRecognition || window.webkitSpeechRecognition); }
+
+const normWord = (s) => String(s || "").toLowerCase().trim().replace(/[.,!?;:"“”‘’]/g, "").replace(/\s+/g, " ");
+function levRatio(a, b) {
+  a = normWord(a); b = normWord(b);
+  if (!a || !b) return 0;
+  if (a === b) return 1;
+  const m = a.length, n = b.length;
+  const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    }
+  }
+  return 1 - dp[m][n] / Math.max(m, n);
+}
+
+function renderListen() {
+  const pool = skillPool(999);
+  const note = pool.length
+    ? `${bookName(S.settings.book)} · 可练 ${pool.length} 个学过的词`
+    : "当前词库还没有学过的词，先去「背单词」学几个。";
+  $("#listenPoolNote").textContent = note;
+  $("#shadowPoolNote").textContent = note;
+  $("#listenSetup").classList.toggle("hide", !!(listenSession || shadowSession));
+
+  $$("#listenModeSeg button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.mode === listenMode)));
+  $$("#listenCountSeg button").forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.n) === listenCount)));
+  $$("#shadowCountSeg button").forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.n) === shadowCount)));
+
+  const lc = $("#listenCard"), lsum = $("#listenSummary");
+  if (!listenSession) { lc.classList.add("hide"); lsum.classList.add("hide"); }
+  else if (listenSession.done) { lc.classList.add("hide"); lsum.classList.remove("hide"); renderListenSummary(); }
+  else { lc.classList.remove("hide"); lsum.classList.add("hide"); renderListenCard(); }
+
+  const sc = $("#shadowCard"), ssum = $("#shadowSummary");
+  if (!shadowSession) { sc.classList.add("hide"); ssum.classList.add("hide"); }
+  else if (shadowSession.done) { sc.classList.add("hide"); ssum.classList.remove("hide"); renderShadowSummary(); }
+  else { sc.classList.remove("hide"); ssum.classList.add("hide"); renderShadowCard(); }
+}
+
+function startListen(mode = listenMode, count = listenCount) {
+  const pool = skillPool(count);
+  if (!pool.length) { toast("当前词库还没有学过的词，先去「背单词」学几个"); return; }
+  stopShadow(true);
+  listenSession = {
+    mode, count,
+    queue: pool.map((x) => ({ ...x, options: mode === "choice" ? listenOptions(x) : null })),
+    i: 0, score: 0, attempts: 0, done: false, feedback: null, input: "", xp: 0, start: Date.now(),
+  };
+  renderListen();
+  speak(pool[0].w, 0.85);
+  focusDict();
+}
+
+function focusDict() {
+  setTimeout(() => {
+    const el = $("#dictInput");
+    if (el && !el.disabled) el.focus();
+  }, 40);
+}
+
+function renderListenCard() {
+  const s = listenSession;
+  const item = listenItem();
+  if (!item) return;
+  $("#listenTag").textContent = s.mode === "choice" ? "听音选义" : "听音写词";
+  $("#listenKind").textContent = s.mode === "choice" ? "听发音，选释义" : "听发音，写单词";
+  $("#listenProg").textContent = `${s.i} / ${s.queue.length}`;
+  $("#listenBar").style.width = Math.round((s.i / Math.max(1, s.queue.length)) * 100) + "%";
+  $("#listenHint").textContent = s.feedback
+    ? (s.feedback.ok ? "✓ 答对了" : "再听一遍，记住它")
+    : (s.mode === "choice" ? "听发音，选出正确释义" : "听发音，写出单词");
+
+  const area = $("#listenAnswerArea");
+  if (s.mode === "choice") {
+    area.innerHTML = `<div class="choice-list">${item.options.map((o, idx) => {
+      let cls = "";
+      if (s.feedback) {
+        if (o === item.t) cls = "correct";
+        else if (idx === s.feedback.picked) cls = "wrong";
+      }
+      return `<button class="qopt ${cls}" data-act="listen-answer" data-i="${idx}" ${s.feedback ? "disabled" : ""}>
+        <span class="num">${idx + 1}</span><span>${esc(o)}</span></button>`;
+    }).join("")}</div>
+    ${s.feedback ? `<div class="dict-feedback ${s.feedback.ok ? "ok" : "bad"}">
+      <div class="big">${esc(item.w)}</div>
+      ${item.p ? `<div class="ph">/${esc(item.p)}/</div>` : ""}
+      <div class="mean">${esc(item.t)}</div>
+      <div class="verdict">${s.feedback.ok ? "听音辨义正确" : "正确答案已标出"} · 本组答对 ${s.score} / ${s.attempts}</div>
+      <div class="row" style="margin-top:12px"><button class="btn primary sm" data-act="listen-next">${s.i + 1 >= s.queue.length ? "看结果" : "下一题"} →</button></div>
+    </div>` : ""}`;
+  } else {
+    const fb = s.feedback;
+    area.innerHTML = `<div class="dict-row">
+      <input id="dictInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"
+        placeholder="听到什么就写什么" value="${esc(s.input)}" ${fb ? "disabled" : ""}>
+      <button class="btn primary" data-act="${fb ? "listen-next" : "listen-submit"}">${fb ? (s.i + 1 >= s.queue.length ? "看结果" : "下一题") : "提交"}</button>
+    </div>
+    ${fb ? `<div class="dict-feedback ${fb.ok ? "ok" : "bad"}">
+      <div class="big">${esc(item.w)}</div>
+      ${item.p ? `<div class="ph">/${esc(item.p)}/</div>` : ""}
+      <div class="mean">${esc(item.t)}</div>
+      <div class="verdict">${fb.ok ? "拼写正确" : fb.ratio >= 0.8 ? `差一点（相似度 ${Math.round(fb.ratio * 100)}%）` : "再听一遍，注意重音和尾音"} · 你写的是 <b>${esc(fb.input || "—")}</b></div>
+      <div class="row" style="margin-top:12px"><button class="btn primary sm" data-act="listen-next">${s.i + 1 >= s.queue.length ? "看结果" : "下一题"} →</button></div>
+    </div>` : ""}`;
+  }
+}
+
+function submitDictation() {
+  if (!listenSession || listenSession.done || listenSession.feedback) return;
+  const el = $("#dictInput");
+  const val = el ? el.value : "";
+  if (!val.trim()) { toast("先写点什么"); if (el) el.focus(); return; }
+  const item = listenItem();
+  if (!item) return;
+  const ok = normWord(val) === normWord(item.w);
+  const ratio = levRatio(val, item.w);
+  listenSession.input = val;
+  listenSession.feedback = { ok, ratio, input: val };
+  recordListen(ok);
+  renderListen();
+}
+
+function listenAnswer(idx) {
+  if (!listenSession || listenSession.done || listenSession.feedback) return;
+  const item = listenItem();
+  if (!item) return;
+  const picked = item.options[idx];
+  const ok = picked === item.t;
+  listenSession.feedback = { ok, picked: idx };
+  recordListen(ok);
+  renderListen();
+}
+
+function recordListen(ok) {
+  const s = listenSession;
+  const item = listenItem();
+  if (!s || !item) return;
+  const rec = S.words[bookKey(item.bk || S.settings.book, item.w)];
+  if (rec) {
+    rec.lstSeen = (rec.lstSeen || 0) + 1;
+    if (ok) rec.lstOk = (rec.lstOk || 0) + 1;
+    rec.last = today();
+  }
+  const st = todayStat(true);
+  st.listen = (st.listen || 0) + 1;
+  st.total = (st.total || 0) + 1;
+  S.skills.listen.seen++;
+  if (ok) S.skills.listen.ok++;
+  s.attempts++;
+  if (ok) s.score++;
+  const xp = ok ? 3 : 1;
+  S.xp += xp; s.xp += xp;
+  save(); checkBadges();
+  renderHeader(); renderToday(); renderStats();
+}
+
+function nextListen() {
+  if (!listenSession) return;
+  if (!listenSession.feedback) { submitDictation(); return; }
+  if (listenSession.i + 1 >= listenSession.queue.length) {
+    listenSession.done = true;
+    save(); renderListen();
+    return;
+  }
+  listenSession.i++;
+  listenSession.feedback = null;
+  listenSession.input = "";
+  const next = listenItem();
+  renderListen();
+  if (next) { speak(next.w, 0.85); focusDict(); }
+}
+
+function renderListenSummary() {
+  const s = listenSession;
+  if (!s) return;
+  const acc = s.attempts ? Math.round((s.score / s.attempts) * 100) : 0;
+  const mins = Math.max(1, Math.round((Date.now() - s.start) / 60000));
+  $("#listenSummary").innerHTML = `
+    <h2><span class="n">DONE</span>听写完成</h2>
+    <p class="sub">${mins} 分钟 · 获得 ${s.xp} XP · ${s.mode === "choice" ? "听音选义" : "听音写词"}</p>
+    <div class="sum">
+      <div class="s"><div class="v">${s.score}</div><div class="k">答对</div></div>
+      <div class="s"><div class="v">${s.attempts}</div><div class="k">练过</div></div>
+      <div class="s"><div class="v">${acc}%</div><div class="k">正确率</div></div>
+      <div class="s"><div class="v">${todayStat().listen || 0}</div><div class="k">今日听写次数</div></div>
+    </div>
+    <div class="row">
+      <button class="btn primary" data-act="again-listen">再来一组</button>
+      <button class="btn ghost" data-act="go-today">回今日</button>
+      <div class="sp"></div>
+      <span class="note">听写也算今天碰过词，可以去今日打卡。</span>
+    </div>`;
+}
+
+/* 跟读 */
+function startShadow(count = shadowCount) {
+  const pool = skillPool(count);
+  if (!pool.length) { toast("当前词库还没有学过的词，先去「背单词」学几个"); return; }
+  listenSession = null;
+  stopShadow(true);
+  shadowSession = {
+    count,
+    queue: pool.map((x) => ({ ...x, attempted: false })),
+    i: 0, score: 0, attempts: 0, done: false, xp: 0,
+    transcript: "", sim: 0, recordUrl: null, recording: false, listening: false, start: Date.now(),
+  };
+  renderListen();
+  speak(pool[0].w, 0.85);
+}
+
+function renderShadowCard() {
+  const s = shadowSession;
+  const item = shadowItem();
+  if (!item) return;
+  $("#shadowProg").textContent = `${s.i} / ${s.queue.length}`;
+  $("#shadowBar").style.width = Math.round((s.i / Math.max(1, s.queue.length)) * 100) + "%";
+  $("#shadowWord").textContent = item.w;
+  $("#shadowPh").innerHTML = item.p ? `/${esc(item.p)}/` : "";
+
+  const recBtn = $("#shadowRecBtn"), stopBtn = $("#shadowStopBtn");
+  recBtn.textContent = s.recording ? "● 录音中…" : "🎙 开始录音";
+  recBtn.classList.toggle("recording", s.recording);
+  recBtn.disabled = s.recording;
+  stopBtn.classList.toggle("hide", !s.recording);
+  stopBtn.disabled = !s.recording;
+
+  let html = "";
+  if (s.recordUrl) html += `<audio class="rec-audio" controls src="${esc(s.recordUrl)}"></audio>`;
+  if (s.listening) {
+    html += `<div class="asr-box"><div class="t">识别中…</div><div class="q">读完点「停止」</div></div>`;
+  } else if (s.transcript) {
+    const ok = s.sim >= 0.7;
+    html += `<div class="asr-box ${ok ? "ok" : "bad"}">
+      <div class="t">识别结果 · 词级相似度 ${Math.round(s.sim * 100)}%</div>
+      <div class="q">${esc(s.transcript)}</div>
+      <div class="t" style="margin-top:6px">${ok ? "通过：这次读得不错" : "没过：再听一遍，注意重音和尾音"}</div>
+    </div>`;
+  } else if (s.recordUrl && !item.attempted) {
+    html += `<div class="asr-box">
+      <div class="t">${hasASR() ? "没有识别到语音。回放自评：" : "这个浏览器不支持自动识别。回放后自评："}</div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn sm ok" data-act="shadow-self" data-ok="1">✓ 读对了</button>
+        <button class="btn sm" data-act="shadow-self" data-ok="0">还不行</button>
+      </div>
+    </div>`;
+  }
+  if (item.attempted) {
+    html += `<div class="note" style="margin-top:12px">这个词本轮已经记过一次，再读不会重复计分。</div>`;
+  }
+  $("#shadowResult").innerHTML = html;
+}
+
+async function startShadowRecording() {
+  if (!shadowSession || shadowSession.done) return;
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
+    toast("这个浏览器不支持录音"); return;
+  }
+  try {
+    recStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    recChunks = [];
+    const rec = new MediaRecorder(recStream);
+    recorder = rec;
+    rec.ondataavailable = (e) => { if (e.data && e.data.size) recChunks.push(e.data); };
+    rec.onstop = () => {
+      try {
+        const blob = new Blob(recChunks, { type: rec.mimeType || "audio/webm" });
+        if (shadowSession) {
+          if (shadowSession.recordUrl) URL.revokeObjectURL(shadowSession.recordUrl);
+          shadowSession.recordUrl = URL.createObjectURL(blob);
+        }
+      } catch (e) { /* 忽略 */ }
+      if (recStream) { recStream.getTracks().forEach((t) => t.stop()); recStream = null; }
+      recorder = null;
+      if (shadowSession) { shadowSession.recording = false; renderListen(); }
+    };
+    rec.start();
+    shadowSession.recording = true;
+    shadowSession.transcript = "";
+    shadowSession.sim = 0;
+    startASR();
+    renderListen();
+  } catch (e) {
+    if (recStream) { recStream.getTracks().forEach((t) => t.stop()); recStream = null; }
+    toast("无法使用麦克风：" + (e.message || e.name));
+  }
+}
+
+function startASR() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR || !shadowSession) return;
+  try {
+    asr = new SR();
+    asr.lang = "en-US";
+    asr.interimResults = false;
+    asr.maxAlternatives = 1;
+    asr.onresult = (e) => {
+      const text = (e.results[0] && e.results[0][0] && e.results[0][0].transcript) || "";
+      if (!shadowSession) return;
+      shadowSession.transcript = text;
+      shadowSession.sim = levRatio(text, shadowItem()?.w || "");
+      shadowSession.listening = false;
+      finishShadowAttempt(shadowSession.sim >= 0.7);
+      renderListen();
+    };
+    asr.onerror = (e) => {
+      if (shadowSession) { shadowSession.listening = false; renderListen(); }
+      if (e.error !== "no-speech" && e.error !== "aborted") toast("识别失败：" + e.error);
+    };
+    asr.onend = () => {
+      if (shadowSession) { shadowSession.listening = false; renderListen(); }
+      asr = null;
+    };
+    shadowSession.listening = true;
+    asr.start();
+  } catch (e) {
+    shadowSession.listening = false;
+  }
+}
+
+function stopShadowRecording() {
+  if (!shadowSession) return;
+  shadowSession.recording = false;
+  if (recorder && recorder.state !== "inactive") {
+    try { recorder.stop(); } catch (e) { /* 忽略 */ }
+  }
+  if (asr) { try { asr.stop(); } catch (e) { /* 忽略 */ } }
+  renderListen();
+}
+
+function finishShadowAttempt(ok) {
+  const s = shadowSession;
+  if (!s || s.done) return;
+  const item = shadowItem();
+  if (!item || item.attempted) return;
+  item.attempted = true;
+  const rec = S.words[bookKey(item.bk || S.settings.book, item.w)];
+  if (rec) {
+    rec.spkSeen = (rec.spkSeen || 0) + 1;
+    if (ok) rec.spkOk = (rec.spkOk || 0) + 1;
+    rec.last = today();
+  }
+  const st = todayStat(true);
+  st.speak = (st.speak || 0) + 1;
+  st.total = (st.total || 0) + 1;
+  S.skills.speak.seen++;
+  if (ok) S.skills.speak.ok++;
+  s.attempts++;
+  if (ok) s.score++;
+  const xp = ok ? 5 : 2;
+  S.xp += xp; s.xp += xp;
+  save(); checkBadges();
+  renderHeader(); renderToday(); renderStats();
+}
+
+function shadowSelf(ok) {
+  if (!shadowSession) return;
+  finishShadowAttempt(!!ok);
+  renderListen();
+}
+
+function cleanupRecording() {
+  if (recorder) {
+    recorder.onstop = null;
+    try { if (recorder.state !== "inactive") recorder.stop(); } catch (e) { /* 忽略 */ }
+    recorder = null;
+  }
+  if (recStream) {
+    recStream.getTracks().forEach((t) => t.stop());
+    recStream = null;
+  }
+  if (asr) {
+    asr.onresult = null; asr.onerror = null; asr.onend = null;
+    try { asr.stop(); } catch (e) { /* 忽略 */ }
+    asr = null;
+  }
+  recChunks = [];
+}
+
+function stopShadow(silent) {
+  cleanupRecording();
+  if (shadowSession && shadowSession.recordUrl) URL.revokeObjectURL(shadowSession.recordUrl);
+  shadowSession = null;
+  if (!silent) renderListen();
+}
+
+function nextShadow() {
+  if (!shadowSession) return;
+  cleanupRecording();
+  if (shadowSession.recordUrl) { URL.revokeObjectURL(shadowSession.recordUrl); shadowSession.recordUrl = null; }
+  if (shadowSession.i + 1 >= shadowSession.queue.length) {
+    shadowSession.done = true;
+    renderListen();
+    return;
+  }
+  shadowSession.i++;
+  shadowSession.transcript = "";
+  shadowSession.sim = 0;
+  shadowSession.recording = false;
+  shadowSession.listening = false;
+  const next = shadowItem();
+  renderListen();
+  if (next) speak(next.w, 0.85);
+}
+
+function renderShadowSummary() {
+  const s = shadowSession;
+  if (!s) return;
+  const acc = s.attempts ? Math.round((s.score / s.attempts) * 100) : 0;
+  const mins = Math.max(1, Math.round((Date.now() - s.start) / 60000));
+  $("#shadowSummary").innerHTML = `
+    <h2><span class="n">DONE</span>跟读完成</h2>
+    <p class="sub">${mins} 分钟 · 获得 ${s.xp} XP · 通过 ${s.score} / ${s.attempts}</p>
+    <div class="sum">
+      <div class="s"><div class="v">${s.score}</div><div class="k">通过</div></div>
+      <div class="s"><div class="v">${s.attempts}</div><div class="k">跟读次数</div></div>
+      <div class="s"><div class="v">${acc}%</div><div class="k">通过率</div></div>
+      <div class="s"><div class="v">${todayStat().speak || 0}</div><div class="k">今日跟读次数</div></div>
+    </div>
+    <div class="row">
+      <button class="btn primary" data-act="again-shadow">再来一组</button>
+      <button class="btn ghost" data-act="go-today">回今日</button>
+      <div class="sp"></div>
+      <span class="note">跟读也算今天碰过词，可以去今日打卡。</span>
+    </div>`;
+}
+
+
 /* ── 词库与计划 ── */
 function renderBooks() {
   const list = $("#bookList");
@@ -1431,6 +2072,15 @@ function renderStats() {
     </div>`;
   }).join("");
 
+  // 四技能
+  const ls = S.skills.listen, sp = S.skills.speak;
+  const lacc = ls.seen ? Math.min(100, Math.round((ls.ok / ls.seen) * 100)) : 0;
+  const spacc = sp.seen ? Math.min(100, Math.round((sp.ok / sp.seen) * 100)) : 0;
+  $("#listenStatTxt").textContent = ls.seen ? `答对 ${ls.ok} / ${ls.seen} · ${lacc}%` : "还没练";
+  $("#listenStatBar").style.width = lacc + "%";
+  $("#speakStatTxt").textContent = sp.seen ? `通过 ${sp.ok} / ${sp.seen} · ${spacc}%` : "还没练";
+  $("#speakStatBar").style.width = spacc + "%";
+
   // 徽章
   const unlocked = Object.keys(S.badges).length;
   $("#badgeCount").textContent = `${unlocked} / ${BADGES.length}`;
@@ -1475,6 +2125,9 @@ function checkBadges() {
     reviews: reviewTotal(),
     quizPerfect: !!S.quizPerfect,
     xp: S.xp,
+    listenOk: S.skills.listen.ok,
+    speakSeen: S.skills.speak.seen,
+    speakOk: S.skills.speak.ok,
     early: Object.values(S.days).some((d) => d.checkinAt && new Date(d.checkinAt).getHours() < 7),
     night: Object.values(S.days).some((d) => d.checkinAt && new Date(d.checkinAt).getHours() >= 23),
     bookDone: BOOK_META.some((b) => {
@@ -1539,10 +2192,14 @@ function importData(file) {
         ...d, ...o,
         settings: { ...d.settings, ...(o.settings || {}) },
         words: o.words || {}, days: o.days || {}, badges: o.badges || {},
+        skills: {
+          listen: { seen: 0, ok: 0, ...((o.skills && o.skills.listen) || {}) },
+          speak: { seen: 0, ok: 0, ...((o.skills && o.skills.speak) || {}) },
+        },
         custom: Array.isArray(o.custom) ? o.custom : [],
       };
       save();
-      session = null; quiz = null;
+      session = null; quiz = null; listenSession = null; stopShadow(true);
       if (!BOOK_META.some((b) => b.id === S.settings.book)) S.settings.book = "cet4";
       if (S.settings.book === "custom" && !S.custom.length) S.settings.book = "cet4";
       await loadBook("custom");
@@ -1593,7 +2250,42 @@ document.addEventListener("click", (e) => {
     return;
   }
   if (act === "grade") { grade(el.dataset.g); return; }
-  if (act === "go-today") { session = null; switchView("today"); return; }
+  if (act === "go-today") { session = null; listenSession = null; stopShadow(true); switchView("today"); return; }
+  if (act === "go-listen") { switchView("listen"); return; }
+
+  if (act === "listen-mode") {
+    listenMode = el.dataset.mode;
+    $$("#listenModeSeg button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.mode === listenMode)));
+    return;
+  }
+  if (act === "listen-count") {
+    listenCount = Number(el.dataset.n);
+    $$("#listenCountSeg button").forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.n) === listenCount)));
+    return;
+  }
+  if (act === "start-listen") { startListen(listenMode, listenCount); return; }
+  if (act === "listen-play") { const it = listenItem(); if (it) speak(it.w, 0.85); return; }
+  if (act === "listen-slow") { const it = listenItem(); if (it) speak(it.w, 0.55); return; }
+  if (act === "listen-submit") { submitDictation(); return; }
+  if (act === "listen-next") { nextListen(); return; }
+  if (act === "listen-answer") { listenAnswer(Number(el.dataset.i)); return; }
+  if (act === "quit-listen") { listenSession = null; renderListen(); return; }
+  if (act === "again-listen") { if (listenSession) startListen(listenSession.mode, listenSession.count); return; }
+
+  if (act === "shadow-count") {
+    shadowCount = Number(el.dataset.n);
+    $$("#shadowCountSeg button").forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.n) === shadowCount)));
+    return;
+  }
+  if (act === "start-shadow") { startShadow(shadowCount); return; }
+  if (act === "shadow-play") { const it = shadowItem(); if (it) speak(it.w, 0.85); return; }
+  if (act === "shadow-slow") { const it = shadowItem(); if (it) speak(it.w, 0.55); return; }
+  if (act === "shadow-record") { startShadowRecording(); return; }
+  if (act === "shadow-stop") { stopShadowRecording(); return; }
+  if (act === "shadow-self") { shadowSelf(el.dataset.ok === "1"); return; }
+  if (act === "shadow-next") { nextShadow(); return; }
+  if (act === "quit-shadow") { stopShadow(false); return; }
+  if (act === "again-shadow") { if (shadowSession) startShadow(shadowSession.count); return; }
 
   if (act === "goal") {
     S.settings.dailyNew = Number(el.dataset.n);
@@ -1657,6 +2349,14 @@ $("#fileIn").addEventListener("change", (e) => {
 });
 
 document.addEventListener("keydown", (e) => {
+  if (e.target.id === "dictInput") {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (listenSession && listenSession.feedback) nextListen();
+      else submitDictation();
+    }
+    return;
+  }
   const tag = (e.target.tagName || "").toLowerCase();
   if (tag === "input" || tag === "textarea" || tag === "select") return;
 
@@ -1676,6 +2376,29 @@ document.addEventListener("keydown", (e) => {
   if (view === "review" && quiz && !quiz.done) {
     if (quiz.picked < 0 && ["1", "2", "3", "4"].includes(e.key)) { answerQuiz(Number(e.key) - 1); return; }
     if (quiz.picked >= 0 && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); nextQuestion(); return; }
+  }
+  if (view === "listen") {
+    if (listenSession && !listenSession.done) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (listenSession.feedback) nextListen();
+        else if (listenSession.mode === "write") submitDictation();
+        return;
+      }
+      if (listenSession.mode === "choice" && !listenSession.feedback && ["1", "2", "3", "4"].includes(e.key)) {
+        listenAnswer(Number(e.key) - 1);
+        return;
+      }
+      if (e.key.toLowerCase() === "r") {
+        const it = listenItem();
+        if (it) speak(it.w, 0.85);
+        return;
+      }
+    }
+    if (shadowSession && !shadowSession.done && e.key.toLowerCase() === "r") {
+      const it = shadowItem();
+      if (it) speak(it.w, 0.85);
+    }
   }
 });
 
