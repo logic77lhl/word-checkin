@@ -1,0 +1,1721 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a0e15">
+<meta name="description" content="词途 · 背单词打卡：四级 / 六级 / 考研 / 雅思词库，间隔复习、打卡热力图、小测与徽章。数据只存在本地浏览器。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%96%3C/text%3E%3C/svg%3E">
+<title>词途 · 背单词打卡</title>
+<style>
+:root{
+  --bg:#0a0e15; --bg2:#0e141d; --panel:#131b26; --panel2:#17202d;
+  --line:#22303f; --line2:#2d3d4f;
+  --tx:#e8eef7; --dim:#8fa3ba; --dim2:#7b8fa5;
+  --acc:#ffd21e; --acc2:#f7b500;
+  --ok:#34d399; --okdim:#0f3d30;
+  --blue:#7dd3fc; --violet:#a78bfa; --rose:#fb7185;
+  --mono:ui-monospace,"Cascadia Code",Consolas,"SF Mono",monospace;
+  --serif:Georgia,"Iowan Old Style","Times New Roman",serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:
+    radial-gradient(1100px 500px at 12% -10%, rgba(255,210,30,.09), transparent 60%),
+    radial-gradient(900px 480px at 92% 0%, rgba(125,211,252,.07), transparent 60%),
+    var(--bg);
+  color:var(--tx);
+  font:15px/1.6 -apple-system,"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:70px;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:0 18px}
+a{color:var(--blue);text-decoration:none}
+button{font-family:inherit}
+.hide{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* ── header ── */
+header{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);
+  background:rgba(10,14,21,.84);border-bottom:1px solid var(--line)}
+.hd{display:flex;align-items:center;gap:14px;padding:12px 0;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:.3px}
+.brand .em{font-size:23px;filter:drop-shadow(0 0 10px rgba(255,210,30,.45))}
+.brand small{display:block;font-weight:500;font-size:10.5px;color:var(--dim2);letter-spacing:.7px;text-transform:uppercase}
+.hd .sp{flex:1}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;
+  background:var(--panel);border:1px solid var(--line);font-size:13px;white-space:nowrap}
+.pill b{font-family:var(--mono);color:var(--acc)}
+.pill.hot{border-color:rgba(255,210,30,.35);background:linear-gradient(180deg,rgba(255,210,30,.12),rgba(255,210,30,.04))}
+.ring{--p:0;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex:none;
+  background:conic-gradient(var(--acc) calc(var(--p)*1%), var(--line) 0);position:relative}
+.ring::before{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--bg)}
+.ring span{position:relative;font:600 10.5px/1 var(--mono);color:var(--tx)}
+
+/* ── tabs ── */
+nav.tabs{display:flex;gap:6px;overflow-x:auto;padding:8px 0 0;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+.tab{border:1px solid transparent;background:transparent;color:var(--dim);padding:9px 15px;
+  border-radius:10px 10px 0 0;cursor:pointer;font:500 13.5px/1 inherit;white-space:nowrap}
+.tab:hover{color:var(--tx);background:var(--panel)}
+.tab[aria-selected="true"]{color:#111;background:var(--acc);font-weight:700}
+
+/* ── layout ── */
+main{padding-top:22px}
+.card{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);
+  border-radius:16px;padding:20px;margin-bottom:16px}
+.card h2{margin:0 0 4px;font-size:17px;letter-spacing:.2px}
+.card h2 .n{font-family:var(--mono);color:var(--acc);font-size:12px;margin-right:8px}
+.sub{color:var(--dim);font-size:13px;margin:0 0 16px}
+.grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+.grid2e{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:820px){.grid2,.grid2e{grid-template-columns:1fr}}
+
+/* ── checkin ── */
+.checkin{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.flame{font-size:44px;line-height:1;filter:drop-shadow(0 0 14px rgba(255,120,30,.45))}
+.flame.off{filter:grayscale(1);opacity:.35}
+.streak{font:800 40px/1 var(--mono);color:var(--acc)}
+.streak small{font:500 12px/1.5 inherit;color:var(--dim);display:block;letter-spacing:.3px;margin-top:6px}
+.btn{border:1px solid var(--line2);background:var(--panel2);color:var(--tx);padding:11px 20px;
+  border-radius:11px;cursor:pointer;font:600 14px/1 inherit;transition:.15s}
+.btn:hover{border-color:var(--acc);color:var(--acc)}
+.btn.primary{background:var(--acc);border-color:var(--acc);color:#151515}
+.btn.primary:hover{background:var(--acc2);color:#151515}
+.btn.ok{background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.45);color:var(--ok)}
+.btn:disabled{opacity:.45;cursor:default;border-color:var(--line);color:var(--dim)}
+.btn:disabled:hover{border-color:var(--line);color:var(--dim)}
+.btn.ok:disabled{opacity:1;color:var(--ok);border-color:rgba(52,211,153,.45);background:rgba(52,211,153,.12)}
+.btn.sm{padding:7px 12px;font-size:12.5px;border-radius:9px}
+.btn.ghost{background:transparent}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.sp{flex:1}
+
+/* ── heatmap ── */
+.heat{display:flex;gap:3px;margin-top:6px;overflow-x:auto;padding-bottom:2px}
+.heat .wk{display:flex;flex-direction:column;gap:3px}
+.heat i{width:11px;height:11px;border-radius:3px;background:#1b2531;display:block}
+.heat i.l1{background:#4a4218}
+.heat i.l2{background:#8a7a1c}
+.heat i.l3{background:var(--acc)}
+.heat i.today{outline:1px solid var(--acc);outline-offset:1px}
+.heat i.future{opacity:.22}
+.legend{display:flex;gap:8px;font-size:11px;color:var(--dim2);margin-top:8px;align-items:center;flex-wrap:wrap}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:1px}
+
+/* ── progress ── */
+.bar{height:6px;background:#1b2531;border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--acc);border-radius:99px;transition:width .35s}
+.bar.ok>i{background:var(--ok)}
+.goal{display:flex;align-items:baseline;gap:6px;font:800 30px/1 var(--mono);color:var(--acc)}
+.goal small{font:500 12px/1.4 inherit;color:var(--dim)}
+.mini{font-size:12px;color:var(--dim2)}
+
+/* ── word of day ── */
+.wod{font:700 34px/1.2 var(--serif);letter-spacing:.3px}
+.wod small{display:block;font:400 13px/1.6 var(--mono);color:var(--dim2);letter-spacing:0;margin-top:5px}
+.mean{font-size:14.5px;line-height:1.8;color:var(--tx);margin-top:10px}
+.mean .sep{color:var(--dim2);margin:0 7px}
+.quote{font:italic 17px/1.7 var(--serif);color:var(--tx)}
+.quote-zh{font-size:13px;color:var(--dim);margin-top:6px}
+
+/* ── study ── */
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;flex-wrap:wrap}
+.seg button{background:transparent;border:0;color:var(--dim);padding:8px 14px;font:13px inherit;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--panel2);color:var(--acc);font-weight:600}
+.sess-top{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--dim);margin-bottom:8px}
+.tag{display:inline-block;font:600 10.5px/1 var(--mono);color:var(--acc);background:rgba(255,210,30,.1);
+  border:1px solid rgba(255,210,30,.25);padding:4px 7px;border-radius:6px;letter-spacing:.4px}
+.tag.blue{color:var(--blue);background:rgba(125,211,252,.1);border-color:rgba(125,211,252,.28)}
+.stage{margin-top:20px;border:1px solid var(--line);border-radius:18px;padding:34px 22px;
+  background:radial-gradient(600px 200px at 50% 0%,rgba(255,210,30,.06),transparent 70%),var(--bg2);
+  text-align:center;cursor:pointer;user-select:none;transition:border-color .2s}
+.stage:hover{border-color:var(--line2)}
+.stage .w{font:700 clamp(38px,7vw,58px)/1.15 var(--serif);letter-spacing:-.5px;word-break:break-word}
+.stage .ph{font:14px/1.5 var(--mono);color:var(--dim2);margin-top:9px;display:flex;gap:8px;justify-content:center;align-items:center}
+.speak{border:1px solid var(--line);background:var(--panel2);color:var(--blue);border-radius:8px;
+  width:29px;height:29px;display:inline-grid;place-items:center;cursor:pointer;font-size:14px}
+.speak:hover{border-color:var(--blue)}
+.hint{color:var(--dim2);font-size:12.5px;margin-top:22px;letter-spacing:.4px}
+.stage .mean{max-width:640px;margin:20px auto 0;font-size:16px}
+.meta{margin-top:14px;font-size:12px;color:var(--dim2)}
+.grade-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.grade{border:1px solid var(--line2);background:var(--panel2);border-radius:13px;padding:14px 8px;
+  cursor:pointer;transition:.15s;color:var(--tx)}
+.grade b{display:block;font-size:14.5px}
+.grade small{display:block;font-size:11px;color:var(--dim2);margin-top:4px;font-family:var(--mono)}
+.grade:hover{transform:translateY(-1px)}
+.grade.g1:hover{border-color:var(--ok);background:rgba(52,211,153,.1)}
+.grade.g2:hover{border-color:var(--acc);background:rgba(255,210,30,.1)}
+.grade.g3:hover{border-color:var(--rose);background:rgba(251,113,133,.1)}
+.grade kbd{margin-left:2px}
+kbd{font:11px var(--mono);background:var(--bg);border:1px solid var(--line2);border-bottom-width:2px;
+  border-radius:5px;padding:2px 5px;color:var(--dim)}
+
+/* ── summary ── */
+.sum{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+@media(max-width:640px){.sum{grid-template-columns:repeat(2,1fr)}}
+.sum .s{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:13px}
+.sum .v{font:800 23px/1.1 var(--mono);color:var(--acc)}
+.sum .k{font-size:11.5px;color:var(--dim2);margin-top:6px}
+
+/* ── review forecast ── */
+.forecast{display:flex;gap:6px;align-items:flex-end;height:110px;margin-top:8px}
+.fcol{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;height:100%}
+.fcol .fb{width:100%;max-width:44px;background:linear-gradient(180deg,var(--acc),var(--acc2));border-radius:6px 6px 2px 2px;min-height:3px;opacity:.85}
+.fcol .fl{font:10.5px/1 var(--mono);color:var(--dim2)}
+.fcol .fv{font:600 11px/1 var(--mono);color:var(--dim)}
+
+/* ── quiz ── */
+.qopt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--bg2);
+  color:var(--tx);padding:13px 16px;border-radius:11px;margin-bottom:9px;cursor:pointer;font-size:14px;
+  transition:.15s;display:flex;gap:10px;align-items:flex-start}
+.qopt .num{font:600 11px/1.5 var(--mono);color:var(--dim2);flex:none}
+.qopt:hover{border-color:var(--acc)}
+.qopt.correct{border-color:var(--ok);background:rgba(52,211,153,.1)}
+.qopt.wrong{border-color:var(--rose);background:rgba(251,113,133,.1)}
+.qopt:disabled{cursor:default}
+.qword{font:700 34px/1.2 var(--serif);margin:6px 0 2px}
+.qmeta{font-size:12px;color:var(--dim2);margin-bottom:16px}
+
+/* ── books ── */
+.books{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.book{border:1px solid var(--line);border-radius:14px;padding:15px;background:var(--bg2);transition:.2s}
+.book.on{border-color:rgba(255,210,30,.45);background:linear-gradient(180deg,rgba(255,210,30,.08),var(--bg2))}
+.book .t{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px}
+.book .en{font:600 10px/1 var(--mono);color:var(--dim2);letter-spacing:.8px}
+.book .d{font-size:12px;color:var(--dim);margin:7px 0 12px;min-height:34px}
+.book .num{font:600 12px/1 var(--mono);color:var(--dim2)}
+.book .bar{margin:7px 0 10px}
+
+/* ── tables ── */
+input[type=search],input[type=text],textarea,select{background:var(--bg);border:1px solid var(--line);color:var(--tx);
+  padding:9px 12px;border-radius:10px;font:14px inherit;outline:none}
+input[type=search]{min-width:220px}
+input:focus,textarea:focus{border-color:var(--acc)}
+textarea{width:100%;min-height:120px;resize:vertical;line-height:1.7;font-size:13px}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+.tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tblwrap table{min-width:600px}
+th{text-align:left;color:var(--dim2);font:600 11px/1 inherit;letter-spacing:.6px;text-transform:uppercase;
+  padding:0 10px 10px 0;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 10px 9px 0;border-bottom:1px solid rgba(34,48,63,.5);vertical-align:top}
+td.w{font-weight:600;white-space:nowrap}
+td.w .ph{display:block;font:11px/1.4 var(--mono);color:var(--dim2);font-weight:400;margin-top:2px}
+td.m{color:var(--dim);font-size:12.5px;line-height:1.6}
+tr:hover td{background:rgba(23,32,45,.6)}
+.badge{display:inline-block;font:11px/1 var(--mono);padding:4px 7px;border-radius:6px;
+  background:var(--panel2);border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+.badge.ok{color:var(--ok);border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.08)}
+.badge.warn{color:var(--acc);border-color:rgba(255,210,30,.3);background:rgba(255,210,30,.08)}
+.badge.bad{color:var(--rose);border-color:rgba(251,113,133,.3);background:rgba(251,113,133,.08)}
+.badge.blue{color:var(--blue);border-color:rgba(125,211,252,.3);background:rgba(125,211,252,.08)}
+
+/* ── stats ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+@media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+.stat .v{font:800 24px/1.1 var(--mono);color:var(--acc)}
+.stat .k{font-size:11.5px;color:var(--dim2);margin-top:6px;letter-spacing:.3px}
+.chart{display:flex;gap:4px;align-items:flex-end;height:130px;margin-top:10px}
+.chart .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;gap:5px}
+.chart .cb{width:100%;background:linear-gradient(180deg,rgba(255,210,30,.9),rgba(255,210,30,.35));
+  border-radius:4px 4px 2px 2px;min-height:2px}
+.chart .cd{font:9px/1 var(--mono);color:var(--dim2)}
+.chart .col.today .cb{background:var(--acc);box-shadow:0 0 10px rgba(255,210,30,.35)}
+.stack{display:flex;height:10px;border-radius:99px;overflow:hidden;background:#1b2531;margin:10px 0 8px}
+.stack i{display:block;height:100%}
+.bgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px}
+.bg-item{display:flex;gap:10px;align-items:center;padding:11px 12px;border-radius:11px;
+  border:1px solid var(--line);background:var(--bg2);transition:.2s}
+.bg-item .ic{font-size:20px;filter:grayscale(1);opacity:.45}
+.bg-item .n{font-size:12.5px;font-weight:600;color:var(--dim)}
+.bg-item .d{font-size:11px;color:var(--dim2);line-height:1.4}
+.bg-item.on{border-color:rgba(255,210,30,.4);background:linear-gradient(180deg,rgba(255,210,30,.09),var(--bg2))}
+.bg-item.on .ic{filter:none;opacity:1}
+.bg-item.on .n{color:var(--tx)}
+.skill{margin-bottom:12px}
+.skill .row{display:flex;justify-content:space-between;font-size:12.5px;color:var(--dim);margin-bottom:5px}
+.skill .bar{width:100%;height:7px}
+
+/* ── misc ── */
+.empty{color:var(--dim2);font-size:13px;padding:22px;text-align:center;line-height:1.8}
+.hr{height:1px;background:var(--line);margin:16px 0}
+.note{font-size:12px;color:var(--dim2);line-height:1.7}
+.note b{color:var(--dim)}
+footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:var(--dim2);font-size:12px;line-height:1.8}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:var(--acc);color:#151515;
+  font-weight:700;font-size:13.5px;padding:11px 20px;border-radius:11px;opacity:0;pointer-events:none;
+  transition:.25s;z-index:99;box-shadow:0 8px 30px rgba(255,210,30,.28);max-width:90vw;text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.loading{display:grid;place-items:center;min-height:50vh;color:var(--dim);gap:12px}
+.spin{width:30px;height:30px;border:2px solid var(--line);border-top-color:var(--acc);border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media(max-width:560px){
+  .brand small{display:none}
+  .pill{padding:5px 9px;font-size:12px}
+  .pill.xp{display:none}
+  .ring{width:38px;height:38px}
+  .tab{padding:8px 7px;font-size:13px}
+  nav.tabs{gap:4px}
+  #btnCheckin{width:100%}
+  .card{padding:16px}
+  .stage{padding:26px 14px}
+  .grade-row{gap:6px}
+  .grade{padding:12px 4px}
+  .grade small{font-size:10px}
+  td.m{font-size:12px}
+  .heat i{width:10px;height:10px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="hd">
+      <div class="brand">
+        <span class="em">📖</span>
+        <div>词途 <small>WORD QUEST · 背单词打卡</small></div>
+      </div>
+      <div class="sp"></div>
+      <span class="pill hot" title="连续打卡天数">🔥 <b id="hStreak">0</b> 天</span>
+      <span class="pill" title="今天碰过的词">📚 <b id="hToday">0</b> 词</span>
+      <span class="pill xp" title="经验值">⚡ <b id="hXp">0</b> XP</span>
+      <div class="ring" id="hRing" title="今日新词目标完成度"><span id="hPct">0%</span></div>
+    </div>
+    <nav class="tabs" id="tabs" role="tablist" aria-label="主导航">
+      <button class="tab" role="tab" data-act="tab" data-view="today" aria-selected="true">今日打卡</button>
+      <button class="tab" role="tab" data-act="tab" data-view="study" aria-selected="false">背单词</button>
+      <button class="tab" role="tab" data-act="tab" data-view="review" aria-selected="false">复习</button>
+      <button class="tab" role="tab" data-act="tab" data-view="books" aria-selected="false">词库与计划</button>
+      <button class="tab" role="tab" data-act="tab" data-view="stats" aria-selected="false">统计与徽章</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="boot" class="loading"><div class="spin"></div><div>正在装词库…</div></div>
+
+  <div id="app" class="hide">
+    <!-- ══════════ 今日 ══════════ -->
+    <section id="v-today">
+      <div class="grid2">
+        <div class="card">
+          <h2><span class="n">01</span>今日打卡</h2>
+          <p class="sub" id="todayDate">—</p>
+          <div class="checkin">
+            <div class="flame off" id="flame">🔥</div>
+            <div>
+              <div class="streak"><span id="bigStreak">0</span></div>
+              <small>连续天数 · 最长 <span id="bestStreak">0</span> 天 · 累计 <span id="totalDays">0</span> 天</small>
+            </div>
+            <div class="sp"></div>
+            <button class="btn primary" id="btnCheckin" data-act="checkin">今天打卡</button>
+          </div>
+          <p class="note" id="checkinHint" style="margin:12px 0 0">学 1 个词即可打卡；完成每日新词目标会自动打卡。</p>
+          <div style="margin-top:18px">
+            <div class="sub" style="margin:0 0 8px">最近 12 周 · 每格一天，颜色 = 当天碰过的词数</div>
+            <div class="heat" id="heat"></div>
+            <div class="legend">
+              <span>少</span><i style="background:#1b2531"></i><i style="background:#4a4218"></i>
+              <i style="background:#8a7a1c"></i><i style="background:#ffd21e"></i><span>多</span>
+              <span style="margin-left:auto" id="weekStat">—</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2><span class="n">02</span>今日计划</h2>
+          <p class="sub" id="planSub">—</p>
+          <div class="row" style="align-items:flex-end">
+            <div class="goal"><span id="planDone">0</span><small>/ <span id="planGoal">20</span> 新词</small></div>
+            <div class="sp"></div>
+            <span class="badge" id="planPct">0%</span>
+          </div>
+          <div class="bar" style="margin:12px 0 6px"><i id="planBar" style="width:0%"></i></div>
+          <div class="row" style="justify-content:space-between;font-size:12px;color:var(--dim2)">
+            <span>待复习 <b id="planDue" style="color:var(--blue)">0</b></span>
+            <span>词库剩余 <b id="planLeft" style="color:var(--dim)">0</b></span>
+          </div>
+          <div class="hr"></div>
+          <button class="btn primary" style="width:100%" data-act="quick-start">开始今日学习 →</button>
+          <p class="note" style="margin:10px 0 0">先复习到期的词，再学新词。每轮约 5–10 分钟。</p>
+        </div>
+      </div>
+
+      <div class="grid2e">
+        <div class="card">
+          <h2><span class="n">03</span>每日一词</h2>
+          <p class="sub">今天和它混个脸熟。</p>
+          <div id="wodBox"><div class="empty">词库加载中…</div></div>
+        </div>
+        <div class="card">
+          <h2><span class="n">04</span>每日一句</h2>
+          <p class="sub">背单词是长跑，别在第一天冲刺。</p>
+          <div id="quoteBox"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="n">05</span>今天碰过的词</h2>
+        <p class="sub">学过就会出现在这里，点 🔊 可以再听一遍。</p>
+        <div id="todayWords"></div>
+      </div>
+
+      <div class="card">
+        <h2><span class="n">06</span>怎么用</h2>
+        <div class="grid2e">
+          <p class="note" style="margin:0">
+            <b>① 选词库</b>：四级 / 六级 / 考研 / 雅思，也可以粘贴自己的词表。<br>
+            <b>② 每天学一组</b>：先看单词回忆意思，再点开答案，诚实地选「认识 / 模糊 / 忘了」。<br>
+            <b>③ 让复习找上门</b>：系统按 1、2、4、7、15… 天安排复习，到期的词会出现在「复习」里。
+          </p>
+          <p class="note" style="margin:0">
+            <b>打卡规则</b>：当天学过至少 1 个词就能打卡；完成每日新词目标会自动打卡。断签会归零连续天数，但累计天数和学过的词都保留。<br>
+            <b>数据在哪</b>：只存在这台设备的浏览器里（localStorage）。换设备用「统计与徽章 → 导出 / 导入」。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 背单词 ══════════ -->
+    <section id="v-study" class="hide">
+      <div class="card" id="studySetup">
+        <h2><span class="n">STUDY</span>开始一组</h2>
+        <p class="sub" id="studySub">—</p>
+        <div class="row" style="margin-bottom:14px">
+          <div class="seg" id="modeSeg">
+            <button data-act="mode" data-mode="new" aria-pressed="true">新词</button>
+            <button data-act="mode" data-mode="review" aria-pressed="false">复习</button>
+            <button data-act="mode" data-mode="mix" aria-pressed="false">混合</button>
+          </div>
+          <div class="seg" id="countSeg">
+            <button data-act="count" data-n="10" aria-pressed="false">10</button>
+            <button data-act="count" data-n="20" aria-pressed="true">20</button>
+            <button data-act="count" data-n="30" aria-pressed="false">30</button>
+          </div>
+          <div class="sp"></div>
+          <button class="btn primary" data-act="start-session">开始</button>
+        </div>
+        <div class="grid2e">
+          <div>
+            <div class="sub" style="margin:0 0 6px">当前词库</div>
+            <div id="setupBook" style="font-size:15px;font-weight:600">—</div>
+            <div class="note" id="setupNums" style="margin-top:8px">—</div>
+          </div>
+          <div class="note">
+            <b>怎么算「认识」</b>：看到英文，3 秒内能说出主要中文意思。<br>
+            想不起来但看到答案有印象 → <b>模糊</b>；完全没见过 → <b>忘了</b>。<br>
+            别骗自己，选「认识」的词会隔很久才回来。
+          </div>
+        </div>
+        <p class="note" style="margin:14px 0 0">快捷键：<kbd>空格</kbd> 显示释义 · <kbd>1</kbd> 认识 · <kbd>2</kbd> 模糊 · <kbd>3</kbd> 忘了</p>
+      </div>
+
+      <div class="card hide" id="studyCard">
+        <div class="sess-top">
+          <span class="tag" id="sessBook">—</span>
+          <span id="sessKind">—</span>
+          <div class="sp"></div>
+          <span id="sessProg">0 / 0</span>
+          <button class="btn sm ghost" data-act="quit-session" title="结束这一组">结束</button>
+        </div>
+        <div class="bar" style="margin-bottom:4px"><i id="sessBar" style="width:0%"></i></div>
+        <div class="stage" id="stage" data-act="reveal">
+          <div class="w" id="stageWord">—</div>
+          <div class="ph" id="stagePh"></div>
+          <div id="stageBody"></div>
+        </div>
+        <div class="grade-row hide" id="gradeRow">
+          <button class="grade g1" data-act="grade" data-g="known"><b>认识</b><small><kbd>1</kbd> 记得</small></button>
+          <button class="grade g2" data-act="grade" data-g="fuzzy"><b>模糊</b><small><kbd>2</kbd> 有印象</small></button>
+          <button class="grade g3" data-act="grade" data-g="forgot"><b>忘了</b><small><kbd>3</kbd> 再见一次</small></button>
+        </div>
+      </div>
+
+      <div class="card hide" id="studySummary"></div>
+    </section>
+
+    <!-- ══════════ 复习 ══════════ -->
+    <section id="v-review" class="hide">
+      <div class="grid2">
+        <div class="card">
+          <h2><span class="n">REVIEW</span>该复习了</h2>
+          <p class="sub">到期的词会先出现在这里。复习比学新词更划算。</p>
+          <div class="row" style="align-items:flex-end">
+            <div class="goal"><span id="dueCount">0</span><small>个词到期</small></div>
+            <div class="sp"></div>
+            <button class="btn primary" id="btnReview" data-act="start-review">开始复习</button>
+          </div>
+          <div class="hr"></div>
+          <div class="note" id="dueNote">—</div>
+        </div>
+        <div class="card">
+          <h2><span class="n">NEXT</span>未来 7 天</h2>
+          <p class="sub">按现在的安排，每天会有多少词回来。</p>
+          <div class="forecast" id="forecast"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="n">QUIZ</span>10 题小测</h2>
+        <p class="sub">从学过的词里随机抽，看英文选中文。答对 +2 XP，满分再 +10。</p>
+        <div id="quizBox">
+          <button class="btn primary" data-act="start-quiz">开始小测</button>
+          <span class="note" style="margin-left:10px" id="quizHint"></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="n">LIST</span>到期清单</h2>
+        <p class="sub">最多显示 40 个，按逾期时间排序。</p>
+        <div id="dueList"></div>
+      </div>
+    </section>
+
+    <!-- ══════════ 词库与计划 ══════════ -->
+    <section id="v-books" class="hide">
+      <div class="card">
+        <h2><span class="n">BOOKS</span>选一本词库</h2>
+        <p class="sub">进度按词库分别记录，换书不会丢。内置词库来自 qwerty-learner 开源词表。</p>
+        <div class="books" id="bookList"></div>
+      </div>
+
+      <div class="grid2e">
+        <div class="card">
+          <h2><span class="n">PLAN</span>每日计划</h2>
+          <p class="sub">新词目标决定每天的节奏，随时可改。</p>
+          <div class="row" style="margin-bottom:12px">
+            <span class="note" style="margin:0">每天新词</span>
+            <div class="seg" id="goalSeg">
+              <button data-act="goal" data-n="10" aria-pressed="false">10</button>
+              <button data-act="goal" data-n="15" aria-pressed="false">15</button>
+              <button data-act="goal" data-n="20" aria-pressed="true">20</button>
+              <button data-act="goal" data-n="30" aria-pressed="false">30</button>
+              <button data-act="goal" data-n="50" aria-pressed="false">50</button>
+            </div>
+          </div>
+          <div class="note" id="goalNote">—</div>
+          <div class="hr"></div>
+          <label class="row" style="cursor:pointer">
+            <input type="checkbox" id="autoSpeak" data-act="toggle-speak">
+            <span style="font-size:13px">进入新词时自动发音</span>
+          </label>
+        </div>
+
+        <div class="card">
+          <h2><span class="n">CUSTOM</span>导入自己的词表</h2>
+          <p class="sub">每行一个词：<code>word 中文释义</code>，逗号 / 制表符分隔也行。</p>
+          <textarea id="customInput" placeholder="abandon 放弃；抛弃&#10;resilient 有韧性的&#10;serendipity, 意外发现珍奇事物的运气"></textarea>
+          <div class="row" style="margin-top:10px">
+            <button class="btn sm primary" data-act="import-custom">导入</button>
+            <button class="btn sm" data-act="clear-custom">清空自定义</button>
+            <div class="sp"></div>
+            <span class="note" id="customCount">0 个词</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="n">WORDS</span>词表</h2>
+        <p class="sub" id="wordTableSub">—</p>
+        <div class="toolbar">
+          <input type="search" id="wordSearch" placeholder="搜索单词或释义…">
+          <div class="seg" id="wordFilter">
+            <button data-act="wfilter" data-f="all" aria-pressed="true">全部</button>
+            <button data-act="wfilter" data-f="new" aria-pressed="false">未学</button>
+            <button data-act="wfilter" data-f="learning" aria-pressed="false">学习中</button>
+            <button data-act="wfilter" data-f="mastered" aria-pressed="false">已掌握</button>
+            <button data-act="wfilter" data-f="due" aria-pressed="false">待复习</button>
+          </div>
+        </div>
+        <div id="wordTable"></div>
+      </div>
+    </section>
+
+    <!-- ══════════ 统计 ══════════ -->
+    <section id="v-stats" class="hide">
+      <div class="card">
+        <h2><span class="n">STAT</span>总览</h2>
+        <div class="stats">
+          <div class="stat"><div class="v" id="sLearned">0</div><div class="k">学过的词（去重）</div></div>
+          <div class="stat"><div class="v" id="sMastered">0</div><div class="k">已掌握（间隔 ≥ 30 天）</div></div>
+          <div class="stat"><div class="v" id="sDays">0</div><div class="k">累计打卡天数</div></div>
+          <div class="stat"><div class="v" id="sXp">0</div><div class="k">XP · Lv.<span id="sLv">1</span></div></div>
+        </div>
+        <div class="skill">
+          <div class="row"><span>当前词库进度</span><span id="curProgTxt" class="mini">—</span></div>
+          <div class="bar ok"><i id="curProg" style="width:0%"></i></div>
+        </div>
+        <p class="note" style="margin:0">XP 来源：新词 +8 · 复习 +3 · 小测答对 +2 · 小测满分 +10</p>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <h2><span class="n">30D</span>最近 30 天</h2>
+          <p class="sub">柱子高度 = 当天学过 + 复习过的词次。</p>
+          <div class="chart" id="chart30"></div>
+        </div>
+        <div class="card">
+          <h2><span class="n">MEM</span>记忆状态</h2>
+          <p class="sub">当前词库里的词分布。</p>
+          <div class="stack" id="memStack"><i style="background:#2d3d4f;width:100%"></i></div>
+          <div class="row" style="justify-content:space-between;font-size:12px">
+            <span><i class="dot" style="background:#2d3d4f"></i> 未学 <b id="memNew">0</b></span>
+            <span><i class="dot" style="background:#7dd3fc"></i> 学习中 <b id="memLearning">0</b></span>
+            <span><i class="dot" style="background:#34d399"></i> 已掌握 <b id="memMastered">0</b></span>
+          </div>
+          <div class="hr"></div>
+          <div id="bookProgress"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="n">BADGE</span>徽章 <span id="badgeCount" style="font-size:12px;color:var(--dim2);font-weight:400"></span></h2>
+        <p class="sub">全部自动判定，不用手动领。</p>
+        <div class="bgs" id="badges"></div>
+      </div>
+
+      <div class="card">
+        <h2><span class="n">DATA</span>数据管理</h2>
+        <p class="sub">数据存在本机浏览器（key: <code>wordquest-v1</code>）。换设备用导出 / 导入。</p>
+        <div class="toolbar">
+          <button class="btn sm" data-act="export">导出备份 JSON</button>
+          <button class="btn sm" data-act="import">导入备份</button>
+          <button class="btn sm" data-act="reset" style="border-color:rgba(251,113,133,.4);color:var(--rose)">清空全部</button>
+          <div class="sp"></div>
+          <span class="note" id="dataInfo">—</span>
+        </div>
+        <p class="note" style="margin:0">备份包含词库选择、每个词的下次复习时间、每日记录和徽章。导入会覆盖当前数据。</p>
+      </div>
+    </section>
+
+    <footer>
+      单页离线应用 · 无第三方依赖 · 数据只在你自己的浏览器里<br>
+      内置词库来自 <a href="https://github.com/Kaiyiwing/qwerty-learner" target="_blank" rel="noopener">qwerty-learner</a>（开源词表），发音使用浏览器自带语音合成。
+    </footer>
+  </div>
+</main>
+
+<input type="file" id="fileIn" accept=".json,application/json" class="hide">
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+/* ═══════════════════ 常量 ═══════════════════ */
+const KEY = "wordquest-v1";
+const INTERVALS = [0, 1, 2, 4, 7, 15, 30, 60, 120];
+const MASTER_BOX = 6;
+
+const BOOK_META = [
+  { id: "cet4",   name: "四级核心", en: "CET-4",       desc: "大学英语四级高频词，按字母序。", total: 2607, color: "#ffd21e" },
+  { id: "cet6",   name: "六级核心", en: "CET-6",       desc: "六级常考词，和四级有部分重叠。", total: 2345, color: "#7dd3fc" },
+  { id: "kaoyan", name: "考研核心", en: "POSTGRAD",    desc: "考研英语大纲核心词。", total: 3727, color: "#a78bfa" },
+  { id: "ielts",  name: "雅思核心", en: "IELTS",       desc: "雅思听说读写高频词。", total: 3575, color: "#34d399" },
+  { id: "custom", name: "我的词表", en: "CUSTOM",      desc: "你自己粘贴进来的词。", total: 0, color: "#fb7185" },
+];
+
+const QUOTES = [
+  { en: "Little by little, one travels far.", zh: "积少成多，行远自迩。" },
+  { en: "The secret of getting ahead is getting started.", zh: "领先的秘诀，是先开始。" },
+  { en: "A word after a word after a word is power.", zh: "一个词，又一个词，再一个词，就是力量。" },
+  { en: "It always seems impossible until it's done.", zh: "在做成之前，它总显得不可能。" },
+  { en: "You don't have to be great to start, but you have to start to be great.", zh: "不必先优秀才开始，要先开始才会优秀。" },
+  { en: "Small daily improvements are the key to staggering long-term results.", zh: "每天进步一点点，长期会惊人。" },
+  { en: "Discipline is choosing between what you want now and what you want most.", zh: "自律，是在「现在想要」和「最想要」之间做选择。" },
+  { en: "The limits of my language mean the limits of my world.", zh: "语言的边界，就是世界的边界。" },
+  { en: "Repetition is the mother of learning.", zh: "重复是学习之母。" },
+  { en: "Fall seven times, stand up eight.", zh: "跌倒七次，第八次站起来。" },
+  { en: "What we learn with pleasure we never forget.", zh: "带着愉快学到的东西，永远不会忘。" },
+  { en: "One hour of practice beats ten hours of planning.", zh: "一小时练习，胜过十小时计划。" },
+];
+
+const BADGES = [
+  { id: "first",    icon: "🌱", name: "第一步",   desc: "完成第一次打卡", test: (c) => c.checkins >= 1 },
+  { id: "streak3",  icon: "🔥", name: "三日之约", desc: "连续打卡 3 天", test: (c) => c.streak >= 3 },
+  { id: "streak7",  icon: "⚡", name: "一周不断", desc: "连续打卡 7 天", test: (c) => c.streak >= 7 },
+  { id: "streak30", icon: "🏆", name: "月度铁人", desc: "连续打卡 30 天", test: (c) => c.streak >= 30 },
+  { id: "w100",     icon: "💯", name: "百词斩",   desc: "累计学过 100 个词", test: (c) => c.learned >= 100 },
+  { id: "w500",     icon: "📚", name: "五百强",   desc: "累计学过 500 个词", test: (c) => c.learned >= 500 },
+  { id: "w1000",    icon: "🧠", name: "千词大脑", desc: "累计学过 1000 个词", test: (c) => c.learned >= 1000 },
+  { id: "r500",     icon: "🔁", name: "复习机器", desc: "累计复习 500 次", test: (c) => c.reviews >= 500 },
+  { id: "quiz10",   icon: "🎯", name: "十题全中", desc: "一次小测拿到满分", test: (c) => c.quizPerfect },
+  { id: "early",    icon: "🌅", name: "早起鸟",   desc: "早上 7 点前打卡", test: (c) => c.early },
+  { id: "night",    icon: "🌙", name: "夜猫子",   desc: "晚上 23 点后打卡", test: (c) => c.night },
+  { id: "bookdone", icon: "👑", name: "词库通关", desc: "背完任意一本词库", test: (c) => c.bookDone },
+  { id: "xp1000",   icon: "⭐", name: "千经验",   desc: "累计获得 1000 XP", test: (c) => c.xp >= 1000 },
+];
+
+/* ═══════════════════ 工具 ═══════════════════ */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const pad = (n) => String(n).padStart(2, "0");
+const ymd = (d = new Date()) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parseYmd = (s) => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+const addDays = (s, n) => { const d = parseYmd(s); d.setDate(d.getDate() + n); return ymd(d); };
+const daysBetween = (a, b) => Math.round((parseYmd(b) - parseYmd(a)) / 86400000);
+const today = () => ymd();
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const shuffle = (a) => { const r = a.slice(); for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; } return r; };
+const weekdayCN = ["日", "一", "二", "三", "四", "五", "六"];
+
+/* ═══════════════════ 状态 ═══════════════════ */
+function defaultState() {
+  return {
+    v: 1,
+    settings: { book: "cet4", dailyNew: 20, autoSpeak: true },
+    words: {},
+    days: {},
+    xp: 0,
+    badges: {},
+    custom: [],
+    quizPerfect: false,
+    createdAt: Date.now(),
+  };
+}
+let S = loadState();
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return defaultState();
+    const o = JSON.parse(raw);
+    const d = defaultState();
+    return {
+      ...d, ...o,
+      settings: { ...d.settings, ...(o.settings || {}) },
+      words: o.words || {}, days: o.days || {}, badges: o.badges || {},
+      custom: Array.isArray(o.custom) ? o.custom : [],
+    };
+  } catch (e) {
+    console.warn("读取本地数据失败", e);
+    return defaultState();
+  }
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(S)); }
+  catch (e) { toast("本地存储写入失败：" + e.message); }
+}
+
+/* ═══════════════════ 词库加载 ═══════════════════ */
+const BOOKS = {};
+const BOOK_INDEX = {};
+let currentWords = [];
+const loadPromises = {};
+
+function bookKey(bk, w) { return bk + ":" + w.toLowerCase(); }
+function bookMeta(id) { return BOOK_META.find((b) => b.id === id) || BOOK_META[0]; }
+function bookName(id) { return bookMeta(id).name; }
+
+function loadBook(id) {
+  if (id === "custom") {
+    const arr = S.custom.map((x) => [x.w, x.t, x.p || ""]);
+    BOOKS.custom = arr;
+    BOOK_INDEX.custom = new Map(arr.map((x) => [x[0].toLowerCase(), x]));
+    return Promise.resolve(arr);
+  }
+  if (BOOKS[id]) return Promise.resolve(BOOKS[id]);
+  if (loadPromises[id]) return loadPromises[id];
+  loadPromises[id] = new Promise((resolve, reject) => {
+    const sc = document.createElement("script");
+    sc.src = "data/" + id + ".js";
+    sc.onload = () => {
+      const b = window.__BOOKS && window.__BOOKS[id];
+      if (!b) { reject(new Error("词库文件格式不对：" + id)); return; }
+      BOOKS[id] = b.words;
+      BOOK_INDEX[id] = new Map(b.words.map((x) => [x[0].toLowerCase(), x]));
+      resolve(b.words);
+    };
+    sc.onerror = () => reject(new Error("词库加载失败：data/" + id + ".js"));
+    document.head.appendChild(sc);
+  });
+  return loadPromises[id];
+}
+
+async function loadCurrent() {
+  try {
+    currentWords = await loadBook(S.settings.book);
+  } catch (e) {
+    toast(e.message);
+    currentWords = [];
+  }
+}
+
+/* ═══════════════════ 日期 / 统计 ═══════════════════ */
+function todayStat(create = false) {
+  const d = today();
+  if (!S.days[d] && create) S.days[d] = { learned: 0, reviewed: 0, correct: 0, total: 0, checkin: false };
+  return S.days[d] || { learned: 0, reviewed: 0, correct: 0, total: 0, checkin: false };
+}
+function checkinDates() { return Object.keys(S.days).filter((d) => S.days[d].checkin).sort(); }
+function calcStreak() {
+  let d = today();
+  if (!(S.days[d] && S.days[d].checkin)) d = addDays(d, -1);
+  let n = 0;
+  while (S.days[d] && S.days[d].checkin) { n++; d = addDays(d, -1); }
+  return n;
+}
+function bestStreak() {
+  const ds = checkinDates();
+  let best = 0, cur = 0, prev = null;
+  for (const d of ds) {
+    cur = prev && daysBetween(prev, d) === 1 ? cur + 1 : 1;
+    best = Math.max(best, cur);
+    prev = d;
+  }
+  return best;
+}
+function learnedCount() { return Object.keys(S.words).length; }
+function todayUnique() { return Object.values(S.words).filter((r) => r.last === today()).length; }
+function masteredCount() { return Object.values(S.words).filter((r) => r.b >= MASTER_BOX).length; }
+function reviewTotal() { return Object.values(S.days).reduce((a, d) => a + (d.reviewed || 0), 0); }
+function level() { return Math.floor(S.xp / 250) + 1; }
+function dueList() {
+  const t = today();
+  return Object.entries(S.words)
+    .filter(([, r]) => r.due && r.due <= t)
+    .sort((a, b) => (a[1].due || "").localeCompare(b[1].due || "") || (a[1].b - b[1].b))
+    .map(([k, r]) => ({ key: k, bk: r.bk, w: r.w, t: r.t, p: r.p, isNew: false }));
+}
+function dueLabel(r) {
+  if (!r || !r.due) return "—";
+  const d = daysBetween(today(), r.due);
+  if (d < 0) return "逾期 " + (-d) + " 天";
+  if (d === 0) return "今天";
+  if (d === 1) return "明天";
+  return "+" + d + " 天";
+}
+function newRemaining() {
+  if (!currentWords.length) return 0;
+  let n = 0;
+  for (const [w] of currentWords) if (!S.words[bookKey(S.settings.book, w)]) n++;
+  return n;
+}
+function bookLearned(id) {
+  const ws = BOOKS[id];
+  if (!ws) return 0;
+  let n = 0;
+  for (const [w] of ws) if (S.words[bookKey(id, w)]) n++;
+  return n;
+}
+function bookMastered(id) {
+  const ws = BOOKS[id];
+  if (!ws) return 0;
+  let n = 0;
+  for (const [w] of ws) { const r = S.words[bookKey(id, w)]; if (r && r.b >= MASTER_BOX) n++; }
+  return n;
+}
+
+/* ═══════════════════ 提示 ═══════════════════ */
+let toastQ = [], toastTimer = null;
+function toast(msg) {
+  toastQ.push(msg);
+  if (!toastTimer) nextToast();
+}
+function nextToast() {
+  const el = $("#toast");
+  if (!toastQ.length) { toastTimer = null; el.classList.remove("on"); return; }
+  el.textContent = toastQ.shift();
+  el.classList.add("on");
+  toastTimer = setTimeout(() => {
+    el.classList.remove("on");
+    toastTimer = setTimeout(nextToast, 240);
+  }, 1900);
+}
+
+/* ═══════════════════ 发音 ═══════════════════ */
+let lastSpoken = "";
+function speak(text) {
+  if (!("speechSynthesis" in window)) { toast("这个浏览器不支持语音合成"); return; }
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-US"; u.rate = 0.88;
+    window.speechSynthesis.speak(u);
+  } catch (e) { /* 忽略 */ }
+}
+
+/* ═══════════════════ 路由 / 渲染 ═══════════════════ */
+const VIEWS = ["today", "study", "review", "books", "stats"];
+let view = "today";
+let studyMode = "new";
+let studyCount = 20;
+let wordFilter = "all";
+let wordLimit = 60;
+
+function switchView(v) {
+  if (!VIEWS.includes(v)) v = "today";
+  view = v;
+  VIEWS.forEach((x) => $("#v-" + x).classList.toggle("hide", x !== v));
+  $$("#tabs .tab").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.view === v)));
+  if (location.hash !== "#" + v) {
+    try { history.replaceState(null, "", "#" + v); }
+    catch (e) { location.hash = v; }
+  }
+  renderAll();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function renderAll() {
+  renderHeader();
+  renderToday();
+  renderStudy();
+  renderReview();
+  renderBooks();
+  renderStats();
+}
+
+function renderHeader() {
+  const st = todayStat();
+  $("#hStreak").textContent = calcStreak();
+  $("#hToday").textContent = todayUnique();
+  $("#hXp").textContent = S.xp;
+  const pct = Math.min(100, Math.round(((st.learned || 0) / S.settings.dailyNew) * 100));
+  $("#hRing").style.setProperty("--p", pct);
+  $("#hPct").textContent = pct + "%";
+}
+
+/* ── 今日 ── */
+function renderToday() {
+  const d = new Date();
+  $("#todayDate").textContent = `${d.getFullYear()} 年 ${d.getMonth() + 1} 月 ${d.getDate()} 日 · 周${weekdayCN[d.getDay()]}`;
+  const st = todayStat();
+  const streak = calcStreak();
+  $("#bigStreak").textContent = streak;
+  $("#bestStreak").textContent = bestStreak();
+  $("#totalDays").textContent = checkinDates().length;
+  $("#flame").classList.toggle("off", !(S.days[today()] && S.days[today()].checkin));
+
+  const btn = $("#btnCheckin");
+  if (st.checkin) {
+    btn.textContent = "✓ 已打卡";
+    btn.disabled = true;
+    btn.className = "btn ok";
+    $("#checkinHint").textContent = "今天已经打过卡了，明天见。";
+  } else if (st.total > 0) {
+    btn.textContent = "今天打卡";
+    btn.disabled = false;
+    btn.className = "btn primary";
+    $("#checkinHint").textContent = "今天已碰过 " + todayUnique() + " 个词，可以打卡了。";
+  } else {
+    btn.textContent = "先学 1 个词";
+    btn.disabled = true;
+    btn.className = "btn primary";
+    $("#checkinHint").textContent = "学 1 个词即可打卡；完成每日新词目标会自动打卡。";
+  }
+
+  $("#planDone").textContent = st.learned || 0;
+  $("#planGoal").textContent = S.settings.dailyNew;
+  const pct = Math.min(100, Math.round(((st.learned || 0) / S.settings.dailyNew) * 100));
+  $("#planPct").textContent = pct + "%";
+  $("#planBar").style.width = pct + "%";
+  $("#planSub").textContent = `${bookName(S.settings.book)} · 今天复习 ${st.reviewed || 0} 次`;
+  $("#planDue").textContent = dueList().length;
+  $("#planLeft").textContent = newRemaining();
+
+  // 热力图：最近 12 周，周一开始
+  const heat = $("#heat");
+  const now = new Date();
+  const dow = (now.getDay() + 6) % 7; // 周一=0
+  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - dow - 11 * 7);
+  let html = "";
+  for (let w = 0; w < 12; w++) {
+    html += '<div class="wk">';
+    for (let i = 0; i < 7; i++) {
+      const dt = new Date(start.getFullYear(), start.getMonth(), start.getDate() + w * 7 + i);
+      const key = ymd(dt);
+      const s = S.days[key];
+      const n = s ? (s.total || 0) : 0;
+      const lvl = n === 0 ? "" : n < 10 ? "l1" : n < 20 ? "l2" : "l3";
+      const isToday = key === today();
+      const future = key > today();
+      html += `<i class="${lvl} ${isToday ? "today" : ""} ${future ? "future" : ""}" title="${key} · ${n} 词${s && s.checkin ? " · 已打卡" : ""}"></i>`;
+    }
+    html += "</div>";
+  }
+  heat.innerHTML = html;
+
+  // 本周
+  const monday = addDays(today(), -((now.getDay() + 6) % 7));
+  let weekChecked = 0;
+  for (let i = 0; i < 7; i++) {
+    const k = addDays(monday, i);
+    if (S.days[k] && S.days[k].checkin) weekChecked++;
+  }
+  $("#weekStat").textContent = `本周打卡 ${weekChecked}/7`;
+
+  renderWod();
+  renderQuote();
+  renderTodayWords();
+}
+
+function renderWod() {
+  const box = $("#wodBox");
+  if (!currentWords.length) {
+    box.innerHTML = `<div class="empty">${S.settings.book === "custom" ? "自定义词表还是空的，去「词库与计划」导入几个词吧。" : "词库加载中…"}</div>`;
+    return;
+  }
+  const dayNum = Math.floor(Date.now() / 86400000);
+  const w = currentWords[dayNum % currentWords.length];
+  box.innerHTML = `
+    <div class="wod">${esc(w[0])}<small>${esc(w[2] ? "/" + w[2] + "/" : "")}</small></div>
+    <div class="mean">${esc(w[1]).replace(/；/g, '<span class="sep">·</span>')}</div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn sm" data-act="speak" data-w="${esc(w[0])}">🔊 听发音</button>
+      <span class="note">来自 ${esc(bookName(S.settings.book))}</span>
+    </div>`;
+}
+
+function renderQuote() {
+  const dayNum = Math.floor(Date.now() / 86400000);
+  const q = QUOTES[dayNum % QUOTES.length];
+  $("#quoteBox").innerHTML = `<div class="quote">“${esc(q.en)}”</div><div class="quote-zh">${esc(q.zh)}</div>`;
+}
+
+function renderTodayWords() {
+  const box = $("#todayWords");
+  const rows = Object.values(S.words).filter((r) => r.last === today()).slice(-12).reverse();
+  if (!rows.length) { box.innerHTML = '<div class="empty">今天还没碰过词。去「背单词」开一组吧。</div>'; return; }
+  box.innerHTML = `<div class="row">${rows.map((r) => `
+    <span class="badge ${r.b >= MASTER_BOX ? "ok" : "blue"}" style="padding:7px 10px;font-size:12px">
+      ${esc(r.w)} <span style="color:var(--dim2);font-family:var(--mono);font-size:10px">${r.b >= MASTER_BOX ? "已掌握" : "第 " + r.b + " 级"}</span>
+      <button class="speak" style="width:22px;height:22px;font-size:11px;margin-left:4px" data-act="speak" data-w="${esc(r.w)}">🔊</button>
+    </span>`).join("")}</div>`;
+}
+
+/* ── 学习 ── */
+function renderStudy() {
+  const setup = $("#studySetup"), card = $("#studyCard"), sum = $("#studySummary");
+  if (!session) {
+    setup.classList.remove("hide"); card.classList.add("hide"); sum.classList.add("hide");
+    $("#studySub").textContent = `${bookName(S.settings.book)} · 共 ${currentWords.length} 词 · 已学 ${bookLearned(S.settings.book)} 词`;
+    $("#setupBook").textContent = bookMeta(S.settings.book).name;
+    $("#setupNums").textContent = `未学 ${newRemaining()} · 到期复习 ${dueList().length} · 今日新词 ${todayStat().learned || 0}/${S.settings.dailyNew}`;
+    return;
+  }
+  setup.classList.add("hide");
+  if (session.done) { card.classList.add("hide"); sum.classList.remove("hide"); renderSummary(); return; }
+  card.classList.remove("hide"); sum.classList.add("hide");
+  renderCard();
+}
+
+function renderCard() {
+  const e = session.queue[session.i];
+  if (!e) return;
+  const rec = S.words[bookKey(e.bk, e.w)];
+  $("#sessBook").textContent = bookName(e.bk);
+  $("#sessKind").textContent = rec ? `复习 · 第 ${(rec.seen || 0) + 1} 次` : "新词";
+  $("#sessProg").textContent = `${session.i} / ${session.queue.length}`;
+  $("#sessBar").style.width = Math.round((session.i / Math.max(1, session.queue.length)) * 100) + "%";
+  $("#stageWord").textContent = e.w;
+  $("#stagePh").innerHTML = (e.p ? `<span>/${esc(e.p)}/</span>` : "") +
+    `<button class="speak" data-act="speak" data-w="${esc(e.w)}" title="发音">🔊</button>`;
+
+  if (session.revealed) {
+    $("#stageBody").innerHTML = `<div class="mean">${esc(e.t).replace(/；/g, '<span class="sep">·</span>')}</div>
+      <div class="meta">${rec ? `已复习 ${rec.seen} 次 · 上次 ${rec.last || "—"} · 下次 ${dueLabel(rec)}` : "第一次见 · 选一个诚实的感觉"}</div>`;
+    $("#gradeRow").classList.remove("hide");
+  } else {
+    $("#stageBody").innerHTML = `<div class="hint">点击卡片显示释义 · 按空格</div>`;
+    $("#gradeRow").classList.add("hide");
+  }
+
+  if (S.settings.autoSpeak && lastSpoken !== e.w) { lastSpoken = e.w; speak(e.w); }
+}
+
+function buildQueue(mode, count) {
+  const q = [];
+  const seen = new Set();
+  const add = (x) => { if (seen.has(x.key)) return; seen.add(x.key); q.push(x); };
+
+  if (mode === "today") {
+    const due = dueList();
+    due.slice(0, 20).forEach(add);
+    const need = Math.max(1, S.settings.dailyNew - (todayStat().learned || 0));
+    const cap = q.length + need;
+    const ws = BOOKS[S.settings.book] || [];
+    for (const [w, t, p] of ws) {
+      if (q.length >= cap) break;
+      const key = bookKey(S.settings.book, w);
+      if (S.words[key] || seen.has(key)) continue;
+      add({ key, bk: S.settings.book, w, t, p, isNew: true });
+    }
+    if (q.length < cap) due.forEach((x) => { if (q.length < cap) add(x); });
+    return q;
+  }
+
+  if (mode === "review" || mode === "mix") {
+    const due = dueList();
+    const n = mode === "review" ? count : Math.ceil(count * 0.6);
+    due.slice(0, n).forEach((x) => add(x));
+  }
+  if (mode === "new" || mode === "mix") {
+    const ws = BOOKS[S.settings.book] || [];
+    for (const [w, t, p] of ws) {
+      if (q.length >= count) break;
+      const key = bookKey(S.settings.book, w);
+      if (S.words[key] || seen.has(key)) continue;
+      add({ key, bk: S.settings.book, w, t, p, isNew: true });
+    }
+  }
+  return q;
+}
+
+async function startSession(mode = studyMode, count = studyCount) {
+  await loadCurrent();
+  const q = buildQueue(mode, count);
+  if (!q.length) {
+    toast(mode === "review" ? "现在没有到期的词，去学点新词吧" : "这本词库已经学完了，换一本或导入自己的词表");
+    return;
+  }
+  session = { queue: q, i: 0, revealed: false, done: false, mode, count, counts: { known: 0, fuzzy: 0, forgot: 0 }, xp: 0, requeued: 0, start: Date.now() };
+  lastSpoken = "";
+  renderStudy();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function reveal() {
+  if (!session || session.done || session.revealed) return;
+  session.revealed = true;
+  renderCard();
+}
+
+function grade(g) {
+  if (!session || session.done || !session.revealed) return;
+  const e = session.queue[session.i];
+  if (!e) return;
+  const key = bookKey(e.bk, e.w);
+  let rec = S.words[key];
+  const isNew = !rec;
+  if (!rec) {
+    rec = S.words[key] = { bk: e.bk, w: e.w, t: e.t, p: e.p, b: 0, seen: 0, ok: 0, bad: 0, lapses: 0, due: today(), last: null };
+  }
+  rec.seen = (rec.seen || 0) + 1;
+  rec.last = today();
+  rec.t = e.t; rec.p = e.p;
+
+  const st = todayStat(true);
+  st.total = (st.total || 0) + 1;
+  if (isNew) st.learned = (st.learned || 0) + 1;
+  else st.reviewed = (st.reviewed || 0) + 1;
+
+  let xp = 0;
+  if (g === "known") {
+    rec.ok = (rec.ok || 0) + 1;
+    rec.b = Math.min(INTERVALS.length - 1, (rec.b || 0) + 1);
+    rec.due = addDays(today(), INTERVALS[rec.b]);
+    xp = isNew ? 8 : 3;
+    session.counts.known++;
+  } else if (g === "fuzzy") {
+    rec.bad = (rec.bad || 0) + 1;
+    rec.b = Math.max(1, rec.b || 0);
+    rec.due = addDays(today(), 1);
+    xp = isNew ? 4 : 2;
+    session.counts.fuzzy++;
+  } else {
+    rec.bad = (rec.bad || 0) + 1;
+    rec.lapses = (rec.lapses || 0) + 1;
+    rec.b = 1;
+    rec.due = today();
+    xp = 1;
+    session.counts.forgot++;
+    if (!e.retry && session.requeued < 20) {
+      e.retry = true; session.requeued++;
+      session.queue.push({ ...e, retry: true });
+    }
+  }
+  S.xp += xp;
+  session.xp += xp;
+  st.correct = (st.correct || 0) + (g === "known" ? 1 : 0);
+
+  session.i++;
+  session.revealed = false;
+  save();
+  checkBadges();
+  maybeAutoCheckin();
+  if (session.i >= session.queue.length) {
+    session.done = true;
+    session.ended = Date.now();
+  }
+  renderHeader(); renderToday(); renderStudy(); renderReview(); renderBooks(); renderStats();
+}
+
+function renderSummary() {
+  const s = session;
+  const total = s.counts.known + s.counts.fuzzy + s.counts.forgot;
+  const acc = total ? Math.round((s.counts.known / total) * 100) : 0;
+  const mins = Math.max(1, Math.round((Date.now() - s.start) / 60000));
+  const st = todayStat();
+  $("#studySummary").innerHTML = `
+    <h2><span class="n">DONE</span>这一组完成了</h2>
+    <p class="sub">${mins} 分钟 · 获得 ${s.xp} XP${st.checkin ? " · 今天已打卡" : ""}</p>
+    <div class="sum">
+      <div class="s"><div class="v">${s.counts.known}</div><div class="k">认识</div></div>
+      <div class="s"><div class="v">${s.counts.fuzzy}</div><div class="k">模糊</div></div>
+      <div class="s"><div class="v">${s.counts.forgot}</div><div class="k">忘了</div></div>
+      <div class="s"><div class="v">${acc}%</div><div class="k">一次认对率</div></div>
+    </div>
+    <div class="row">
+      <button class="btn primary" data-act="again">再来一组</button>
+      ${st.checkin ? "" : `<button class="btn" data-act="checkin">顺手打个卡</button>`}
+      <button class="btn ghost" data-act="go-today">回今日</button>
+      <div class="sp"></div>
+      <span class="note">${dueList().length} 个词到期 · 今日新词 ${st.learned || 0}/${S.settings.dailyNew}</span>
+    </div>`;
+}
+
+/* ── 复习 ── */
+function renderReview() {
+  const due = dueList();
+  $("#dueCount").textContent = due.length;
+  const overdue = due.filter((x) => (S.words[x.key]?.due || today()) < today()).length;
+  $("#dueNote").innerHTML = due.length
+    ? `其中 <b style="color:var(--rose)">${overdue}</b> 个已经逾期。先复习，再学新词，记得更牢。`
+    : "今天没有到期的词。可以学一组新词，或者做个小测。";
+  $("#btnReview").disabled = due.length === 0;
+
+  // 未来 7 天
+  const fc = $("#forecast");
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const d = addDays(today(), i);
+    const n = Object.values(S.words).filter((r) => r.due === d).length;
+    days.push({ d, n });
+  }
+  const max = Math.max(1, ...days.map((x) => x.n));
+  fc.innerHTML = days.map((x) => {
+    const dd = parseYmd(x.d);
+    return `<div class="fcol" title="${x.d} · ${x.n} 个词">
+      <div class="fv">${x.n || ""}</div>
+      <div class="fb" style="height:${Math.max(3, (x.n / max) * 74)}px;opacity:${x.n ? 1 : .18}"></div>
+      <div class="fl">${dd.getMonth() + 1}/${dd.getDate()}</div>
+    </div>`;
+  }).join("");
+
+  // 到期清单
+  const list = $("#dueList");
+  if (!due.length) list.innerHTML = '<div class="empty">暂无到期词。保持节奏，明天再来。</div>';
+  else list.innerHTML = `<div class="tblwrap"><table><thead><tr><th>单词</th><th>释义</th><th>状态</th><th><span class="sr-only">发音</span></th></tr></thead><tbody>
+    ${due.slice(0, 40).map((x) => {
+      const r = S.words[x.key];
+      return `<tr>
+        <td class="w">${esc(x.w)}${x.p ? `<span class="ph">/${esc(x.p)}/</span>` : ""}</td>
+        <td class="m">${esc(x.t)}</td>
+        <td><span class="badge ${(r.due || "") < today() ? "bad" : "warn"}">${dueLabel(r)}</span></td>
+        <td style="text-align:right"><button class="speak" data-act="speak" data-w="${esc(x.w)}">🔊</button></td>
+      </tr>`;
+    }).join("")}</tbody></table></div>${due.length > 40 ? `<div class="note" style="margin-top:10px">还有 ${due.length - 40} 个未显示。</div>` : ""}`;
+
+  renderQuiz();
+}
+
+/* ── 小测 ── */
+let quiz = null;
+function renderQuiz() {
+  const box = $("#quizBox");
+  if (!quiz) {
+    const pool = Object.values(S.words).filter((r) => r.b >= 1);
+    $("#quizHint").textContent = pool.length >= 4 ? `可用 ${pool.length} 个学过的词` : "至少先学 4 个词才能开始";
+    const btn = box.querySelector('[data-act="start-quiz"]');
+    if (btn) btn.disabled = pool.length < 4;
+    return;
+  }
+  if (quiz.done) {
+    const total = quiz.qs.length;
+    const pct = Math.round((quiz.score / total) * 100);
+    box.innerHTML = `
+      <div class="sum" style="margin-top:0">
+        <div class="s"><div class="v">${quiz.score}/${total}</div><div class="k">答对</div></div>
+        <div class="s"><div class="v">${pct}%</div><div class="k">正确率</div></div>
+        <div class="s"><div class="v">+${quiz.xp}</div><div class="k">XP</div></div>
+        <div class="s"><div class="v">${pct === 100 ? "🏆" : pct >= 80 ? "🎯" : "🌱"}</div><div class="k">${pct === 100 ? "满分" : pct >= 80 ? "不错" : "继续"}</div></div>
+      </div>
+      <button class="btn primary" data-act="start-quiz">再来一组</button>`;
+    return;
+  }
+  const q = quiz.qs[quiz.i];
+  box.innerHTML = `
+    <div class="qmeta">第 ${quiz.i + 1} / ${quiz.qs.length} 题 · 得分 ${quiz.score}</div>
+    <div class="qword">${esc(q.word)}</div>
+    <div class="qmeta">${q.p ? "/" + esc(q.p) + "/" : ""} 选出正确的中文释义</div>
+    ${q.options.map((o, idx) => {
+      let cls = "";
+      if (quiz.picked >= 0) {
+        if (o === q.answer) cls = "correct";
+        else if (idx === quiz.picked) cls = "wrong";
+      }
+      return `<button class="qopt ${cls}" data-act="answer" data-i="${idx}" ${quiz.picked >= 0 ? "disabled" : ""}>
+        <span class="num">${idx + 1}</span><span>${esc(o)}</span></button>`;
+    }).join("")}
+    ${quiz.picked >= 0 ? `<div class="row" style="margin-top:12px">
+      <span class="note">${quiz.picked === q.options.indexOf(q.answer) ? "✓ 答对了" : "✗ 正确答案：" + esc(q.answer)}</span>
+      <div class="sp"></div>
+      <button class="btn primary sm" data-act="next-q">${quiz.i + 1 >= quiz.qs.length ? "看结果" : "下一题"}</button>
+    </div>` : ""}`;
+}
+
+function startQuiz() {
+  const pool = Object.values(S.words).filter((r) => r.b >= 1);
+  if (pool.length < 4) { toast("至少先学 4 个词才能小测"); return; }
+  const picked = shuffle(pool).slice(0, Math.min(10, pool.length));
+  const all = (currentWords || []).map((x) => x[1]);
+  const qs = picked.map((r) => {
+    const answer = r.t;
+    const poolMean = shuffle(all.filter((t) => t !== answer));
+    const opts = [answer];
+    for (const t of poolMean) {
+      if (opts.length >= 4) break;
+      if (!opts.includes(t)) opts.push(t);
+    }
+    while (opts.length < 4) opts.push("以上都不是");
+    return { word: r.w, p: r.p, answer, options: shuffle(opts) };
+  });
+  quiz = { qs, i: 0, score: 0, picked: -1, done: false, xp: 0 };
+  renderQuiz();
+}
+
+function answerQuiz(idx) {
+  if (!quiz || quiz.done || quiz.picked >= 0) return;
+  quiz.picked = idx;
+  const q = quiz.qs[quiz.i];
+  if (q.options[idx] === q.answer) {
+    quiz.score++;
+    quiz.xp += 2;
+    S.xp += 2;
+    const st = todayStat(true);
+    st.correct = (st.correct || 0) + 1;
+    save();
+  }
+  renderQuiz();
+}
+
+function nextQuestion() {
+  if (!quiz || quiz.picked < 0) return;
+  if (quiz.i + 1 >= quiz.qs.length) {
+    quiz.done = true;
+    if (quiz.score === quiz.qs.length) {
+      S.quizPerfect = true;
+      S.xp += 10;
+      quiz.xp += 10;
+      toast("满分！额外 +10 XP");
+    }
+    save(); checkBadges(); renderHeader(); renderStats();
+  } else {
+    quiz.i++;
+    quiz.picked = -1;
+  }
+  renderQuiz();
+}
+
+/* ── 词库与计划 ── */
+function renderBooks() {
+  const list = $("#bookList");
+  const metas = BOOK_META.filter((b) => b.id !== "custom" || S.custom.length);
+  list.innerHTML = metas.map((b) => {
+    const total = b.id === "custom" ? S.custom.length : b.total;
+    const learned = bookLearned(b.id);
+    const pct = total ? Math.round((learned / total) * 100) : 0;
+    const on = S.settings.book === b.id;
+    return `<div class="book ${on ? "on" : ""}">
+      <div class="t">${esc(b.name)} <span class="en">${esc(b.en)}</span>${on ? '<span class="badge warn" style="margin-left:auto">当前</span>' : ""}</div>
+      <div class="d">${esc(b.desc)}</div>
+      <div class="row" style="justify-content:space-between"><span class="num">${learned} / ${total}</span><span class="num">${pct}%</span></div>
+      <div class="bar"><i style="width:${pct}%;background:${b.color}"></i></div>
+      <button class="btn sm ${on ? "" : "primary"}" data-act="select-book" data-book="${b.id}" ${on ? "disabled" : ""}>${on ? "使用中" : "选这本"}</button>
+    </div>`;
+  }).join("");
+
+  $$("#goalSeg button").forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.n) === S.settings.dailyNew)));
+  const left = newRemaining();
+  const days = Math.ceil(left / S.settings.dailyNew);
+  $("#goalNote").innerHTML = `当前词库还剩 <b style="color:var(--tx)">${left}</b> 个词，按每天 ${S.settings.dailyNew} 个算，约 <b style="color:var(--acc)">${days}</b> 天背完。`;
+  $("#autoSpeak").checked = !!S.settings.autoSpeak;
+  $("#customCount").textContent = S.custom.length + " 个词";
+  renderWordTable();
+}
+
+function renderWordTable() {
+  const ws = BOOKS[S.settings.book] || [];
+  const q = ($("#wordSearch").value || "").trim().toLowerCase();
+  const t = today();
+  const rows = [];
+  for (const [w, tr, p] of ws) {
+    const key = bookKey(S.settings.book, w);
+    const r = S.words[key];
+    const status = !r ? "new" : r.b >= MASTER_BOX ? "mastered" : "learning";
+    const isDue = !!r && r.due <= t;
+    if (wordFilter === "due" && !isDue) continue;
+    if (wordFilter !== "all" && wordFilter !== "due" && status !== wordFilter) continue;
+    if (q && !w.toLowerCase().includes(q) && !tr.toLowerCase().includes(q)) continue;
+    rows.push({ w, tr, p, r, status, isDue });
+  }
+  $("#wordTableSub").textContent = `${bookName(S.settings.book)} · 共 ${ws.length} 词 · 筛选结果 ${rows.length} 个`;
+  const box = $("#wordTable");
+  if (!ws.length) { box.innerHTML = '<div class="empty">这本词库还没有词。先导入自己的词表，或换一本内置词库。</div>'; return; }
+  if (!rows.length) { box.innerHTML = '<div class="empty">没有符合条件的词。</div>'; return; }
+  box.innerHTML = `<div class="tblwrap"><table><thead><tr><th>单词</th><th>释义</th><th>状态</th><th>下次复习</th><th><span class="sr-only">发音</span></th></tr></thead><tbody>
+    ${rows.slice(0, wordLimit).map((x) => {
+      const badge = x.status === "mastered" ? '<span class="badge ok">已掌握</span>'
+        : x.status === "learning" ? '<span class="badge blue">学习中</span>'
+        : '<span class="badge">未学</span>';
+      return `<tr>
+        <td class="w">${esc(x.w)}${x.p ? `<span class="ph">/${esc(x.p)}/</span>` : ""}</td>
+        <td class="m">${esc(x.tr)}</td>
+        <td>${badge}</td>
+        <td><span class="badge ${x.isDue ? "warn" : ""}">${x.r ? dueLabel(x.r) : "—"}</span></td>
+        <td style="text-align:right"><button class="speak" data-act="speak" data-w="${esc(x.w)}">🔊</button></td>
+      </tr>`;
+    }).join("")}</tbody></table></div>
+    ${rows.length > wordLimit ? `<div class="row" style="margin-top:12px"><span class="note">已显示 ${wordLimit} / ${rows.length}</span><div class="sp"></div><button class="btn sm" data-act="more-words">再看 60 个</button></div>` : ""}`;
+}
+
+/* ── 统计 ── */
+function renderStats() {
+  const learned = learnedCount(), mastered = masteredCount();
+  $("#sLearned").textContent = learned;
+  $("#sMastered").textContent = mastered;
+  $("#sDays").textContent = checkinDates().length;
+  $("#sXp").textContent = S.xp;
+  $("#sLv").textContent = level();
+
+  const total = currentWords.length || 1;
+  const cl = bookLearned(S.settings.book);
+  $("#curProgTxt").textContent = `${bookName(S.settings.book)} · ${cl} / ${currentWords.length}（${Math.round((cl / total) * 100)}%）`;
+  $("#curProg").style.width = Math.round((cl / total) * 100) + "%";
+
+  // 30 天
+  const chart = $("#chart30");
+  const days = [];
+  let max = 1;
+  for (let i = 29; i >= 0; i--) {
+    const d = addDays(today(), -i);
+    const s = S.days[d];
+    const n = s ? (s.total || 0) : 0;
+    max = Math.max(max, n);
+    days.push({ d, n });
+  }
+  chart.innerHTML = days.map((x, i) => {
+    const dd = parseYmd(x.d);
+    const showLabel = i % 5 === 0 || i === days.length - 1;
+    return `<div class="col ${x.d === today() ? "today" : ""}" title="${x.d} · ${x.n} 词">
+      <div class="cb" style="height:${Math.max(2, (x.n / max) * 96)}px;opacity:${x.n ? 1 : .25}"></div>
+      <div class="cd">${showLabel ? dd.getMonth() + 1 + "/" + dd.getDate() : ""}</div>
+    </div>`;
+  }).join("");
+
+  // 记忆状态
+  const memNew = Math.max(0, currentWords.length - cl);
+  const memMastered = bookMastered(S.settings.book);
+  const memLearning = Math.max(0, cl - memMastered);
+  const sum = Math.max(1, memNew + memLearning + memMastered);
+  $("#memStack").innerHTML =
+    `<i style="background:#2d3d4f;width:${(memNew / sum) * 100}%"></i>
+     <i style="background:#7dd3fc;width:${(memLearning / sum) * 100}%"></i>
+     <i style="background:#34d399;width:${(memMastered / sum) * 100}%"></i>`;
+  $("#memNew").textContent = memNew;
+  $("#memLearning").textContent = memLearning;
+  $("#memMastered").textContent = memMastered;
+
+  $("#bookProgress").innerHTML = BOOK_META.filter((b) => b.id !== "custom" || S.custom.length).map((b) => {
+    const tot = b.id === "custom" ? S.custom.length : b.total;
+    const l = bookLearned(b.id);
+    const pct = tot ? Math.round((l / tot) * 100) : 0;
+    return `<div class="skill" style="margin-bottom:9px">
+      <div class="row"><span>${esc(b.name)}</span><span class="mini">${l}/${tot} · ${pct}%</span></div>
+      <div class="bar"><i style="width:${pct}%;background:${b.color}"></i></div>
+    </div>`;
+  }).join("");
+
+  // 徽章
+  const unlocked = Object.keys(S.badges).length;
+  $("#badgeCount").textContent = `${unlocked} / ${BADGES.length}`;
+  $("#badges").innerHTML = BADGES.map((b) => `
+    <div class="bg-item ${S.badges[b.id] ? "on" : ""}" title="${esc(b.desc)}">
+      <div class="ic">${b.icon}</div>
+      <div><div class="n">${esc(b.name)}</div><div class="d">${esc(b.desc)}${S.badges[b.id] ? " · " + S.badges[b.id] : ""}</div></div>
+    </div>`).join("");
+
+  $("#dataInfo").textContent = `已记录 ${Object.keys(S.days).length} 天 · ${learned} 个词`;
+}
+
+/* ═══════════════════ 打卡 / 徽章 ═══════════════════ */
+function maybeAutoCheckin() {
+  const st = todayStat();
+  if (!st.checkin && (st.learned || 0) >= S.settings.dailyNew) {
+    st.checkin = true;
+    st.checkinAt = Date.now();
+    save();
+    checkBadges();
+    toast(`今日 ${S.settings.dailyNew} 个新词完成，自动打卡 🔥`);
+  }
+}
+
+function doCheckin() {
+  const st = todayStat();
+  if (st.checkin) { toast("今天已经打过卡了"); return; }
+  if (!(st.total > 0)) { toast("先学 1 个词再来打卡"); return; }
+  st.checkin = true;
+  st.checkinAt = Date.now();
+  save();
+  checkBadges();
+  renderAll();
+  toast(`打卡成功 🔥 连续 ${calcStreak()} 天`);
+}
+
+function checkBadges() {
+  const ctx = {
+    checkins: checkinDates().length,
+    streak: calcStreak(),
+    learned: learnedCount(),
+    reviews: reviewTotal(),
+    quizPerfect: !!S.quizPerfect,
+    xp: S.xp,
+    early: Object.values(S.days).some((d) => d.checkinAt && new Date(d.checkinAt).getHours() < 7),
+    night: Object.values(S.days).some((d) => d.checkinAt && new Date(d.checkinAt).getHours() >= 23),
+    bookDone: BOOK_META.some((b) => {
+      if (b.id === "custom") return false;
+      return BOOKS[b.id] && bookLearned(b.id) >= BOOKS[b.id].length;
+    }),
+  };
+  const got = [];
+  for (const b of BADGES) {
+    if (!S.badges[b.id] && b.test(ctx)) { S.badges[b.id] = today(); got.push(b); }
+  }
+  if (got.length) {
+    save();
+    got.forEach((b) => toast(`解锁徽章 ${b.icon} ${b.name}`));
+  }
+}
+
+/* ═══════════════════ 自定义词表 ═══════════════════ */
+function importCustom(text) {
+  const lines = text.split(/\r?\n/);
+  let added = 0, skipped = 0;
+  for (const line of lines) {
+    const s = line.trim();
+    if (!s) continue;
+    let m = s.match(/^([A-Za-z][A-Za-z' .-]*?)\s*[\t,，|:：]\s*(.+)$/) || s.match(/^([A-Za-z][A-Za-z' .-]*)\s+(.+)$/);
+    if (!m) { skipped++; continue; }
+    const w = m[1].trim();
+    const t = m[2].trim();
+    if (!w || !t) { skipped++; continue; }
+    if (S.custom.some((x) => x.w.toLowerCase() === w.toLowerCase())) { skipped++; continue; }
+    S.custom.push({ w, t, p: "" });
+    added++;
+  }
+  save();
+  loadBook("custom").then(() => {
+    if (S.settings.book === "custom") currentWords = BOOKS.custom;
+    renderAll();
+    toast(`导入 ${added} 个词${skipped ? `，跳过 ${skipped} 行` : ""}`);
+  });
+}
+
+/* ═══════════════════ 导入导出 ═══════════════════ */
+function exportData() {
+  const blob = new Blob([JSON.stringify(S, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `wordquest-${today()}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+  toast("备份已导出");
+}
+
+function importData(file) {
+  const reader = new FileReader();
+  reader.onload = async () => {
+    try {
+      const o = JSON.parse(reader.result);
+      if (!o || typeof o !== "object" || !o.words || !o.days) throw new Error("不是词途的备份文件");
+      if (!confirm("导入会覆盖当前所有进度，确定继续？")) return;
+      const d = defaultState();
+      S = {
+        ...d, ...o,
+        settings: { ...d.settings, ...(o.settings || {}) },
+        words: o.words || {}, days: o.days || {}, badges: o.badges || {},
+        custom: Array.isArray(o.custom) ? o.custom : [],
+      };
+      save();
+      session = null; quiz = null;
+      if (!BOOK_META.some((b) => b.id === S.settings.book)) S.settings.book = "cet4";
+      if (S.settings.book === "custom" && !S.custom.length) S.settings.book = "cet4";
+      await loadBook("custom");
+      await loadCurrent();
+      renderAll();
+      toast("导入成功");
+    } catch (e) { toast("导入失败：" + e.message); }
+  };
+  reader.readAsText(file, "utf-8");
+}
+
+/* ═══════════════════ 事件 ═══════════════════ */
+let session = null;
+
+document.addEventListener("click", (e) => {
+  const el = e.target.closest("[data-act]");
+  if (!el) return;
+  const act = el.dataset.act;
+
+  if (act === "tab") { switchView(el.dataset.view); return; }
+  if (act === "speak") {
+    e.stopPropagation();
+    speak(el.dataset.w);
+    return;
+  }
+  if (act === "reveal") { reveal(); return; }
+  if (act === "checkin") { doCheckin(); return; }
+
+  if (act === "mode") {
+    studyMode = el.dataset.mode;
+    $$("#modeSeg button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.mode === studyMode)));
+    return;
+  }
+  if (act === "count") {
+    studyCount = Number(el.dataset.n);
+    $$("#countSeg button").forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.n) === studyCount)));
+    return;
+  }
+  if (act === "start-session" || act === "again") { startSession(studyMode, studyCount); return; }
+  if (act === "quick-start") {
+    switchView("study");
+    startSession("today", Math.max(20, S.settings.dailyNew));
+    return;
+  }
+  if (act === "start-review") { switchView("study"); startSession("review", Math.max(10, Math.min(50, dueList().length))); return; }
+  if (act === "quit-session") {
+    if (confirm("结束这一组？已学过的词会保留。")) { session = null; lastSpoken = ""; renderStudy(); }
+    return;
+  }
+  if (act === "grade") { grade(el.dataset.g); return; }
+  if (act === "go-today") { session = null; switchView("today"); return; }
+
+  if (act === "goal") {
+    S.settings.dailyNew = Number(el.dataset.n);
+    save(); renderAll(); toast(`每天 ${S.settings.dailyNew} 个新词`);
+    return;
+  }
+  if (act === "select-book") {
+    S.settings.book = el.dataset.book;
+    save();
+    loadCurrent().then(() => { wordLimit = 60; renderAll(); toast("已切换到「" + bookName(S.settings.book) + "」"); });
+    return;
+  }
+  if (act === "toggle-speak") { S.settings.autoSpeak = $("#autoSpeak").checked; save(); return; }
+  if (act === "wfilter") {
+    wordFilter = el.dataset.f; wordLimit = 60;
+    $$("#wordFilter button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.f === wordFilter)));
+    renderWordTable();
+    return;
+  }
+  if (act === "more-words") { wordLimit += 60; renderWordTable(); return; }
+  if (act === "import-custom") {
+    const txt = $("#customInput").value;
+    if (!txt.trim()) { toast("先把词贴进文本框"); return; }
+    importCustom(txt);
+    $("#customInput").value = "";
+    return;
+  }
+  if (act === "clear-custom") {
+    if (!S.custom.length) { toast("还没有自定义词"); return; }
+    if (!confirm(`清空 ${S.custom.length} 个自定义词？相关学习记录也会删除。`)) return;
+    S.custom = [];
+    session = null; quiz = null;
+    for (const k of Object.keys(S.words)) if (k.startsWith("custom:")) delete S.words[k];
+    save();
+    loadBook("custom").then(async () => {
+      if (S.settings.book === "custom") { S.settings.book = "cet4"; await loadCurrent(); }
+      renderAll(); toast("已清空自定义词表");
+    });
+    return;
+  }
+  if (act === "start-quiz") { startQuiz(); return; }
+  if (act === "answer") { answerQuiz(Number(el.dataset.i)); return; }
+  if (act === "next-q") { nextQuestion(); return; }
+  if (act === "export") { exportData(); return; }
+  if (act === "import") { $("#fileIn").click(); return; }
+  if (act === "reset") {
+    if (!confirm("清空所有学习记录、打卡和徽章？这个操作不能撤销。")) return;
+    localStorage.removeItem(KEY);
+    S = defaultState();
+    session = null; quiz = null;
+    loadCurrent().then(() => { renderAll(); toast("已清空，重新开始"); });
+    return;
+  }
+});
+
+$("#wordSearch").addEventListener("input", () => { wordLimit = 60; renderWordTable(); });
+$("#fileIn").addEventListener("change", (e) => {
+  const f = e.target.files[0];
+  if (f) importData(f);
+  e.target.value = "";
+});
+
+document.addEventListener("keydown", (e) => {
+  const tag = (e.target.tagName || "").toLowerCase();
+  if (tag === "input" || tag === "textarea" || tag === "select") return;
+
+  if (view === "study" && session && !session.done) {
+    if (e.code === "Space" || e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      if (!session.revealed) reveal();
+      else grade("known");
+      return;
+    }
+    if (session.revealed && ["1", "2", "3"].includes(e.key)) {
+      e.preventDefault();
+      grade(e.key === "1" ? "known" : e.key === "2" ? "fuzzy" : "forgot");
+      return;
+    }
+  }
+  if (view === "review" && quiz && !quiz.done) {
+    if (quiz.picked < 0 && ["1", "2", "3", "4"].includes(e.key)) { answerQuiz(Number(e.key) - 1); return; }
+    if (quiz.picked >= 0 && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); nextQuestion(); return; }
+  }
+});
+
+/* ═══════════════════ 启动 ═══════════════════ */
+async function init() {
+  const h = (location.hash || "").replace("#", "");
+  if (VIEWS.includes(h)) view = h;
+  if (!BOOK_META.some((b) => b.id === S.settings.book)) S.settings.book = "cet4";
+  await loadCurrent();
+  if (S.settings.book === "custom" && !S.custom.length) {
+    S.settings.book = "cet4";
+    await loadCurrent();
+  }
+  // 提前加载其他内置词库，让切换更快（失败不影响）
+  $("#boot").classList.add("hide");
+  $("#app").classList.remove("hide");
+  VIEWS.forEach((x) => $("#v-" + x).classList.toggle("hide", x !== view));
+  $$("#tabs .tab").forEach((b) => {
+    b.setAttribute("aria-selected", String(b.dataset.view === view));
+    b.setAttribute("aria-controls", "v-" + b.dataset.view);
+  });
+  checkBadges();
+  renderAll();
+  Promise.allSettled(
+    BOOK_META.filter((b) => b.id !== "custom" && b.id !== S.settings.book).map((b) => loadBook(b.id))
+  ).then(() => { checkBadges(); renderBooks(); renderStats(); });
+}
+
+window.addEventListener("hashchange", () => {
+  const h = (location.hash || "").replace("#", "");
+  if (VIEWS.includes(h) && h !== view) switchView(h);
+});
+
+init();
+
+// 跨过午夜时自动刷新当天视图
+let dayCursor = today();
+setInterval(() => {
+  if (today() !== dayCursor) { dayCursor = today(); renderAll(); }
+}, 60000);
+</script>
+</body>
+</html>

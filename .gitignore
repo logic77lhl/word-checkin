@@ -1,0 +1,6 @@
+data-src/
+demo-tmp/
+_demo*.html
+node_modules/
+.DS_Store
+Thumbs.db
