@@ -189,9 +189,13 @@ kbd{font:11px var(--mono);background:var(--bg);border:1px solid var(--line2);bor
 .audio-big:hover{transform:translateY(-2px);border-color:var(--acc);box-shadow:0 0 30px rgba(255,210,30,.25)}
 .audio-big:active{transform:scale(.97)}
 .dict-row{display:flex;gap:10px;max-width:520px;margin:20px auto 0}
+.dict-row.sent{max-width:720px}
+.dict-row.sent input{text-transform:none;font:500 15px/1.6 inherit;letter-spacing:0;text-align:left}
 .dict-row input{flex:1;min-width:0;font:600 22px/1.2 var(--mono);text-align:center;letter-spacing:1.5px;padding:13px 14px;text-transform:lowercase}
 .dict-row input::placeholder{font-weight:400;font-size:14px;letter-spacing:0;color:var(--dim2)}
 .dict-feedback{max-width:560px;margin:16px auto 0;border:1px solid var(--line);border-radius:13px;padding:15px 16px;text-align:left;background:var(--bg2)}
+.dict-feedback.sent{max-width:720px}
+.dict-feedback .big.sent{font:600 18px/1.7 var(--serif)}
 .dict-feedback.ok{border-color:rgba(52,211,153,.42);background:rgba(52,211,153,.07)}
 .dict-feedback.bad{border-color:rgba(251,113,133,.42);background:rgba(251,113,133,.07)}
 .dict-feedback .big{font:700 26px/1.2 var(--serif)}
@@ -202,6 +206,8 @@ kbd{font:11px var(--mono);background:var(--bg);border:1px solid var(--line2);bor
 .choice-list{max-width:620px;margin:18px auto 0;text-align:left}
 .shadow-stage{text-align:center;padding:8px 0 4px}
 .shadow-word{font:700 clamp(38px,7vw,58px)/1.2 var(--serif);letter-spacing:-.3px;margin-top:10px;word-break:break-word}
+.shadow-word.sent{font:600 clamp(22px,3.6vw,34px)/1.5 var(--serif);letter-spacing:0;text-align:left;max-width:760px;margin:10px auto 0}
+.sent-zh{display:block;max-width:760px;margin:8px auto 0;text-align:left;font-size:13.5px;line-height:1.7;color:var(--dim);font-family:-apple-system,"Segoe UI","Microsoft YaHei",system-ui,sans-serif}
 .shadow-ph{font:13px/1.5 var(--mono);color:var(--dim2);margin-top:4px}
 .rec-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
 .rec-btn{min-width:150px}
@@ -306,7 +312,10 @@ footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:v
   .grade small{font-size:10px}
   .audio-big{width:72px;height:72px;font-size:30px}
   .dict-row input{font-size:19px;letter-spacing:1px}
+  .dict-row.sent{flex-direction:column}
+  .dict-row.sent .btn{width:100%}
   .listen-start,.shadow-start{width:100%;margin-top:8px}
+  .sent-start{width:100%;margin-top:6px}
   td.m{font-size:12px}
   .heat i{width:10px;height:10px}
 }
@@ -563,6 +572,27 @@ footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:v
         </div>
       </div>
 
+      <div class="card" id="sentenceSetup">
+        <h2><span class="n">SENTENCE</span>句子训练</h2>
+        <p class="sub">用完整句子练听写和跟读。先听整句，再逐句模仿。</p>
+        <div class="row" style="margin-bottom:12px">
+          <div class="seg" id="sentenceLevelSeg">
+            <button data-act="sent-level" data-lv="b" aria-pressed="false">基础</button>
+            <button data-act="sent-level" data-lv="a" aria-pressed="false">进阶</button>
+            <button data-act="sent-level" data-lv="mix" aria-pressed="true">混合</button>
+          </div>
+          <div class="seg" id="sentenceCountSeg">
+            <button data-act="sent-count" data-n="5" aria-pressed="true">5</button>
+            <button data-act="sent-count" data-n="10" aria-pressed="false">10</button>
+          </div>
+          <div class="sp"></div>
+          <button class="btn primary sent-start" data-act="start-sentence-dictation">句子听写</button>
+          <button class="btn sent-start" data-act="start-sentence-shadow">影子跟读</button>
+        </div>
+        <div class="note" id="sentencePoolNote">—</div>
+        <p class="note" style="margin:10px 0 0">听写按词级准确率判定；跟读支持录音、回放和浏览器识别。共 60 句。</p>
+      </div>
+
       <div class="card hide" id="listenCard">
         <div class="sess-top">
           <span class="tag" id="listenTag">听写</span>
@@ -585,8 +615,8 @@ footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:v
 
       <div class="card hide" id="shadowCard">
         <div class="sess-top">
-          <span class="tag blue">跟读</span>
-          <span>听 → 读 → 录 → 回放</span>
+          <span class="tag blue" id="shadowTag">跟读</span>
+          <span id="shadowKind">听 → 读 → 录 → 回放</span>
           <div class="sp"></div>
           <span id="shadowProg">0 / 0</span>
           <button class="btn sm ghost" data-act="quit-shadow">结束</button>
@@ -623,7 +653,7 @@ footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:v
             浏览器不支持自动识别时，用回放自评；点「读对了」也会计入统计。
           </p>
         </div>
-        <p class="note" style="margin:14px 0 0">下一步：句子听写、影子跟读（逐句循环）、阅读点词、写作批改。</p>
+        <p class="note" style="margin:14px 0 0">下一步：阅读点词、写作批改、逐句循环精听。</p>
       </div>
     </section>
 
@@ -736,8 +766,16 @@ footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:v
             <div class="row"><span>跟读 · 通过率</span><span id="speakStatTxt" class="mini">—</span></div>
             <div class="bar"><i id="speakStatBar" style="width:0%;background:var(--rose)"></i></div>
           </div>
+          <div class="skill-stat">
+            <div class="row"><span>句子听写 · 通过率</span><span id="sentListenStatTxt" class="mini">—</span></div>
+            <div class="bar"><i id="sentListenStatBar" style="width:0%;background:var(--blue)"></i></div>
+          </div>
+          <div class="skill-stat">
+            <div class="row"><span>影子跟读 · 通过率</span><span id="sentSpeakStatTxt" class="mini">—</span></div>
+            <div class="bar"><i id="sentSpeakStatBar" style="width:0%;background:var(--ok)"></i></div>
+          </div>
         </div>
-        <p class="note" style="margin:0">听写答对 +3 XP，跟读通过 +5 XP；读错 / 写错也会记一次练习。</p>
+        <p class="note" style="margin:0">听写答对 +3 XP，跟读通过 +5 XP；句子听写通过 +5，影子跟读通过 +8。写错 / 读错也会记一次练习。</p>
       </div>
 
       <div class="card">
@@ -801,6 +839,69 @@ const QUOTES = [
   { en: "One hour of practice beats ten hours of planning.", zh: "一小时练习，胜过十小时计划。" },
 ];
 
+const SENTENCES = [
+  { lv: "b", en: "I usually review my notes before the exam.", zh: "我通常在考试前复习笔记。" },
+  { lv: "b", en: "She decided to apply for a summer internship.", zh: "她决定申请一份暑期实习。" },
+  { lv: "b", en: "The meeting has been postponed until next Monday.", zh: "会议已推迟到下周一。" },
+  { lv: "b", en: "We should take advantage of the good weather.", zh: "我们应该利用好天气。" },
+  { lv: "b", en: "He was too tired to finish the report last night.", zh: "他昨晚太累了，没能完成报告。" },
+  { lv: "b", en: "The library is a quiet place to study.", zh: "图书馆是个安静的学习场所。" },
+  { lv: "b", en: "Please turn off your phone during the flight.", zh: "飞行期间请关闭手机。" },
+  { lv: "b", en: "I am looking forward to hearing from you.", zh: "我期待收到你的回复。" },
+  { lv: "b", en: "The company plans to expand its business overseas.", zh: "公司计划把业务扩展到海外。" },
+  { lv: "b", en: "It is important to keep a balance between work and life.", zh: "保持工作与生活的平衡很重要。" },
+  { lv: "b", en: "Could you explain the rules to me again?", zh: "你能再给我解释一遍规则吗？" },
+  { lv: "b", en: "The train was delayed because of the heavy rain.", zh: "火车因为大雨晚点了。" },
+  { lv: "b", en: "She has made great progress in her spoken English.", zh: "她的英语口语有了很大进步。" },
+  { lv: "b", en: "We need to book a hotel before the holiday.", zh: "我们需要在假期前订好酒店。" },
+  { lv: "b", en: "The doctor advised him to give up smoking.", zh: "医生建议他戒烟。" },
+  { lv: "b", en: "This restaurant is famous for its local dishes.", zh: "这家餐厅以当地菜闻名。" },
+  { lv: "b", en: "I forgot to bring my umbrella this morning.", zh: "今天早上我忘了带伞。" },
+  { lv: "b", en: "The students are preparing for the final exam.", zh: "学生们正在准备期末考试。" },
+  { lv: "b", en: "He apologized for being late to the meeting.", zh: "他为开会迟到道歉。" },
+  { lv: "b", en: "The city has changed a lot in the past ten years.", zh: "这座城市在过去十年里变化很大。" },
+  { lv: "b", en: "Please let me know if you need any help.", zh: "如果你需要任何帮助，请告诉我。" },
+  { lv: "b", en: "The weather forecast says it will be sunny tomorrow.", zh: "天气预报说明天会是晴天。" },
+  { lv: "b", en: "She spends half an hour reading every day.", zh: "她每天花半小时阅读。" },
+  { lv: "b", en: "We arrived at the airport two hours early.", zh: "我们提前两小时到达了机场。" },
+  { lv: "b", en: "The new policy will take effect next month.", zh: "新政策将于下个月生效。" },
+  { lv: "b", en: "I can't afford to buy a new computer right now.", zh: "我现在买不起新电脑。" },
+  { lv: "b", en: "The children were excited about the school trip.", zh: "孩子们对学校旅行感到兴奋。" },
+  { lv: "b", en: "He is responsible for managing the project.", zh: "他负责管理这个项目。" },
+  { lv: "b", en: "The shop is closed on public holidays.", zh: "这家商店在公共假日不营业。" },
+  { lv: "b", en: "I would like to make a reservation for two.", zh: "我想订两个人的位子。" },
+  { lv: "b", en: "The movie was so boring that I fell asleep.", zh: "这部电影太无聊了，我睡着了。" },
+  { lv: "b", en: "She speaks English with a slight accent.", zh: "她说英语带一点口音。" },
+  { lv: "b", en: "We should recycle paper and plastic bottles.", zh: "我们应该回收纸张和塑料瓶。" },
+  { lv: "b", en: "The internet has made communication much easier.", zh: "互联网让沟通容易多了。" },
+  { lv: "b", en: "He failed the driving test for the second time.", zh: "他第二次驾照考试又没过。" },
+  { lv: "b", en: "The teacher encouraged us to ask more questions.", zh: "老师鼓励我们多提问。" },
+  { lv: "b", en: "I have been learning English for three years.", zh: "我学英语已经三年了。" },
+  { lv: "b", en: "The hotel offers free breakfast to all guests.", zh: "酒店为所有客人提供免费早餐。" },
+  { lv: "b", en: "Please keep your seat belt fastened.", zh: "请系好安全带。" },
+  { lv: "b", en: "The project was completed ahead of schedule.", zh: "项目提前完成了。" },
+  { lv: "a", en: "The government has introduced new policies to reduce carbon emissions.", zh: "政府出台了新政策以减少碳排放。" },
+  { lv: "a", en: "The research findings challenge the conventional wisdom about memory.", zh: "这项研究结果挑战了关于记忆的传统观点。" },
+  { lv: "a", en: "Her argument was convincing, but it lacked sufficient evidence.", zh: "她的论点很有说服力，但缺乏足够的证据。" },
+  { lv: "a", en: "The museum offers a fascinating glimpse into ancient civilization.", zh: "这座博物馆让人得以一窥古代文明。" },
+  { lv: "a", en: "Technological advances have transformed the way we communicate.", zh: "技术进步改变了我们的沟通方式。" },
+  { lv: "a", en: "The novel explores themes of identity and belonging.", zh: "这部小说探讨了身份与归属的主题。" },
+  { lv: "a", en: "Despite the setback, the team remained optimistic about the outcome.", zh: "尽管遭遇挫折，团队仍对结果保持乐观。" },
+  { lv: "a", en: "The survey reveals a growing concern about food safety.", zh: "调查显示人们越来越担心食品安全。" },
+  { lv: "a", en: "We need to evaluate the potential risks before making a decision.", zh: "我们需要在做出决定前评估潜在风险。" },
+  { lv: "a", en: "The lecture provided valuable insights into economic development.", zh: "这场讲座为经济发展提供了宝贵的见解。" },
+  { lv: "a", en: "The company is committed to sustainable growth and innovation.", zh: "公司致力于可持续增长和创新。" },
+  { lv: "a", en: "The report highlights the urgent need for environmental protection.", zh: "报告强调了环境保护的紧迫性。" },
+  { lv: "a", en: "Her performance exceeded everyone's expectations.", zh: "她的表现超出了所有人的预期。" },
+  { lv: "a", en: "The two countries have reached an agreement on trade.", zh: "两国已就贸易达成协议。" },
+  { lv: "a", en: "The study suggests that regular exercise improves mental health.", zh: "研究表明，规律运动有助于改善心理健康。" },
+  { lv: "a", en: "The exhibition attracted a large number of visitors.", zh: "展览吸引了大量参观者。" },
+  { lv: "a", en: "He was reluctant to admit that he had made a mistake.", zh: "他不愿承认自己犯了错误。" },
+  { lv: "a", en: "The new evidence contradicts the theory proposed last year.", zh: "新证据与去年提出的理论相矛盾。" },
+  { lv: "a", en: "The city is investing heavily in public transportation.", zh: "这座城市正在大力投资公共交通。" },
+  { lv: "a", en: "The article examines the impact of social media on teenagers.", zh: "这篇文章探讨了社交媒体对青少年的影响。" },
+];
+
 const BADGES = [
   { id: "first",    icon: "🌱", name: "第一步",   desc: "完成第一次打卡", test: (c) => c.checkins >= 1 },
   { id: "streak3",  icon: "🔥", name: "三日之约", desc: "连续打卡 3 天", test: (c) => c.streak >= 3 },
@@ -818,6 +919,8 @@ const BADGES = [
   { id: "listen100", icon: "🎧", name: "听力耳朵", desc: "听写答对 100 次", test: (c) => c.listenOk >= 100 },
   { id: "speak50",  icon: "🎙", name: "开口 50 次", desc: "跟读 50 次", test: (c) => c.speakSeen >= 50 },
   { id: "speak10",  icon: "🗣", name: "读得不错", desc: "跟读通过 10 次", test: (c) => c.speakOk >= 10 },
+  { id: "sent50",   icon: "📝", name: "句子耳朵", desc: "句子听写通过 50 次", test: (c) => c.sentListenOk >= 50 },
+  { id: "shadow20", icon: "🎬", name: "影子跟读", desc: "影子跟读通过 20 次", test: (c) => c.sentSpeakOk >= 20 },
 ];
 
 /* ═══════════════════ 工具 ═══════════════════ */
@@ -842,7 +945,12 @@ function defaultState() {
     days: {},
     xp: 0,
     badges: {},
-    skills: { listen: { seen: 0, ok: 0 }, speak: { seen: 0, ok: 0 } },
+    skills: {
+      listen: { seen: 0, ok: 0 },
+      speak: { seen: 0, ok: 0 },
+      sentListen: { seen: 0, ok: 0 },
+      sentSpeak: { seen: 0, ok: 0 },
+    },
     custom: [],
     quizPerfect: false,
     createdAt: Date.now(),
@@ -863,6 +971,8 @@ function loadState() {
       skills: {
         listen: { seen: 0, ok: 0, ...((o.skills && o.skills.listen) || {}) },
         speak: { seen: 0, ok: 0, ...((o.skills && o.skills.speak) || {}) },
+        sentListen: { seen: 0, ok: 0, ...((o.skills && o.skills.sentListen) || {}) },
+        sentSpeak: { seen: 0, ok: 0, ...((o.skills && o.skills.sentSpeak) || {}) },
       },
       custom: Array.isArray(o.custom) ? o.custom : [],
     };
@@ -1021,6 +1131,8 @@ let view = "today";
 let listenMode = "write";
 let listenCount = 10;
 let shadowCount = 10;
+let sentenceLevel = "mix";
+let sentenceCount = 5;
 let listenSession = null;
 let shadowSession = null;
 let recStream = null;
@@ -1522,6 +1634,12 @@ function listenOptions(item) {
 
 function listenItem() { return listenSession && !listenSession.done ? listenSession.queue[listenSession.i] : null; }
 function shadowItem() { return shadowSession && !shadowSession.done ? shadowSession.queue[shadowSession.i] : null; }
+function listenTarget() { const it = listenItem(); return it ? (it.en || it.w) : ""; }
+function shadowTarget() { const it = shadowItem(); return it ? (it.en || it.w) : ""; }
+function sentencePool(level, n) {
+  const arr = level === "mix" ? SENTENCES.slice() : SENTENCES.filter((s) => s.lv === level);
+  return shuffle(arr).slice(0, n);
+}
 function hasASR() { return !!(window.SpeechRecognition || window.webkitSpeechRecognition); }
 
 const normWord = (s) => String(s || "").toLowerCase().trim().replace(/[.,!?;:"“”‘’]/g, "").replace(/\s+/g, " ");
@@ -1541,6 +1659,22 @@ function levRatio(a, b) {
   return 1 - dp[m][n] / Math.max(m, n);
 }
 
+function wordsOf(s) { return normWord(s).split(/\s+/).filter(Boolean); }
+function sentenceScore(a, b) {
+  const A = wordsOf(a), B = wordsOf(b);
+  if (!A.length || !B.length) return 0;
+  const m = A.length, n = B.length;
+  const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + (A[i - 1] === B[j - 1] ? 0 : 1));
+    }
+  }
+  return 1 - dp[m][n] / Math.max(m, n);
+}
+
 function renderListen() {
   const pool = skillPool(999);
   const note = pool.length
@@ -1549,6 +1683,10 @@ function renderListen() {
   $("#listenPoolNote").textContent = note;
   $("#shadowPoolNote").textContent = note;
   $("#listenSetup").classList.toggle("hide", !!(listenSession || shadowSession));
+  $("#sentenceSetup").classList.toggle("hide", !!(listenSession || shadowSession));
+  $$("#sentenceLevelSeg button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lv === sentenceLevel)));
+  $$("#sentenceCountSeg button").forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.n) === sentenceCount)));
+  $("#sentencePoolNote").textContent = `共 ${SENTENCES.length} 句 · 基础 ${SENTENCES.filter((s) => s.lv === "b").length} / 进阶 ${SENTENCES.filter((s) => s.lv === "a").length}`;
 
   $$("#listenModeSeg button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.mode === listenMode)));
   $$("#listenCountSeg button").forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.n) === listenCount)));
@@ -1570,7 +1708,7 @@ function startListen(mode = listenMode, count = listenCount) {
   if (!pool.length) { toast("当前词库还没有学过的词，先去「背单词」学几个"); return; }
   stopShadow(true);
   listenSession = {
-    mode, count,
+    kind: "word", mode, count,
     queue: pool.map((x) => ({ ...x, options: mode === "choice" ? listenOptions(x) : null })),
     i: 0, score: 0, attempts: 0, done: false, feedback: null, input: "", xp: 0, start: Date.now(),
   };
@@ -1586,20 +1724,62 @@ function focusDict() {
   }, 40);
 }
 
+function startSentenceDictation(level = sentenceLevel, count = sentenceCount) {
+  const pool = sentencePool(level, count);
+  if (!pool.length) { toast("没有这个难度的句子"); return; }
+  stopShadow(true);
+  listenSession = {
+    kind: "sentence", mode: "sentence", level, count,
+    queue: pool.map((s) => ({ ...s })),
+    i: 0, score: 0, attempts: 0, done: false, feedback: null, input: "", xp: 0, start: Date.now(),
+  };
+  renderListen();
+  speak(pool[0].en, 0.9);
+  focusDict();
+}
+
+function startSentenceShadow(level = sentenceLevel, count = sentenceCount) {
+  const pool = sentencePool(level, count);
+  if (!pool.length) { toast("没有这个难度的句子"); return; }
+  listenSession = null;
+  stopShadow(true);
+  shadowSession = {
+    kind: "sentence", level, count,
+    queue: pool.map((s) => ({ ...s, attempted: false })),
+    i: 0, score: 0, attempts: 0, done: false, xp: 0,
+    transcript: "", sim: 0, recordUrl: null, recording: false, listening: false, start: Date.now(),
+  };
+  renderListen();
+  speak(pool[0].en, 0.9);
+}
+
 function renderListenCard() {
   const s = listenSession;
   const item = listenItem();
   if (!item) return;
-  $("#listenTag").textContent = s.mode === "choice" ? "听音选义" : "听音写词";
-  $("#listenKind").textContent = s.mode === "choice" ? "听发音，选释义" : "听发音，写单词";
+  $("#listenTag").textContent = s.kind === "sentence" ? "句子听写" : (s.mode === "choice" ? "听音选义" : "听音写词");
+  $("#listenKind").textContent = s.kind === "sentence" ? "听整句，写下来" : (s.mode === "choice" ? "听发音，选释义" : "听发音，写单词");
   $("#listenProg").textContent = `${s.i} / ${s.queue.length}`;
   $("#listenBar").style.width = Math.round((s.i / Math.max(1, s.queue.length)) * 100) + "%";
   $("#listenHint").textContent = s.feedback
     ? (s.feedback.ok ? "✓ 答对了" : "再听一遍，记住它")
-    : (s.mode === "choice" ? "听发音，选出正确释义" : "听发音，写出单词");
+    : (s.kind === "sentence" ? "听整句，写出你听到的内容" : (s.mode === "choice" ? "听发音，选出正确释义" : "听发音，写出单词"));
 
   const area = $("#listenAnswerArea");
-  if (s.mode === "choice") {
+  if (s.kind === "sentence") {
+    const fb = s.feedback;
+    area.innerHTML = `<div class="dict-row sent">
+      <input id="dictInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"
+        placeholder="听到什么就写什么" value="${esc(s.input)}" ${fb ? "disabled" : ""}>
+      <button class="btn primary" data-act="${fb ? "listen-next" : "listen-submit"}">${fb ? (s.i + 1 >= s.queue.length ? "看结果" : "下一题") : "提交"}</button>
+    </div>
+    ${fb ? `<div class="dict-feedback sent ${fb.ok ? "ok" : "bad"}">
+      <div class="big sent">${esc(item.en)}</div>
+      <div class="mean">${esc(item.zh)}</div>
+      <div class="verdict">${fb.ok ? "句子听写通过" : "再听一遍，注意连读和弱读"} · 词级准确率 ${Math.round(fb.ratio * 100)}% · 你写的是 <b>${esc(fb.input || "—")}</b></div>
+      <div class="row" style="margin-top:12px"><button class="btn primary sm" data-act="listen-next">${s.i + 1 >= s.queue.length ? "看结果" : "下一题"} →</button></div>
+    </div>` : ""}`;
+  } else if (s.mode === "choice") {
     area.innerHTML = `<div class="choice-list">${item.options.map((o, idx) => {
       let cls = "";
       if (s.feedback) {
@@ -1640,8 +1820,10 @@ function submitDictation() {
   if (!val.trim()) { toast("先写点什么"); if (el) el.focus(); return; }
   const item = listenItem();
   if (!item) return;
-  const ok = normWord(val) === normWord(item.w);
-  const ratio = levRatio(val, item.w);
+  const isSent = listenSession.kind === "sentence";
+  const target = listenTarget();
+  const ratio = isSent ? sentenceScore(val, target) : levRatio(val, target);
+  const ok = isSent ? ratio >= 0.85 : normWord(val) === normWord(target);
   listenSession.input = val;
   listenSession.feedback = { ok, ratio, input: val };
   recordListen(ok);
@@ -1663,20 +1845,26 @@ function recordListen(ok) {
   const s = listenSession;
   const item = listenItem();
   if (!s || !item) return;
-  const rec = S.words[bookKey(item.bk || S.settings.book, item.w)];
-  if (rec) {
-    rec.lstSeen = (rec.lstSeen || 0) + 1;
-    if (ok) rec.lstOk = (rec.lstOk || 0) + 1;
-    rec.last = today();
+  const isSent = s.kind === "sentence";
+  if (!isSent) {
+    const rec = S.words[bookKey(item.bk || S.settings.book, item.w)];
+    if (rec) {
+      rec.lstSeen = (rec.lstSeen || 0) + 1;
+      if (ok) rec.lstOk = (rec.lstOk || 0) + 1;
+      rec.last = today();
+    }
+    S.skills.listen.seen++;
+    if (ok) S.skills.listen.ok++;
+  } else {
+    S.skills.sentListen.seen++;
+    if (ok) S.skills.sentListen.ok++;
   }
   const st = todayStat(true);
   st.listen = (st.listen || 0) + 1;
   st.total = (st.total || 0) + 1;
-  S.skills.listen.seen++;
-  if (ok) S.skills.listen.ok++;
   s.attempts++;
   if (ok) s.score++;
-  const xp = ok ? 3 : 1;
+  const xp = ok ? (isSent ? 5 : 3) : (isSent ? 2 : 1);
   S.xp += xp; s.xp += xp;
   save(); checkBadges();
   renderHeader(); renderToday(); renderStats();
@@ -1695,7 +1883,7 @@ function nextListen() {
   listenSession.input = "";
   const next = listenItem();
   renderListen();
-  if (next) { speak(next.w, 0.85); focusDict(); }
+  if (next) { speak(listenTarget(), listenSession.kind === "sentence" ? 0.9 : 0.85); focusDict(); }
 }
 
 function renderListenSummary() {
@@ -1703,11 +1891,12 @@ function renderListenSummary() {
   if (!s) return;
   const acc = s.attempts ? Math.round((s.score / s.attempts) * 100) : 0;
   const mins = Math.max(1, Math.round((Date.now() - s.start) / 60000));
+  const label = s.kind === "sentence" ? "句子听写" : (s.mode === "choice" ? "听音选义" : "听音写词");
   $("#listenSummary").innerHTML = `
-    <h2><span class="n">DONE</span>听写完成</h2>
-    <p class="sub">${mins} 分钟 · 获得 ${s.xp} XP · ${s.mode === "choice" ? "听音选义" : "听音写词"}</p>
+    <h2><span class="n">DONE</span>${s.kind === "sentence" ? "句子听写完成" : "听写完成"}</h2>
+    <p class="sub">${mins} 分钟 · 获得 ${s.xp} XP · ${label}</p>
     <div class="sum">
-      <div class="s"><div class="v">${s.score}</div><div class="k">答对</div></div>
+      <div class="s"><div class="v">${s.score}</div><div class="k">${s.kind === "sentence" ? "通过" : "答对"}</div></div>
       <div class="s"><div class="v">${s.attempts}</div><div class="k">练过</div></div>
       <div class="s"><div class="v">${acc}%</div><div class="k">正确率</div></div>
       <div class="s"><div class="v">${todayStat().listen || 0}</div><div class="k">今日听写次数</div></div>
@@ -1727,7 +1916,7 @@ function startShadow(count = shadowCount) {
   listenSession = null;
   stopShadow(true);
   shadowSession = {
-    count,
+    kind: "word", count,
     queue: pool.map((x) => ({ ...x, attempted: false })),
     i: 0, score: 0, attempts: 0, done: false, xp: 0,
     transcript: "", sim: 0, recordUrl: null, recording: false, listening: false, start: Date.now(),
@@ -1740,10 +1929,16 @@ function renderShadowCard() {
   const s = shadowSession;
   const item = shadowItem();
   if (!item) return;
+  const isSent = s.kind === "sentence";
+  $("#shadowTag").textContent = isSent ? "影子跟读" : "跟读";
+  $("#shadowKind").textContent = isSent ? "听整句 → 跟读 → 录音 → 回放" : "听 → 读 → 录 → 回放";
   $("#shadowProg").textContent = `${s.i} / ${s.queue.length}`;
   $("#shadowBar").style.width = Math.round((s.i / Math.max(1, s.queue.length)) * 100) + "%";
-  $("#shadowWord").textContent = item.w;
-  $("#shadowPh").innerHTML = item.p ? `/${esc(item.p)}/` : "";
+  $("#shadowWord").textContent = isSent ? item.en : item.w;
+  $("#shadowWord").classList.toggle("sent", isSent);
+  $("#shadowPh").innerHTML = isSent
+    ? `<span class="sent-zh">${esc(item.zh)}</span>`
+    : (item.p ? `/${esc(item.p)}/` : "");
 
   const recBtn = $("#shadowRecBtn"), stopBtn = $("#shadowStopBtn");
   recBtn.textContent = s.recording ? "● 录音中…" : "🎙 开始录音";
@@ -1825,7 +2020,9 @@ function startASR() {
       const text = (e.results[0] && e.results[0][0] && e.results[0][0].transcript) || "";
       if (!shadowSession) return;
       shadowSession.transcript = text;
-      shadowSession.sim = levRatio(text, shadowItem()?.w || "");
+      shadowSession.sim = shadowSession.kind === "sentence"
+        ? sentenceScore(text, shadowTarget())
+        : levRatio(text, shadowTarget());
       shadowSession.listening = false;
       finishShadowAttempt(shadowSession.sim >= 0.7);
       renderListen();
@@ -1861,20 +2058,26 @@ function finishShadowAttempt(ok) {
   const item = shadowItem();
   if (!item || item.attempted) return;
   item.attempted = true;
-  const rec = S.words[bookKey(item.bk || S.settings.book, item.w)];
-  if (rec) {
-    rec.spkSeen = (rec.spkSeen || 0) + 1;
-    if (ok) rec.spkOk = (rec.spkOk || 0) + 1;
-    rec.last = today();
+  const isSent = s.kind === "sentence";
+  if (!isSent) {
+    const rec = S.words[bookKey(item.bk || S.settings.book, item.w)];
+    if (rec) {
+      rec.spkSeen = (rec.spkSeen || 0) + 1;
+      if (ok) rec.spkOk = (rec.spkOk || 0) + 1;
+      rec.last = today();
+    }
+    S.skills.speak.seen++;
+    if (ok) S.skills.speak.ok++;
+  } else {
+    S.skills.sentSpeak.seen++;
+    if (ok) S.skills.sentSpeak.ok++;
   }
   const st = todayStat(true);
   st.speak = (st.speak || 0) + 1;
   st.total = (st.total || 0) + 1;
-  S.skills.speak.seen++;
-  if (ok) S.skills.speak.ok++;
   s.attempts++;
   if (ok) s.score++;
-  const xp = ok ? 5 : 2;
+  const xp = ok ? (isSent ? 8 : 5) : (isSent ? 3 : 2);
   S.xp += xp; s.xp += xp;
   save(); checkBadges();
   renderHeader(); renderToday(); renderStats();
@@ -1927,7 +2130,7 @@ function nextShadow() {
   shadowSession.listening = false;
   const next = shadowItem();
   renderListen();
-  if (next) speak(next.w, 0.85);
+  if (next) speak(shadowTarget(), shadowSession.kind === "sentence" ? 0.9 : 0.85);
 }
 
 function renderShadowSummary() {
@@ -1936,8 +2139,8 @@ function renderShadowSummary() {
   const acc = s.attempts ? Math.round((s.score / s.attempts) * 100) : 0;
   const mins = Math.max(1, Math.round((Date.now() - s.start) / 60000));
   $("#shadowSummary").innerHTML = `
-    <h2><span class="n">DONE</span>跟读完成</h2>
-    <p class="sub">${mins} 分钟 · 获得 ${s.xp} XP · 通过 ${s.score} / ${s.attempts}</p>
+    <h2><span class="n">DONE</span>${s.kind === "sentence" ? "影子跟读完成" : "跟读完成"}</h2>
+    <p class="sub">${mins} 分钟 · 获得 ${s.xp} XP · ${s.kind === "sentence" ? "影子跟读" : "单词跟读"} 通过 ${s.score} / ${s.attempts}</p>
     <div class="sum">
       <div class="s"><div class="v">${s.score}</div><div class="k">通过</div></div>
       <div class="s"><div class="v">${s.attempts}</div><div class="k">跟读次数</div></div>
@@ -2074,12 +2277,19 @@ function renderStats() {
 
   // 四技能
   const ls = S.skills.listen, sp = S.skills.speak;
+  const sl = S.skills.sentListen, ss = S.skills.sentSpeak;
   const lacc = ls.seen ? Math.min(100, Math.round((ls.ok / ls.seen) * 100)) : 0;
   const spacc = sp.seen ? Math.min(100, Math.round((sp.ok / sp.seen) * 100)) : 0;
+  const slacc = sl.seen ? Math.min(100, Math.round((sl.ok / sl.seen) * 100)) : 0;
+  const ssacc = ss.seen ? Math.min(100, Math.round((ss.ok / ss.seen) * 100)) : 0;
   $("#listenStatTxt").textContent = ls.seen ? `答对 ${ls.ok} / ${ls.seen} · ${lacc}%` : "还没练";
   $("#listenStatBar").style.width = lacc + "%";
   $("#speakStatTxt").textContent = sp.seen ? `通过 ${sp.ok} / ${sp.seen} · ${spacc}%` : "还没练";
   $("#speakStatBar").style.width = spacc + "%";
+  $("#sentListenStatTxt").textContent = sl.seen ? `通过 ${sl.ok} / ${sl.seen} · ${slacc}%` : "还没练";
+  $("#sentListenStatBar").style.width = slacc + "%";
+  $("#sentSpeakStatTxt").textContent = ss.seen ? `通过 ${ss.ok} / ${ss.seen} · ${ssacc}%` : "还没练";
+  $("#sentSpeakStatBar").style.width = ssacc + "%";
 
   // 徽章
   const unlocked = Object.keys(S.badges).length;
@@ -2128,6 +2338,8 @@ function checkBadges() {
     listenOk: S.skills.listen.ok,
     speakSeen: S.skills.speak.seen,
     speakOk: S.skills.speak.ok,
+    sentListenOk: S.skills.sentListen.ok,
+    sentSpeakOk: S.skills.sentSpeak.ok,
     early: Object.values(S.days).some((d) => d.checkinAt && new Date(d.checkinAt).getHours() < 7),
     night: Object.values(S.days).some((d) => d.checkinAt && new Date(d.checkinAt).getHours() >= 23),
     bookDone: BOOK_META.some((b) => {
@@ -2195,6 +2407,8 @@ function importData(file) {
         skills: {
           listen: { seen: 0, ok: 0, ...((o.skills && o.skills.listen) || {}) },
           speak: { seen: 0, ok: 0, ...((o.skills && o.skills.speak) || {}) },
+          sentListen: { seen: 0, ok: 0, ...((o.skills && o.skills.sentListen) || {}) },
+          sentSpeak: { seen: 0, ok: 0, ...((o.skills && o.skills.sentSpeak) || {}) },
         },
         custom: Array.isArray(o.custom) ? o.custom : [],
       };
@@ -2264,13 +2478,19 @@ document.addEventListener("click", (e) => {
     return;
   }
   if (act === "start-listen") { startListen(listenMode, listenCount); return; }
-  if (act === "listen-play") { const it = listenItem(); if (it) speak(it.w, 0.85); return; }
-  if (act === "listen-slow") { const it = listenItem(); if (it) speak(it.w, 0.55); return; }
+  if (act === "listen-play") { if (listenItem()) speak(listenTarget(), 0.85); return; }
+  if (act === "listen-slow") { if (listenItem()) speak(listenTarget(), 0.55); return; }
   if (act === "listen-submit") { submitDictation(); return; }
   if (act === "listen-next") { nextListen(); return; }
   if (act === "listen-answer") { listenAnswer(Number(el.dataset.i)); return; }
   if (act === "quit-listen") { listenSession = null; renderListen(); return; }
-  if (act === "again-listen") { if (listenSession) startListen(listenSession.mode, listenSession.count); return; }
+  if (act === "again-listen") {
+    if (listenSession) {
+      if (listenSession.kind === "sentence") startSentenceDictation(listenSession.level, listenSession.count);
+      else startListen(listenSession.mode, listenSession.count);
+    }
+    return;
+  }
 
   if (act === "shadow-count") {
     shadowCount = Number(el.dataset.n);
@@ -2278,14 +2498,33 @@ document.addEventListener("click", (e) => {
     return;
   }
   if (act === "start-shadow") { startShadow(shadowCount); return; }
-  if (act === "shadow-play") { const it = shadowItem(); if (it) speak(it.w, 0.85); return; }
-  if (act === "shadow-slow") { const it = shadowItem(); if (it) speak(it.w, 0.55); return; }
+  if (act === "shadow-play") { if (shadowItem()) speak(shadowTarget(), 0.85); return; }
+  if (act === "shadow-slow") { if (shadowItem()) speak(shadowTarget(), 0.55); return; }
   if (act === "shadow-record") { startShadowRecording(); return; }
   if (act === "shadow-stop") { stopShadowRecording(); return; }
   if (act === "shadow-self") { shadowSelf(el.dataset.ok === "1"); return; }
   if (act === "shadow-next") { nextShadow(); return; }
   if (act === "quit-shadow") { stopShadow(false); return; }
-  if (act === "again-shadow") { if (shadowSession) startShadow(shadowSession.count); return; }
+  if (act === "again-shadow") {
+    if (shadowSession) {
+      if (shadowSession.kind === "sentence") startSentenceShadow(shadowSession.level, shadowSession.count);
+      else startShadow(shadowSession.count);
+    }
+    return;
+  }
+
+  if (act === "sent-level") {
+    sentenceLevel = el.dataset.lv;
+    $$("#sentenceLevelSeg button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lv === sentenceLevel)));
+    return;
+  }
+  if (act === "sent-count") {
+    sentenceCount = Number(el.dataset.n);
+    $$("#sentenceCountSeg button").forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.n) === sentenceCount)));
+    return;
+  }
+  if (act === "start-sentence-dictation") { startSentenceDictation(sentenceLevel, sentenceCount); return; }
+  if (act === "start-sentence-shadow") { startSentenceShadow(sentenceLevel, sentenceCount); return; }
 
   if (act === "goal") {
     S.settings.dailyNew = Number(el.dataset.n);
@@ -2390,14 +2629,12 @@ document.addEventListener("keydown", (e) => {
         return;
       }
       if (e.key.toLowerCase() === "r") {
-        const it = listenItem();
-        if (it) speak(it.w, 0.85);
+        if (listenItem()) speak(listenTarget(), 0.85);
         return;
       }
     }
     if (shadowSession && !shadowSession.done && e.key.toLowerCase() === "r") {
-      const it = shadowItem();
-      if (it) speak(it.w, 0.85);
+      if (shadowItem()) speak(shadowTarget(), 0.85);
     }
   }
 });
