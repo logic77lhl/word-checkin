@@ -68,6 +68,9 @@ create policy "own progress update" on public.progress
   for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
 create policy "own progress delete" on public.progress
   for delete using (auth.uid() = user_id);
+
+-- 给登录用户表权限（RLS 负责限定到「只有自己那一行」）
+grant select, insert, update, delete on public.progress to authenticated;
 ```
 
 RLS 是安全边界：前端只拿 publishable key（等同旧版 anon key），**永远不要把 `service_role` / secret key 写进前端**。

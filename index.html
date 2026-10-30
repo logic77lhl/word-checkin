@@ -2835,7 +2835,7 @@ function renderAccount() {
     ? new Date(WQCloud.lastSyncAt).toLocaleString("zh-CN", { hour12: false })
     : "还没同步过";
   const initial = String(WQCloud.title()).trim().charAt(0).toUpperCase() || "W";
-  const errLine = cloudIssue || WQCloud.lastError;
+  const errLine = WQCloud.lastError || (WQCloud.status === "error" ? cloudIssue : "");
   const shortKey = stateKey.length > 30 ? stateKey.slice(0, 20) + "…" : stateKey;
   box.innerHTML = `
     <div class="acct-head">
