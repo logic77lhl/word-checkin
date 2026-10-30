@@ -333,6 +333,7 @@ footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:v
   .pill.acct{max-width:120px}
   .pill.acct .nm-more{display:none}
   .hd{gap:10px}
+  .ring{display:none}
   .ring{width:38px;height:38px}
   .tab{padding:8px 7px;font-size:13px}
   nav.tabs{gap:4px}
@@ -2783,6 +2784,7 @@ document.addEventListener("keydown", (e) => {
 
 /* ═══════════════════ 云端同步 UI ═══════════════════ */
 let mergeCtx = null;
+let cloudIssue = "";
 
 function syncStatusLabel() {
   if (!window.WQCloud) return ["", "—"];
@@ -2833,12 +2835,14 @@ function renderAccount() {
     ? new Date(WQCloud.lastSyncAt).toLocaleString("zh-CN", { hour12: false })
     : "还没同步过";
   const initial = String(WQCloud.title()).trim().charAt(0).toUpperCase() || "W";
+  const errLine = cloudIssue || WQCloud.lastError;
+  const shortKey = stateKey.length > 30 ? stateKey.slice(0, 20) + "…" : stateKey;
   box.innerHTML = `
     <div class="acct-head">
       <div class="acct-av">${esc(initial)}</div>
       <div style="flex:1;min-width:170px">
         <div class="acct-nm">${esc(WQCloud.title())}</div>
-        <div class="acct-sub">数据 key：${esc(stateKey)}</div>
+        <div class="acct-sub" title="${esc(stateKey)}">数据 key：${esc(shortKey)}</div>
       </div>
       <span class="badge ${cls}">${txt}</span>
     </div>
@@ -2850,7 +2854,7 @@ function renderAccount() {
       <div class="sp"></div>
       <span class="note">上次同步：${esc(when)}${WQCloud.revision ? ` · rev ${WQCloud.revision}` : ""}</span>
     </div>
-    ${WQCloud.lastError ? `<p class="note" style="margin:8px 0 0;color:var(--rose)">${esc(WQCloud.lastError)}</p>` : ""}
+    ${errLine ? `<p class="note" style="margin:8px 0 0;color:var(--rose)">${esc(errLine)}</p>` : ""}
     <p class="note" style="margin:10px 0 0">改动会自动上传（停手 1.5 秒后）。两台设备同时改同一批词时按「取较新 / 取较大」合并，不会整块覆盖。</p>`;
 }
 
@@ -2862,8 +2866,12 @@ async function cloudStart(guestState) {
   let row = null;
   try {
     row = await WQCloud.pull();
+    cloudIssue = "";
   } catch (e) {
-    toast("云端读取失败：" + WQCloud.describeError(e));
+    const msg = WQCloud.describeError(e);
+    cloudIssue = msg;
+    // 建表前的「表不存在」不用每次弹提示，卡片里说明就够了
+    if (!/progress 表/.test(msg)) toast("云端读取失败：" + msg);
     renderAccount();
     return;
   }
