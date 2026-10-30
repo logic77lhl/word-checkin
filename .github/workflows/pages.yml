@@ -1,0 +1,54 @@
+name: Deploy Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # Supabase 配置不写进仓库：运行时从仓库 Secrets 注入
+      - name: Generate config.js
+        env:
+          WQ_SUPABASE_URL: ${{ secrets.WQ_SUPABASE_URL }}
+          WQ_SUPABASE_ANON_KEY: ${{ secrets.WQ_SUPABASE_ANON_KEY }}
+        run: node scripts/gen-config.mjs
+
+      - name: Stage site
+        run: |
+          mkdir -p _site
+          rsync -a index.html login.html config.js js data _site/
+          test -s _site/config.js || { echo "config.js 没生成"; exit 1; }
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

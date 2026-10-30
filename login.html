@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a0e15">
+<meta name="robots" content="noindex">
+<meta name="description" content="登录词途账号：用 GitHub 或邮箱登录，把背单词进度同步到云端，换设备接着学。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%96%3C/text%3E%3C/svg%3E">
+<title>登录 · 词途</title>
+<style>
+:root{
+  --bg:#0a0e15; --bg2:#0e141d; --panel:#131b26;
+  --line:#22303f; --line2:#2d3d4f;
+  --tx:#e8eef7; --dim:#8fa3ba; --dim2:#7b8fa5;
+  --acc:#ffd21e; --ok:#34d399; --blue:#7dd3fc; --rose:#fb7185;
+  --mono:ui-monospace,"Cascadia Code",Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  min-height:100vh;display:grid;place-items:center;padding:28px 18px;
+  background:
+    radial-gradient(900px 460px at 15% -10%, rgba(255,210,30,.10), transparent 60%),
+    radial-gradient(760px 420px at 88% 4%, rgba(125,211,252,.08), transparent 60%),
+    var(--bg);
+  color:var(--tx);
+  font:15px/1.6 -apple-system,"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+.card{
+  width:100%;max-width:430px;background:var(--panel);border:1px solid var(--line);
+  border-radius:18px;padding:26px 24px;box-shadow:0 24px 60px rgba(0,0,0,.45);
+}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.brand .em{font-size:24px}
+.brand b{font-size:16px;letter-spacing:.2px}
+.brand small{display:block;font-size:11px;color:var(--dim2);letter-spacing:.6px;font-weight:500}
+h1{font-size:20px;margin:0 0 6px;letter-spacing:-.2px}
+.sub{color:var(--dim2);font-size:12.5px;margin:0 0 20px;line-height:1.7}
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:9px;width:100%;
+  padding:12px 16px;border-radius:11px;border:1px solid var(--line2);
+  background:var(--bg2);color:var(--tx);font:600 14px/1 inherit;cursor:pointer;
+  transition:.18s;text-decoration:none;
+}
+.btn:hover{border-color:#3d5266;background:#16202c;text-decoration:none}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.primary{background:linear-gradient(180deg,var(--acc),#f2bf00);color:#161616;border-color:#e5b800}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--dim2);font-weight:500}
+.btn.ghost:hover{color:var(--tx);background:rgba(255,255,255,.03)}
+.btn svg{width:18px;height:18px;flex:none}
+.or{display:flex;align-items:center;gap:12px;color:var(--dim2);font-size:11.5px;margin:18px 0}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+label{display:block;font-size:12px;color:var(--dim);margin-bottom:7px;letter-spacing:.2px}
+input[type=email]{
+  width:100%;padding:12px 14px;border-radius:11px;border:1px solid var(--line2);
+  background:#0b1219;color:var(--tx);font:400 14px/1.4 inherit;outline:none;transition:.18s;
+}
+input[type=email]:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(255,210,30,.12)}
+input[type=email]::placeholder{color:#5c6f83}
+form{margin-top:2px}
+form .btn{margin-top:12px}
+.msg{font-size:12.5px;line-height:1.65;border-radius:10px;padding:11px 13px;margin:0 0 16px;border:1px solid transparent}
+.msg.err{color:#ffb3c1;background:rgba(251,113,133,.08);border-color:rgba(251,113,133,.3)}
+.msg.ok{color:#8ff0c4;background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.28)}
+.msg.info{color:var(--dim);background:var(--bg2);border-color:var(--line)}
+.msg.hide{display:none}
+.who{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:12px;
+  background:var(--bg2);border:1px solid var(--line);margin-bottom:16px}
+.avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;
+  background:linear-gradient(160deg,#ffd21e,#f2a600);color:#191919;font-weight:800;font-size:15px;flex:none}
+.who .n{font-size:13.5px;font-weight:600;line-height:1.35;word-break:break-all}
+.who .e{font-size:11.5px;color:var(--dim2);word-break:break-all}
+.foot{margin-top:20px;padding-top:16px;border-top:1px solid var(--line);font-size:11.5px;color:var(--dim2);line-height:1.75}
+.foot b{color:var(--dim)}
+.spin{width:14px;height:14px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:none}
+.loading .spin{display:block}
+.loading .lbl{opacity:.7}
+@keyframes sp{to{transform:rotate(360deg)}}
+.hide{display:none!important}
+@media(max-width:420px){.card{padding:22px 18px;border-radius:16px}}
+</style>
+</head>
+<body>
+
+<main class="card">
+  <div class="brand">
+    <span class="em">📖</span>
+    <div><b>词途</b><small>WORD QUEST</small></div>
+  </div>
+
+  <h1 id="title">登录账号</h1>
+  <p class="sub" id="subtitle">登录后进度会同步到云端，换电脑、换手机都能接着背。</p>
+
+  <div class="msg hide" id="msg"></div>
+
+  <div id="signedIn" class="hide">
+    <div class="who">
+      <div class="avatar" id="avatar">W</div>
+      <div>
+        <div class="n" id="whoName">—</div>
+        <div class="e" id="whoMail">—</div>
+      </div>
+    </div>
+    <a class="btn primary" href="index.html">进入应用 →</a>
+    <button class="btn ghost" id="btnOut" style="margin-top:8px">退出这个账号</button>
+  </div>
+
+  <div id="signInBox" class="hide">
+    <button class="btn primary" id="btnGithub">
+      <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+      <span>用 GitHub 登录</span>
+    </button>
+
+    <div class="or" id="orLine">或</div>
+
+    <form id="emailForm">
+      <label for="email">邮箱</label>
+      <input id="email" type="email" autocomplete="email" inputmode="email"
+             placeholder="you@example.com" required>
+      <button class="btn" type="submit" id="btnMail">
+        <span class="spin"></span><span class="lbl">发送登录链接</span>
+      </button>
+    </form>
+    <p class="sub" style="margin:10px 0 0;font-size:11.5px">不设密码：点邮件里的链接就直接登录。同一邮箱一分钟内只能发一次。</p>
+  </div>
+
+  <div id="unavailable" class="hide">
+    <div class="msg info" style="margin-bottom:14px" id="unavailableMsg">云端同步还没配置。</div>
+    <a class="btn" href="index.html">继续用本地模式 →</a>
+  </div>
+
+  <div class="foot">
+    <b>数据存在哪</b>：登录后的进度存在 Supabase（Postgres）里，每个账号一行，
+    由 RLS 保证只有你自己能读写。不登录时进度只在这台设备的浏览器里。<br>
+    <a href="index.html">先随便看看，不登录 →</a>
+  </div>
+</main>
+
+<script src="config.js" onerror="window.__noConfig=true"></script>
+<script src="js/vendor/supabase.js"></script>
+<script>
+"use strict";
+(function () {
+  const $ = (s) => document.querySelector(s);
+  const cfg = window.WQ_CONFIG || {};
+  const pageDir = location.origin + location.pathname.replace(/[^/]*$/, "");
+  const REDIRECT = pageDir + "login.html";
+
+  const show = (el) => el.classList.remove("hide");
+  const hide = (el) => el.classList.add("hide");
+
+  function say(kind, text) {
+    const m = $("#msg");
+    if (!text) { hide(m); return; }
+    m.className = "msg " + kind;
+    m.textContent = text;
+    show(m);
+  }
+
+  const unavailable = (text) => {
+    hide($("#signInBox"));
+    hide($("#signedIn"));
+    if (text) $("#unavailableMsg").textContent = text;
+    show($("#unavailable"));
+    $("#subtitle").textContent = "当前是纯本地模式，进度只存在这台设备上。";
+  };
+
+  if (!cfg.supabaseUrl || !cfg.supabaseAnonKey) {
+    unavailable("还没有配置 Supabase（config.js 里是空的）。照 README 跑一次 node scripts/gen-config.mjs 就好。");
+    return;
+  }
+  if (!window.supabase || !window.supabase.createClient) {
+    unavailable("Supabase 客户端没有加载成功，请刷新页面重试。");
+    return;
+  }
+
+  const client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
+    auth: { flowType: "pkce", detectSessionInUrl: true, persistSession: true },
+  });
+
+  // 回跳时 Supabase 可能带错误参数回来
+  const hash = new URLSearchParams(location.hash.replace(/^#/, ""));
+  const errDesc = hash.get("error_description") || hash.get("error");
+  if (errDesc) {
+    say("err", "登录失败：" + errDesc.replace(/\+/g, " "));
+    history.replaceState(null, "", location.pathname);
+  }
+
+  let done = false;
+  function entered(session) {
+    if (done) return;
+    done = true;
+    // 确实是从回调回来的，直接进应用；主动打开这个页面就停在这里
+    if (location.search.includes("code=")) {
+      location.replace("index.html");
+      return;
+    }
+    render(session);
+  }
+
+  async function render(session) {
+    const u = session.user;
+    const meta = u.user_metadata || {};
+    const name = meta.user_name || meta.preferred_username || meta.name || u.email || "已登录";
+    $("#whoName").textContent = name;
+    $("#whoMail").textContent = u.email || (meta.user_name ? "@" + meta.user_name + " · GitHub" : "");
+    $("#avatar").textContent = String(name).trim().charAt(0).toUpperCase() || "W";
+    hide($("#signInBox"));
+    hide($("#unavailable"));
+    show($("#signedIn"));
+    $("#title").textContent = "已登录";
+    $("#subtitle").textContent = "进度会自动同步到云端，可以在这台设备上继续学了。";
+    say("", "");
+  }
+
+  function busy(btn, on, label) {
+    btn.classList.toggle("loading", on);
+    btn.disabled = on;
+    const o = btn.querySelector(".lbl");
+    if (o) o.textContent = label || "发送登录链接";
+  }
+
+  (async () => {
+    show($("#signInBox"));
+    $("#title").textContent = "登录账号";
+
+    // 先看有没有已存在的会话
+    const { data } = await client.auth.getSession();
+    if (data && data.session) { entered(data.session); return; }
+
+    client.auth.onAuthStateChange((evt, s) => {
+      if (s && (evt === "SIGNED_IN" || evt === "INITIAL_SESSION")) entered(s);
+    });
+
+    // 探测哪些登录方式可用（GitHub 没开就藏起来）
+    let github = false;
+    try {
+      const r = await fetch(cfg.supabaseUrl.replace(/\/$/, "") + "/auth/v1/settings", {
+        headers: { apikey: cfg.supabaseAnonKey },
+      });
+      const s = await r.json();
+      github = !!(s && s.external && s.external.github);
+    } catch (e) { /* 探测失败就按可用处理 */ github = true; }
+
+    if (!github) { hide($("#btnGithub")); hide($("#orLine")); }
+  })();
+
+  $("#btnGithub").addEventListener("click", async () => {
+    const btn = $("#btnGithub");
+    btn.disabled = true;
+    try {
+      const { error } = await client.auth.signInWithOAuth({
+        provider: "github",
+        options: { redirectTo: REDIRECT },
+      });
+      if (error) throw error;
+    } catch (e) {
+      btn.disabled = false;
+      say("err", "GitHub 登录没起来：" + (e.message || e));
+    }
+  });
+
+  $("#emailForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = $("#btnMail");
+    const email = $("#email").value.trim();
+    if (!email) return;
+    busy(btn, true, "发送中…");
+    say("", "");
+    try {
+      const { error } = await client.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: REDIRECT, shouldCreateUser: true },
+      });
+      if (error) throw error;
+      say("ok", "登录链接已发到 " + email + "，点开邮件里的按钮就能进来。没收到就看下垃圾箱。");
+    } catch (e) {
+      const m = e.message || String(e);
+      if (/rate limit|too many/i.test(m)) say("err", "发信太频繁了，等一分钟再试。");
+      else if (/not authorize|redirect/i.test(m)) say("err", "回调地址没在 Supabase 白名单里：" + m);
+      else say("err", "发送失败：" + m);
+    } finally {
+      busy(btn, false);
+    }
+  });
+
+  $("#btnOut").addEventListener("click", async () => {
+    await client.auth.signOut();
+    location.reload();
+  });
+})();
+</script>
+</body>
+</html>

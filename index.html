@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0a0e15">
-<meta name="description" content="词途 · 背单词打卡：四级 / 六级 / 考研 / 雅思词库，间隔复习、打卡热力图、小测与徽章。数据只存在本地浏览器。">
+<meta name="description" content="词途 · 背单词打卡：四级 / 六级 / 考研 / 雅思词库，间隔复习、打卡热力图、小测与徽章。不登录时数据只在本地浏览器，登录后可跨设备同步。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%96%3C/text%3E%3C/svg%3E">
 <title>词途 · 背单词打卡</title>
 <style>
@@ -48,6 +48,15 @@ header{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);
   background:var(--panel);border:1px solid var(--line);font-size:13px;white-space:nowrap}
 .pill b{font-family:var(--mono);color:var(--acc)}
 .pill.hot{border-color:rgba(255,210,30,.35);background:linear-gradient(180deg,rgba(255,210,30,.12),rgba(255,210,30,.04))}
+.pill.acct{cursor:pointer;font:inherit;font-size:13px;color:inherit;transition:.18s;max-width:190px}
+.pill.acct:hover{border-color:var(--line2);color:var(--tx)}
+.pill.acct .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pill.acct .dot{width:7px;height:7px;border-radius:50%;background:var(--dim2);flex:none}
+.pill.acct[data-st="idle"] .dot{background:var(--ok);box-shadow:0 0 8px rgba(52,211,153,.6)}
+.pill.acct[data-st="syncing"] .dot{background:var(--acc);animation:pulse 1s infinite}
+.pill.acct[data-st="error"] .dot{background:var(--rose)}
+.pill.acct[data-st="signed-out"] .dot{display:none}
+@keyframes pulse{50%{opacity:.3}}
 .ring{--p:0;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex:none;
   background:conic-gradient(var(--acc) calc(var(--p)*1%), var(--line) 0);position:relative}
 .ring::before{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--bg)}
@@ -294,6 +303,26 @@ footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:v
   font-weight:700;font-size:13.5px;padding:11px 20px;border-radius:11px;opacity:0;pointer-events:none;
   transition:.25s;z-index:99;box-shadow:0 8px 30px rgba(255,210,30,.28);max-width:90vw;text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
+/* ── 合并选择弹窗 ── */
+.modal-wrap{position:fixed;inset:0;z-index:70;background:rgba(6,9,14,.8);backdrop-filter:blur(6px);
+  display:grid;place-items:center;padding:20px;overflow-y:auto}
+.modal{width:100%;max-width:520px;background:var(--panel);border:1px solid var(--line2);
+  border-radius:18px;padding:22px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.modal h3{margin:0 0 6px;font-size:17px;letter-spacing:.2px}
+.modal .sub{margin-bottom:14px}
+.modal .opt{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;padding:13px 14px;
+  border-radius:12px;border:1px solid var(--line);background:var(--bg2);color:var(--tx);
+  font:inherit;cursor:pointer;transition:.16s;margin-top:10px}
+.modal .opt:hover{border-color:var(--acc);background:#151d27}
+.modal .opt:first-of-type{margin-top:4px}
+.modal .opt .ic{font-size:19px;line-height:1.3;flex:none}
+.modal .opt b{display:block;font-size:13.5px;margin-bottom:3px}
+.modal .opt span{font-size:11.5px;color:var(--dim2);line-height:1.6}
+.acct-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.acct-av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:none;
+  background:linear-gradient(160deg,#ffd21e,#f2a600);color:#191919;font-weight:800;font-size:16px}
+.acct-nm{font-size:14.5px;font-weight:700;line-height:1.3;word-break:break-all}
+.acct-sub{font-size:11.5px;color:var(--dim2);margin-top:3px;word-break:break-all}
 .loading{display:grid;place-items:center;min-height:50vh;color:var(--dim);gap:12px}
 .spin{width:30px;height:30px;border:2px solid var(--line);border-top-color:var(--acc);border-radius:50%;animation:sp .8s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
@@ -301,6 +330,9 @@ footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:v
   .brand small{display:none}
   .pill{padding:5px 9px;font-size:12px}
   .pill.xp{display:none}
+  .pill.acct{max-width:120px}
+  .pill.acct .nm-more{display:none}
+  .hd{gap:10px}
   .ring{width:38px;height:38px}
   .tab{padding:8px 7px;font-size:13px}
   nav.tabs{gap:4px}
@@ -334,6 +366,7 @@ footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:v
       <span class="pill hot" title="连续打卡天数">🔥 <b id="hStreak">0</b> 天</span>
       <span class="pill" title="今天碰过的词">📚 <b id="hToday">0</b> 词</span>
       <span class="pill xp" title="经验值">⚡ <b id="hXp">0</b> XP</span>
+      <button class="pill acct hide" id="acctPill" data-act="account" type="button">登录</button>
       <div class="ring" id="hRing" title="今日新词目标完成度"><span id="hPct">0%</span></div>
     </div>
     <nav class="tabs" id="tabs" role="tablist" aria-label="主导航">
@@ -431,7 +464,7 @@ footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:v
           </p>
           <p class="note" style="margin:0">
             <b>打卡规则</b>：当天学过至少 1 个词就能打卡；完成每日新词目标会自动打卡。断签会归零连续天数，但累计天数和学过的词都保留。<br>
-            <b>数据在哪</b>：只存在这台设备的浏览器里（localStorage）。换设备用「统计与徽章 → 导出 / 导入」。
+            <b>数据在哪</b>：默认只存在这台设备的浏览器里；登录后同步到云端，换设备不用导出导入。
           </p>
         </div>
       </div>
@@ -784,9 +817,15 @@ footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:v
         <div class="bgs" id="badges"></div>
       </div>
 
+      <div class="card" id="accountCard">
+        <h2><span class="n">SYNC</span>账号与同步</h2>
+        <p class="sub" id="acctSub">登录后进度会同步到云端，换设备不用再导出导入。</p>
+        <div id="acctBody"></div>
+      </div>
+
       <div class="card">
         <h2><span class="n">DATA</span>数据管理</h2>
-        <p class="sub">数据存在本机浏览器（key: <code>wordquest-v1</code>）。换设备用导出 / 导入。</p>
+        <p class="sub">本地数据存在这台浏览器（key: <code id="dataKeyTxt">wordquest-v1</code>）。</p>
         <div class="toolbar">
           <button class="btn sm" data-act="export">导出备份 JSON</button>
           <button class="btn sm" data-act="import">导入备份</button>
@@ -799,20 +838,44 @@ footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:v
     </section>
 
     <footer>
-      单页离线应用 · 无第三方依赖 · 数据只在你自己的浏览器里<br>
+      单页离线应用 · 未登录时数据只在这台浏览器里，登录后同步到云端<br>
       内置词库来自 <a href="https://github.com/Kaiyiwing/qwerty-learner" target="_blank" rel="noopener">qwerty-learner</a>（开源词表），发音使用浏览器自带语音合成。
     </footer>
   </div>
 </main>
 
+<div class="modal-wrap hide" id="mergeModal" role="dialog" aria-modal="true" aria-labelledby="mergeTitle">
+  <div class="modal">
+    <h3 id="mergeTitle">要把哪份进度带过来？</h3>
+    <p class="sub">这台设备上有游客进度，云端也有这个账号的进度。</p>
+    <button class="opt" data-act="merge-choice" data-mode="both">
+      <span class="ic">🔀</span>
+      <span><b>合并两份（推荐）</b><span id="mergeAllN">—</span></span>
+    </button>
+    <button class="opt" data-act="merge-choice" data-mode="cloud">
+      <span class="ic">☁️</span>
+      <span><b>只用云端进度</b><span id="mergeCloudN">—</span></span>
+    </button>
+    <button class="opt" data-act="merge-choice" data-mode="local">
+      <span class="ic">💻</span>
+      <span><b>只用这台设备的进度</b><span id="mergeLocalN">—</span></span>
+    </button>
+  </div>
+</div>
+
 <input type="file" id="fileIn" accept=".json,application/json" class="hide">
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="config.js"></script>
+<script src="js/vendor/supabase.js"></script>
+<script src="js/cloud.js"></script>
 
 <script>
 "use strict";
 
 /* ═══════════════════ 常量 ═══════════════════ */
-const KEY = "wordquest-v1";
+const GUEST_KEY = "wordquest-v1";
+let stateKey = GUEST_KEY; // 登录后变成 wordquest-v1:<uid>，每个账号一份本地数据
 const INTERVALS = [0, 1, 2, 4, 7, 15, 30, 60, 120];
 const MASTER_BOX = 6;
 
@@ -956,34 +1019,50 @@ function defaultState() {
     createdAt: Date.now(),
   };
 }
-let S = loadState();
+let S = defaultState();
+let settingsStamp = "";
 
-function loadState() {
+function normalizeState(o) {
+  const d = defaultState();
+  if (!o || typeof o !== "object") return d;
+  return {
+    ...d, ...o,
+    settings: { ...d.settings, ...(o.settings || {}) },
+    words: o.words || {}, days: o.days || {}, badges: o.badges || {},
+    skills: {
+      listen: { seen: 0, ok: 0, ...((o.skills && o.skills.listen) || {}) },
+      speak: { seen: 0, ok: 0, ...((o.skills && o.skills.speak) || {}) },
+      sentListen: { seen: 0, ok: 0, ...((o.skills && o.skills.sentListen) || {}) },
+      sentSpeak: { seen: 0, ok: 0, ...((o.skills && o.skills.sentSpeak) || {}) },
+    },
+    custom: Array.isArray(o.custom) ? o.custom : [],
+  };
+}
+
+function readKey(key) {
   try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return defaultState();
-    const o = JSON.parse(raw);
-    const d = defaultState();
-    return {
-      ...d, ...o,
-      settings: { ...d.settings, ...(o.settings || {}) },
-      words: o.words || {}, days: o.days || {}, badges: o.badges || {},
-      skills: {
-        listen: { seen: 0, ok: 0, ...((o.skills && o.skills.listen) || {}) },
-        speak: { seen: 0, ok: 0, ...((o.skills && o.skills.speak) || {}) },
-        sentListen: { seen: 0, ok: 0, ...((o.skills && o.skills.sentListen) || {}) },
-        sentSpeak: { seen: 0, ok: 0, ...((o.skills && o.skills.sentSpeak) || {}) },
-      },
-      custom: Array.isArray(o.custom) ? o.custom : [],
-    };
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    return normalizeState(JSON.parse(raw));
   } catch (e) {
     console.warn("读取本地数据失败", e);
-    return defaultState();
+    return null;
   }
 }
+function loadState(key = stateKey) {
+  return readKey(key) || defaultState();
+}
 function save() {
-  try { localStorage.setItem(KEY, JSON.stringify(S)); }
-  catch (e) { toast("本地存储写入失败：" + e.message); }
+  try {
+    // 记住设置最后一次改动的时刻，合并多设备时才知道以谁为准
+    const stamp = JSON.stringify(S.settings);
+    if (stamp !== settingsStamp) {
+      settingsStamp = stamp;
+      S.settings.updatedAt = Date.now();
+    }
+    localStorage.setItem(stateKey, JSON.stringify(S));
+  } catch (e) { toast("本地存储写入失败：" + e.message); }
+  if (window.WQCloud) WQCloud.touch();
 }
 
 /* ═══════════════════ 词库加载 ═══════════════════ */
@@ -1176,6 +1255,24 @@ function renderHeader() {
   const pct = Math.min(100, Math.round(((st.learned || 0) / S.settings.dailyNew) * 100));
   $("#hRing").style.setProperty("--p", pct);
   $("#hPct").textContent = pct + "%";
+  renderAcctPill();
+}
+
+function renderAcctPill() {
+  const pill = $("#acctPill");
+  if (!pill) return;
+  const on = window.WQCloud && WQCloud.ready;
+  if (!on) { pill.classList.add("hide"); return; }
+  pill.classList.remove("hide");
+  if (WQCloud.isOn()) {
+    pill.dataset.st = WQCloud.status;
+    pill.innerHTML = `<i class="dot"></i><span class="nm">${esc(WQCloud.title())}</span>`;
+    pill.title = "已登录 · 点击查看同步";
+  } else {
+    pill.dataset.st = "signed-out";
+    pill.innerHTML = `<span class="nm">登录<i class="nm-more"> / 同步</i></span>`;
+    pill.title = "登录后可在多台设备间同步进度";
+  }
 }
 
 /* ── 今日 ── */
@@ -2301,6 +2398,9 @@ function renderStats() {
     </div>`).join("");
 
   $("#dataInfo").textContent = `已记录 ${Object.keys(S.days).length} 天 · ${learned} 个词`;
+  const dk = $("#dataKeyTxt");
+  if (dk) dk.textContent = stateKey;
+  renderAccount();
 }
 
 /* ═══════════════════ 打卡 / 徽章 ═══════════════════ */
@@ -2428,7 +2528,7 @@ function importData(file) {
 /* ═══════════════════ 事件 ═══════════════════ */
 let session = null;
 
-document.addEventListener("click", (e) => {
+document.addEventListener("click", async (e) => {
   const el = e.target.closest("[data-act]");
   if (!el) return;
   const act = el.dataset.act;
@@ -2569,13 +2669,55 @@ document.addEventListener("click", (e) => {
   if (act === "answer") { answerQuiz(Number(el.dataset.i)); return; }
   if (act === "next-q") { nextQuestion(); return; }
   if (act === "export") { exportData(); return; }
+  if (act === "account") {
+    if (window.WQCloud && WQCloud.isOn()) { switchView("stats"); $("#accountCard").scrollIntoView({ behavior: "smooth", block: "center" }); }
+    else location.href = "login.html";
+    return;
+  }
+  if (act === "sync-now") {
+    if (!window.WQCloud || !WQCloud.isOn()) return;
+    WQCloud.touch();
+    const r = await WQCloud.flush(true);
+    if (r && r.ok) toast("已同步到云端");
+    else if (r && r.error) toast(r.error);
+    renderAccount();
+    return;
+  }
+  if (act === "sign-out") {
+    if (!confirm("退出登录？本地进度会留着，重新登录还能接上。")) return;
+    await WQCloud.flush(true).catch(() => {});
+    await WQCloud.signOut();
+    location.reload();
+    return;
+  }
+  if (act === "delete-cloud") {
+    if (!confirm("删除云端的这份进度？云端会清空，这台设备上的本地数据保留。")) return;
+    try {
+      await WQCloud.deleteCloud();
+      toast("云端数据已删除");
+    } catch (e) {
+      toast("删除失败：" + e.message);
+    }
+    renderAccount();
+    return;
+  }
+  if (act === "merge-choice") { mergeChoose(el.dataset.mode); return; }
   if (act === "import") { $("#fileIn").click(); return; }
   if (act === "reset") {
-    if (!confirm("清空所有学习记录、打卡和徽章？这个操作不能撤销。")) return;
-    localStorage.removeItem(KEY);
+    const cloudNote = window.WQCloud && WQCloud.isOn() ? "（已登录，云端进度也会一起清空）" : "";
+    if (!confirm("清空所有学习记录、打卡和徽章？这个操作不能撤销。" + cloudNote)) return;
+    localStorage.removeItem(stateKey);
     S = defaultState();
+    settingsStamp = "";
     session = null; quiz = null;
-    loadCurrent().then(() => { renderAll(); toast("已清空，重新开始"); });
+    loadCurrent().then(async () => {
+      renderAll();
+      toast("已清空，重新开始");
+      if (window.WQCloud && WQCloud.isOn()) {
+        await WQCloud.push(S).catch(() => {});
+        renderAccount();
+      }
+    });
     return;
   }
 });
@@ -2639,8 +2781,185 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+/* ═══════════════════ 云端同步 UI ═══════════════════ */
+let mergeCtx = null;
+
+function syncStatusLabel() {
+  if (!window.WQCloud) return ["", "—"];
+  switch (WQCloud.status) {
+    case "syncing": return ["blue", "同步中…"];
+    case "error": return ["bad", "同步失败"];
+    case "idle": return ["ok", "已同步"];
+    default: return ["warn", "未登录"];
+  }
+}
+
+function renderAccount() {
+  const box = $("#acctBody");
+  const sub = $("#acctSub");
+  if (!box || !sub) return;
+
+  if (!window.WQCloud || !WQCloud.ready) {
+    sub.textContent = "当前是纯本地模式：进度只在这台设备上。";
+    const why = window.WQCloud ? WQCloud.reason : "no-config";
+    const text = why === "no-config"
+      ? "还没有配置 Supabase（config.js 是空的）。照着 README 的「启用账号同步」跑一次 <code>node scripts/gen-config.mjs</code> 就能开。"
+      : why === "file-protocol"
+        ? "用 <code>file://</code> 直接打开时没法登录，请用 http 访问（本地 <code>node scripts/serve.mjs</code>，线上是 GitHub Pages）。"
+        : why === "no-lib"
+          ? "Supabase 客户端没加载成功，检查 <code>js/vendor/supabase.js</code> 是否还在。"
+          : "云端初始化失败：" + esc(WQCloud.lastError || "未知原因");
+    box.innerHTML = `<p class="note" style="margin:0">${text}<br>这不影响现在的功能，单词、打卡、导入导出都照常。</p>`;
+    return;
+  }
+
+  if (!WQCloud.isOn()) {
+    sub.textContent = "登录后进度会同步到云端，换设备不用再导出导入。";
+    box.innerHTML = `
+      <div class="acct-head">
+        <div class="acct-av" style="background:linear-gradient(160deg,#2d3d4f,#1b2531);color:var(--dim)">☁</div>
+        <div style="flex:1;min-width:170px">
+          <div class="acct-nm">还没有登录</div>
+          <div class="acct-sub">游客模式 · 数据只在这台浏览器</div>
+        </div>
+        <a class="btn sm" href="login.html">登录 / 注册</a>
+      </div>
+      <p class="note" style="margin:12px 0 0">登录后：多设备同步、换电脑恢复进度、云端备份。不登录照样能用，功能完全一样。</p>`;
+    return;
+  }
+
+  const [cls, txt] = syncStatusLabel();
+  const when = WQCloud.lastSyncAt
+    ? new Date(WQCloud.lastSyncAt).toLocaleString("zh-CN", { hour12: false })
+    : "还没同步过";
+  const initial = String(WQCloud.title()).trim().charAt(0).toUpperCase() || "W";
+  box.innerHTML = `
+    <div class="acct-head">
+      <div class="acct-av">${esc(initial)}</div>
+      <div style="flex:1;min-width:170px">
+        <div class="acct-nm">${esc(WQCloud.title())}</div>
+        <div class="acct-sub">数据 key：${esc(stateKey)}</div>
+      </div>
+      <span class="badge ${cls}">${txt}</span>
+    </div>
+    <div class="toolbar" style="margin:14px 0 0">
+      <button class="btn sm" data-act="sync-now">立即同步</button>
+      <a class="btn sm" href="login.html">账号 / 换号</a>
+      <button class="btn sm" data-act="sign-out">退出登录</button>
+      <button class="btn sm" data-act="delete-cloud" style="border-color:rgba(251,113,133,.4);color:var(--rose)">删除云端数据</button>
+      <div class="sp"></div>
+      <span class="note">上次同步：${esc(when)}${WQCloud.revision ? ` · rev ${WQCloud.revision}` : ""}</span>
+    </div>
+    ${WQCloud.lastError ? `<p class="note" style="margin:8px 0 0;color:var(--rose)">${esc(WQCloud.lastError)}</p>` : ""}
+    <p class="note" style="margin:10px 0 0">改动会自动上传（停手 1.5 秒后）。两台设备同时改同一批词时按「取较新 / 取较大」合并，不会整块覆盖。</p>`;
+}
+
+/** 启动后把本地和云端对齐 */
+async function cloudStart(guestState) {
+  renderAccount();
+  if (!WQCloud.isOn()) return;
+
+  let row = null;
+  try {
+    row = await WQCloud.pull();
+  } catch (e) {
+    toast("云端读取失败：" + WQCloud.describeError(e));
+    renderAccount();
+    return;
+  }
+
+  const cloudHas = !!(row && WQCloud.hasData(row.data));
+  const localHas = WQCloud.hasData(S);
+
+  if (guestState) {
+    if (!cloudHas) {
+      // 云端是空的：游客进度直接搬过去
+      S = guestState;
+      save();
+      renderAll();
+      await WQCloud.push(S).catch(() => {});
+      toast("游客进度已上传到云端");
+      return;
+    }
+    openMerge(guestState, row.data);
+    return;
+  }
+
+  if (!cloudHas && localHas) {
+    await WQCloud.push(S).catch((e) => toast("上传失败：" + WQCloud.describeError(e)));
+    renderAccount();
+    return;
+  }
+  if (cloudHas && !localHas) {
+    S = normalizeState(row.data);
+    save();
+    renderAll();
+    toast("已拉取云端进度");
+    return;
+  }
+  if (cloudHas && localHas) {
+    const before = WQCloud.countWords(S);
+    S = WQCloud.mergeStates(S, row.data);
+    save();
+    renderAll();
+    await WQCloud.push(S).catch(() => {});
+    const after = WQCloud.countWords(S);
+    if (after !== before) toast(`已合并：本机 ${before} 词 → ${after} 词`);
+    return;
+  }
+}
+
+function openMerge(guest, cloudData) {
+  mergeCtx = { guest: normalizeState(guest), cloud: normalizeState(cloudData) };
+  $("#mergeLocalN").textContent =
+    `这台设备：${WQCloud.countWords(mergeCtx.guest)} 词 · ${WQCloud.countDays(mergeCtx.guest)} 天记录`;
+  $("#mergeCloudN").textContent =
+    `云端：${WQCloud.countWords(mergeCtx.cloud)} 词 · ${WQCloud.countDays(mergeCtx.cloud)} 天记录`;
+  $("#mergeAllN").textContent =
+    `两边合起来 ${WQCloud.countWords(WQCloud.mergeStates(mergeCtx.guest, mergeCtx.cloud))} 词，重复的词不会重复算`;
+  $("#mergeModal").classList.remove("hide");
+}
+
+async function mergeChoose(mode) {
+  if (!mergeCtx) return;
+  const { guest, cloud } = mergeCtx;
+  const next = mode === "cloud" ? cloud : mode === "local" ? guest : WQCloud.mergeStates(guest, cloud);
+  mergeCtx = null;
+  $("#mergeModal").classList.add("hide");
+  S = next;
+  save();
+  renderAll();
+  try {
+    await WQCloud.push(S);
+    toast(mode === "cloud" ? "已使用云端进度" : mode === "local" ? "已使用本机进度" : "已合并两份进度");
+  } catch (e) {
+    toast("上传失败：" + WQCloud.describeError(e));
+  }
+  renderAccount();
+}
+
 /* ═══════════════════ 启动 ═══════════════════ */
 async function init() {
+  // 先确定这次用哪份本地数据：游客 = wordquest-v1，登录后 = wordquest-v1:<uid>
+  let guestState = null;
+  if (window.WQCloud) {
+    try { await WQCloud.init(); } catch (e) { console.warn("云同步初始化失败", e); }
+    if (WQCloud.ready) {
+      stateKey = WQCloud.storageKey();
+      if (stateKey !== GUEST_KEY && !localStorage.getItem(stateKey)) {
+        // 第一次在这台设备登录：游客数据先挂着，等云端拉下来再让用户选
+        guestState = readKey(GUEST_KEY);
+      }
+      WQCloud.bind({
+        get: () => S,
+        set: (s) => { S = s; },
+      });
+      WQCloud.onChange(() => { renderHeader(); if (view === "stats") renderAccount(); });
+    }
+  }
+  S = loadState(stateKey);
+  settingsStamp = JSON.stringify(S.settings);
+
   const h = (location.hash || "").replace("#", "");
   if (VIEWS.includes(h)) view = h;
   if (!BOOK_META.some((b) => b.id === S.settings.book)) S.settings.book = "cet4";
@@ -2662,6 +2981,8 @@ async function init() {
   Promise.allSettled(
     BOOK_META.filter((b) => b.id !== "custom" && b.id !== S.settings.book).map((b) => loadBook(b.id))
   ).then(() => { checkBadges(); renderBooks(); renderStats(); });
+
+  if (window.WQCloud && WQCloud.ready) cloudStart(guestState);
 }
 
 window.addEventListener("hashchange", () => {
@@ -2670,6 +2991,14 @@ window.addEventListener("hashchange", () => {
 });
 
 init();
+
+// 关标签页 / 切后台时尽量把待同步的改动推上去
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden" && window.WQCloud) WQCloud.flush();
+});
+window.addEventListener("pagehide", () => {
+  if (window.WQCloud) WQCloud.flush();
+});
 
 // 跨过午夜时自动刷新当天视图
 let dayCursor = today();

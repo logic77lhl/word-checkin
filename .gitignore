@@ -1,6 +1,12 @@
 data-src/
 demo-tmp/
 _demo*.html
+_cloudtest*.html
 node_modules/
 .DS_Store
 Thumbs.db
+
+# 本地/CI 生成的配置，含 Supabase URL 与 publishable key
+config.js
+.env.local
+.env
