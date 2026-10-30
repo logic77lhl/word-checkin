@@ -126,7 +126,7 @@ form .btn{margin-top:12px}
         <span class="spin"></span><span class="lbl">发送登录链接</span>
       </button>
     </form>
-    <p class="sub" style="margin:10px 0 0;font-size:11.5px">不设密码：点邮件里的链接就直接登录。同一邮箱一分钟内只能发一次。</p>
+    <p class="sub" style="margin:10px 0 0;font-size:11.5px">不设密码：点邮件里的链接就直接登录。同一邮箱一分钟内只能发一次。<b>请在这台设备上打开邮件链接</b>，换设备打开会失败。</p>
   </div>
 
   <div id="unavailable" class="hide">
@@ -187,7 +187,11 @@ form .btn{margin-top:12px}
   const hash = new URLSearchParams(location.hash.replace(/^#/, ""));
   const errDesc = hash.get("error_description") || hash.get("error");
   if (errDesc) {
-    say("err", "登录失败：" + errDesc.replace(/\+/g, " "));
+    if (/code verifier|pkce|invalid request/i.test(errDesc)) {
+      say("err", "这个登录链接要在发送它的同一台设备、同一个浏览器里打开。请回到这台设备重新发送一次。");
+    } else {
+      say("err", "登录失败：" + errDesc.replace(/\+/g, " "));
+    }
     history.replaceState(null, "", location.pathname);
   }
 
