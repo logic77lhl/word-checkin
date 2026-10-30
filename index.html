@@ -839,7 +839,7 @@ footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:v
     </section>
 
     <footer>
-      单页离线应用 · 未登录时数据只在这台浏览器里，登录后同步到云端<br>
+      单页离线应用 · 未登录时数据只在这台浏览器里，登录后同步到云端 · <a href="guide.html">配置教程</a><br>
       内置词库来自 <a href="https://github.com/Kaiyiwing/qwerty-learner" target="_blank" rel="noopener">qwerty-learner</a>（开源词表），发音使用浏览器自带语音合成。
     </footer>
   </div>
@@ -2811,7 +2811,8 @@ function renderAccount() {
         : why === "no-lib"
           ? "Supabase 客户端没加载成功，检查 <code>js/vendor/supabase.js</code> 是否还在。"
           : "云端初始化失败：" + esc(WQCloud.lastError || "未知原因");
-    box.innerHTML = `<p class="note" style="margin:0">${text}<br>这不影响现在的功能，单词、打卡、导入导出都照常。</p>`;
+    box.innerHTML = `<p class="note" style="margin:0">${text}<br>这不影响现在的功能，单词、打卡、导入导出都照常。<br>
+      <a href="guide.html">→ 看配置教程（20 分钟接通）</a></p>`;
     return;
   }
 
@@ -2826,7 +2827,8 @@ function renderAccount() {
         </div>
         <a class="btn sm" href="login.html">登录 / 注册</a>
       </div>
-      <p class="note" style="margin:12px 0 0">登录后：多设备同步、换电脑恢复进度、云端备份。不登录照样能用，功能完全一样。</p>`;
+      <p class="note" style="margin:12px 0 0">登录后：多设备同步、换电脑恢复进度、云端备份。不登录照样能用，功能完全一样。<br>
+        <a href="guide.html">第一次部署？看配置教程 →</a></p>`;
     return;
   }
 

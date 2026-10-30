@@ -45,6 +45,8 @@ node scripts/serve.mjs
 
 不配这一段也能用，页面会自动进「纯本地模式」。要开登录和云同步，按下面四步做一遍。
 
+> 也可以直接打开站点里的 **配置教程页**：[`guide.html`](guide.html)，带自检按钮和错误对照表。
+
 ### 1. 建项目和表
 
 在 [supabase.com](https://supabase.com/dashboard) 新建项目（区域选 Southeast Asia / Singapore 对国内最快），然后在 **SQL Editor** 执行：
@@ -136,6 +138,7 @@ gh secret set WQ_SUPABASE_ANON_KEY --body "sb_publishable_xxxx"
 word-checkin/
 ├─ index.html            # 界面 + 逻辑 + 样式（单文件）
 ├─ login.html            # 登录 / 注册页（Supabase Auth）
+├─ guide.html            # 配置教程（建表、环境变量、GitHub 登录、自检）
 ├─ config.js             # 自动生成，含 Supabase URL 与 publishable key（不进仓库）
 ├─ js/
 │  ├─ cloud.js           # 云同步层：推送、乐观锁、合并规则

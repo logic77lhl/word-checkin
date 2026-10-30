@@ -34,7 +34,7 @@ jobs:
       - name: Stage site
         run: |
           mkdir -p _site
-          rsync -a index.html login.html config.js js data _site/
+          rsync -a index.html login.html guide.html config.js js data _site/
           test -s _site/config.js || { echo "config.js 没生成"; exit 1; }
 
       - uses: actions/configure-pages@v5

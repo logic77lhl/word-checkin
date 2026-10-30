@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a0e15">
+<meta name="description" content="词途配置教程：从零接通 Supabase 账号登录与跨设备同步，含建表 SQL、环境变量、GitHub 登录和常见错误对照。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%96%3C/text%3E%3C/svg%3E">
+<title>配置教程 · 词途</title>
+<style>
+:root{
+  --bg:#0a0e15; --bg2:#0e141d; --panel:#131b26; --panel2:#17202d;
+  --line:#22303f; --line2:#2d3d4f;
+  --tx:#e8eef7; --dim:#8fa3ba; --dim2:#7b8fa5;
+  --acc:#ffd21e; --ok:#34d399; --blue:#7dd3fc; --violet:#a78bfa; --rose:#fb7185;
+  --mono:ui-monospace,"Cascadia Code",Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;padding:0 0 80px;
+  background:
+    radial-gradient(980px 460px at 10% -8%, rgba(255,210,30,.08), transparent 60%),
+    radial-gradient(820px 420px at 92% 2%, rgba(125,211,252,.07), transparent 60%),
+    var(--bg);
+  color:var(--tx);
+  font:15px/1.7 -apple-system,"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:860px;margin:0 auto;padding:0 18px}
+code{font-family:var(--mono);font-size:.9em;background:#0b1219;border:1px solid var(--line);border-radius:5px;padding:1px 5px;color:#ffd98a;overflow-wrap:anywhere}
+kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--line2);border-bottom-width:2px;border-radius:5px;padding:1px 5px;color:var(--dim)}
+
+/* ── 顶栏 ── */
+header{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);
+  background:rgba(10,14,21,.86);border-bottom:1px solid var(--line)}
+.hd{display:flex;align-items:center;gap:12px;padding:11px 0}
+.brand{display:flex;align-items:center;gap:9px;font-weight:700}
+.brand .em{font-size:20px;filter:drop-shadow(0 0 9px rgba(255,210,30,.45))}
+.brand small{display:block;font-size:10px;letter-spacing:.7px;color:var(--dim2);font-weight:500}
+.hd .sp{flex:1}
+.back{font-size:12.5px;color:var(--dim);border:1px solid var(--line);border-radius:999px;padding:6px 13px;transition:.16s}
+.back:hover{color:var(--tx);border-color:var(--line2);text-decoration:none}
+
+/* ── 进度条 ── */
+.pbar{height:3px;background:var(--line);border-radius:99px;overflow:hidden;margin:0 0 10px}
+.pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc),#f2a600);transition:width .3s}
+.pmeta{display:flex;justify-content:space-between;font-size:11.5px;color:var(--dim2);margin-bottom:22px}
+
+/* ── 卡片 ── */
+.card{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);
+  border-radius:16px;padding:20px;margin-bottom:16px}
+.card h2{margin:0 0 6px;font-size:17px;letter-spacing:.2px;display:flex;align-items:center;gap:9px}
+.card h2 .n{font-family:var(--mono);font-size:11px;color:var(--acc);letter-spacing:.5px;
+  border:1px solid rgba(255,210,30,.35);background:rgba(255,210,30,.07);border-radius:5px;padding:2px 6px}
+.card .sub{margin:0 0 16px;color:var(--dim);font-size:13px}
+.card h3{margin:22px 0 8px;font-size:14.5px}
+.card h3:first-of-type{margin-top:4px}
+.card p{margin:0 0 12px}
+.card ol,.card ul{margin:0 0 14px;padding-left:20px}
+.card li{margin-bottom:7px}
+.card li b{color:var(--tx)}
+
+/* ── 步骤 ── */
+.step{display:flex;gap:12px;margin-bottom:14px}
+.step .i{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(255,210,30,.12);border:1px solid rgba(255,210,30,.4);color:var(--acc);
+  font:700 12px/1 var(--mono);margin-top:2px}
+.step .b{flex:1;min-width:0}
+.step .b b{display:block;margin-bottom:2px}
+
+/* ── 代码块 ── */
+.pre{position:relative;margin:12px 0 16px}
+.pre pre{margin:0;background:#080d13;border:1px solid var(--line);border-radius:11px;
+  padding:14px 15px;overflow-x:auto;font:12.5px/1.65 var(--mono);color:#cfe0f0}
+.pre .copy{position:absolute;top:8px;right:8px;background:var(--panel2);border:1px solid var(--line2);
+  color:var(--dim);font:500 11px/1 inherit;padding:6px 10px;border-radius:7px;cursor:pointer;transition:.15s}
+.pre .copy:hover{color:var(--acc);border-color:var(--acc)}
+.pre .copy.done{color:var(--ok);border-color:rgba(52,211,153,.5)}
+
+/* ── 提示块 ── */
+.cal{border-radius:11px;padding:12px 14px;margin:0 0 14px;font-size:12.8px;line-height:1.7;border:1px solid transparent}
+.cal b{display:block;margin-bottom:3px;font-size:12.5px}
+.cal.warn{background:rgba(251,113,133,.07);border-color:rgba(251,113,133,.28);color:#ffb9c5}
+.cal.warn b{color:#fb7185}
+.cal.ok{background:rgba(52,211,153,.07);border-color:rgba(52,211,153,.26);color:#9ff0cb}
+.cal.ok b{color:var(--ok)}
+.cal.info{background:rgba(125,211,252,.06);border-color:rgba(125,211,252,.24);color:#bfe6f8}
+.cal.info b{color:var(--blue)}
+.cal code{background:rgba(0,0,0,.35)}
+
+/* ── 表格 ── */
+table{width:100%;border-collapse:collapse;font-size:12.8px;margin:6px 0 16px}
+th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top;
+  word-break:break-word;overflow-wrap:anywhere}
+th{color:var(--dim2);font-weight:600;font-size:11.5px;letter-spacing:.3px;text-transform:uppercase}
+td code{white-space:normal}
+tbody tr:last-child td{border-bottom:none}
+
+/* ── 清单 ── */
+.check{display:flex;align-items:flex-start;gap:10px;padding:9px 11px;border-radius:9px;
+  border:1px solid var(--line);background:var(--bg2);margin-bottom:7px;cursor:pointer;transition:.15s}
+.check:hover{border-color:var(--line2)}
+.check.on{border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.06)}
+.check input{margin:4px 0 0;accent-color:#34d399;width:15px;height:15px;flex:none;cursor:pointer}
+.check span{font-size:13px}
+.check.on span{color:var(--dim);text-decoration:line-through}
+
+/* ── 自检 ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:10px 18px;border-radius:10px;border:1px solid var(--line2);background:var(--panel2);
+  color:var(--tx);font:600 13.5px/1 inherit;cursor:pointer;transition:.15s}
+.btn:hover{border-color:var(--acc);color:var(--acc)}
+.btn.primary{background:linear-gradient(180deg,var(--acc),#f2b800);color:#161616;border-color:#e5b800}
+.btn.primary:hover{filter:brightness(1.06);color:#161616}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.res{margin-top:14px;display:flex;flex-direction:column;gap:7px}
+.res .it{display:flex;gap:9px;align-items:flex-start;font-size:12.8px;padding:9px 11px;border-radius:9px;
+  border:1px solid var(--line);background:var(--bg2)}
+.res .it .ic{flex:none;font-weight:700}
+.res .it.ok .ic{color:var(--ok)}
+.res .it.bad .ic{color:var(--rose)}
+.res .it.warn .ic{color:var(--acc)}
+.res .it .d{color:var(--dim2);font-size:11.5px;margin-top:2px;word-break:break-word}
+.spin{width:13px;height:13px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;
+  animation:sp .7s linear infinite;display:none}
+.loading .spin{display:block}
+.loading .lbl{opacity:.7}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+footer{margin-top:30px;padding-top:16px;border-top:1px solid var(--line);
+  color:var(--dim2);font-size:12px;line-height:1.8}
+.toc{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 20px}
+.toc a{font-size:12px;color:var(--dim);border:1px solid var(--line);border-radius:999px;
+  padding:5px 11px;transition:.16s}
+.toc a:hover{color:var(--acc);border-color:rgba(255,210,30,.4);text-decoration:none}
+@media(max-width:560px){
+  .card{padding:16px}
+  .brand small{display:none}
+  .pre pre{font-size:11.5px}
+  table{font-size:12px}
+  th,td{padding:8px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="hd">
+      <div class="brand"><span class="em">📖</span><div>词途 <small>SETUP GUIDE</small></div></div>
+      <div class="sp"></div>
+      <a class="back" href="index.html">← 返回应用</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap" style="padding-top:22px">
+
+  <div class="pbar"><i id="pbar"></i></div>
+  <div class="pmeta"><span>跟着做，大约 20 分钟</span><span id="pnum">0 / 8 步</span></div>
+
+  <div class="card">
+    <h2><span class="n">WHY</span>这篇教程解决什么</h2>
+    <p class="sub">不配也能用——页面会自动进纯本地模式。这篇只解决一件事：让进度能跟着账号走。</p>
+    <p>配完之后你会得到：</p>
+    <ul>
+      <li>换电脑、换手机，登录同一个账号就能接着背</li>
+      <li>游客期间的进度能带到账号里（会弹窗让你选合并方式）</li>
+      <li>两台设备同时学同一批词也不会互相覆盖</li>
+    </ul>
+    <div class="cal info">
+      <b>先说清楚成本</b>
+      Supabase 免费额度对个人使用足够：数据库 500 MB（你一年的进度大约几百 KB）、每月 5 GB 流量。
+      唯一要注意的是项目连续 7 天没有任何请求会被自动暂停，重新点一下 Restore 就好。
+    </div>
+  </div>
+
+  <nav class="toc">
+    <a href="#step1">① 建项目</a>
+    <a href="#step2">② 建表</a>
+    <a href="#step3">③ 填配置</a>
+    <a href="#step4">④ 部署</a>
+    <a href="#auth">⑤ 登录方式</a>
+    <a href="#merge">合并规则</a>
+    <a href="#check">自检</a>
+    <a href="#err">常见错误</a>
+    <a href="#sec">安全</a>
+  </nav>
+
+  <!-- ══════ 1 ══════ -->
+  <section class="card" id="step1">
+    <h2><span class="n">STEP 01</span>建 Supabase 项目</h2>
+    <p class="sub">5 分钟。注册免费，不需要信用卡。</p>
+
+    <div class="step"><div class="i">1</div><div class="b"><b>注册并新建项目</b>
+      打开 <a href="https://supabase.com/dashboard" target="_blank" rel="noopener">supabase.com/dashboard</a>，用 GitHub 登录 → <b>New project</b>。</div></div>
+
+    <table>
+      <tr><th>字段</th><th>填什么</th></tr>
+      <tr><td>Name</td><td><code>word-checkin</code>（随便取，用户看不到）</td></tr>
+      <tr><td>Database Password</td><td>点 <b>Generate</b>，复制存到密码管理器（后面基本用不到，但丢了要重置）</td></tr>
+      <tr><td>Region</td><td><b>Southeast Asia (Singapore)</b>，国内访问延迟最低</td></tr>
+      <tr><td>Plan</td><td><b>Free</b></td></tr>
+    </table>
+
+    <div class="step"><div class="i">2</div><div class="b"><b>等它变绿</b>
+      状态从 <code>Setting up project…</code> 变成 Active 大约 1–2 分钟。这期间别急着下一步。</div></div>
+
+    <div class="step"><div class="i">3</div><div class="b"><b>记下两个值</b>
+      <b>Project Settings → API</b>（新版叫 <b>API Keys</b>）里：
+      <ul style="margin-top:6px">
+        <li><b>Project URL</b>：<code>https://xxxx.supabase.co</code>，也可以直接看浏览器地址栏里 <code>/project/</code> 后面那段</li>
+        <li><b>anon public</b> 或新版 <b>publishable</b> key：<code>eyJ…</code> 或 <code>sb_publishable_…</code></li>
+      </ul></div></div>
+
+    <div class="cal warn">
+      <b>只看这两个，别的都不要复制</b>
+      同页面的 <code>service_role</code> / <code>sb_secret_…</code> 会绕过所有权限。它一旦出现在前端，等于把整个数据库交出去。
+    </div>
+  </section>
+
+  <!-- ══════ 2 ══════ -->
+  <section class="card" id="step2">
+    <h2><span class="n">STEP 02</span>建表 + RLS</h2>
+    <p class="sub">3 分钟。一次粘贴，跑完就不用再管数据库。</p>
+
+    <p>Supabase → <b>SQL Editor</b> → <b>New query</b>，把下面整段粘进去执行：</p>
+
+    <div class="pre">
+      <button class="copy" data-copy="sql">复制</button>
+      <pre id="sql">create table public.progress (
+  user_id     uuid primary key references auth.users(id) on delete cascade,
+  data        jsonb not null default '{}'::jsonb,
+  revision    bigint not null default 1,
+  updated_at  timestamptz not null default now(),
+  constraint progress_size check (pg_column_size(data) <= 2097152)
+);
+
+alter table public.progress enable row level security;
+
+create policy "own progress select" on public.progress
+  for select using (auth.uid() = user_id);
+create policy "own progress insert" on public.progress
+  for insert with check (auth.uid() = user_id);
+create policy "own progress update" on public.progress
+  for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy "own progress delete" on public.progress
+  for delete using (auth.uid() = user_id);
+
+-- 给登录用户表权限；RLS 负责把它们限定成「只有自己那一行」
+grant select, insert, update, delete on public.progress to authenticated;</pre>
+    </div>
+
+    <div class="cal warn">
+      <b>最后那行 grant 别漏</b>
+      少了它，前端会稳定收到 <code>403 permission denied for table progress</code>。
+      表建出来了、RLS 也开了，但角色根本没拿到读写权限——这是最容易卡住的地方。
+    </div>
+
+    <p><b>怎么算过：</b>左侧 <b>Table Editor</b> 能看到 <code>progress</code> 表，并且表名旁边标着 <b>RLS enabled</b>。</p>
+
+    <div class="cal ok">
+      <b>为什么只有一张表</b>
+      整个进度是一个 JSON（设置、每词复习状态、每日记录、徽章……），塞进一行的 <code>data</code> 字段。
+      读写都是一次请求，不用 join。等真要做排行榜时再拆表。
+    </div>
+  </section>
+
+  <!-- ══════ 3 ══════ -->
+  <section class="card" id="step3">
+    <h2><span class="n">STEP 03</span>把 URL 和 key 喂给页面</h2>
+    <p class="sub">2 分钟。走环境变量，key 不进仓库。</p>
+
+    <p>静态页面在浏览器里没有 <code>process.env</code>，所以做法是<b>构建时注入</b>：脚本从环境变量生成 <code>config.js</code>，这个文件已经被 <code>.gitignore</code> 忽略。</p>
+
+    <h3>本地</h3>
+    <p>在仓库根目录建 <code>.env.local</code>：</p>
+    <div class="pre">
+      <button class="copy" data-copy="env">复制</button>
+      <pre id="env">WQ_SUPABASE_URL=https://xxxx.supabase.co
+WQ_SUPABASE_ANON_KEY=sb_publishable_xxxx</pre>
+    </div>
+    <p>然后生成配置：</p>
+    <div class="pre">
+      <button class="copy" data-copy="cmd1">复制</button>
+      <pre id="cmd1">node scripts/gen-config.mjs</pre>
+    </div>
+
+    <h3>线上（GitHub Actions）</h3>
+    <p>把同样两个值存成仓库 Secret，部署时由 workflow 读出来生成 <code>config.js</code>：</p>
+    <div class="pre">
+      <button class="copy" data-copy="cmd2">复制</button>
+      <pre id="cmd2">gh secret set WQ_SUPABASE_URL --body "https://xxxx.supabase.co"
+gh secret set WQ_SUPABASE_ANON_KEY --body "sb_publishable_xxxx"</pre>
+    </div>
+
+    <div class="cal info">
+      <b>publishable key 本来就是公开的</b>
+      它会被打包进页面、出现在浏览器网络面板里，这是设计如此。真正的安全边界是数据库里的 RLS 策略，不是这个 key 的保密性。走环境变量只是为了让配置和代码分离，换环境不用改代码。
+    </div>
+  </section>
+
+  <!-- ══════ 4 ══════ -->
+  <section class="card" id="step4">
+    <h2><span class="n">STEP 04</span>部署到 GitHub Pages</h2>
+    <p class="sub">1 分钟。因为要生成 config.js，必须用 Actions 发布。</p>
+
+    <div class="step"><div class="i">1</div><div class="b"><b>改发布源</b>
+      仓库 <b>Settings → Pages → Build and deployment → Source</b>，从 <code>Deploy from a branch</code> 改成 <b>GitHub Actions</b>。</div></div>
+
+    <div class="step"><div class="i">2</div><div class="b"><b>推一次代码</b>
+      <code>.github/workflows/pages.yml</code> 会自动跑：生成 config.js → 打包 → 发布。</div></div>
+
+    <div class="step"><div class="i">3</div><div class="b"><b>确认</b>
+      打开 <code>https://&lt;用户名&gt;.github.io/&lt;仓库名&gt;/config.js</code>，能看到 <code>window.WQ_CONFIG</code> 就算成功。</div></div>
+
+    <div class="cal warn">
+      <b>还是从分支发布会怎样</b>
+      Pages 会直接把仓库原样发布，里面没有 <code>config.js</code>，页面就会一直停在「纯本地模式」，登录页提示「还没有配置 Supabase」。功能不受影响，但登录用不了。
+    </div>
+  </section>
+
+  <!-- ══════ 5 ══════ -->
+  <section class="card" id="auth">
+    <h2><span class="n">AUTH</span>开通登录方式</h2>
+    <p class="sub">邮箱登录开箱即用；GitHub 登录更顺，但要额外建一个 OAuth App。</p>
+
+    <h3>A. 先填回调地址（必做）</h3>
+    <p>Supabase → <b>Authentication → URL Configuration</b>：</p>
+    <table>
+      <tr><th>字段</th><th>填什么</th></tr>
+      <tr><td>Site URL</td><td><code>https://&lt;用户名&gt;.github.io/&lt;仓库名&gt;/</code></td></tr>
+      <tr><td>Redirect URLs</td><td>再加两条：<br><code>https://&lt;用户名&gt;.github.io/&lt;仓库名&gt;/login.html</code><br><code>http://localhost:4173/login.html</code></td></tr>
+    </table>
+    <div class="cal warn">
+      <b>漏了这条的典型表现</b>
+      点登录 → 跳出去 → 回来还是未登录，或者直接被打回首页。Supabase 只会往白名单里的地址回跳。
+    </div>
+
+    <h3>B. 邮箱魔法链接（默认，不用配）</h3>
+    <p>用户填邮箱 → 收到一封邮件 → 点链接直接进来，不设密码。</p>
+    <div class="cal warn">
+      <b>两个限制</b>
+      ① 免费版自带发信服务每小时只能发几封，只适合自己测；要给真实用户用，在 <b>Authentication → Emails → SMTP</b> 换成自己的发信服务。<br>
+      ② 链接必须在<b>同一台设备、同一个浏览器</b>里打开（PKCE 机制），换设备会失败并给出提示。
+    </div>
+
+    <h3>C. GitHub 登录（可选，3 分钟）</h3>
+    <p>去 <a href="https://github.com/settings/developers" target="_blank" rel="noopener">GitHub → Settings → Developer settings → OAuth Apps</a> → New OAuth App：</p>
+    <table>
+      <tr><th>字段</th><th>填什么</th></tr>
+      <tr><td>Application name</td><td>随便，比如 <code>词途 WordQuest</code></td></tr>
+      <tr><td>Homepage URL</td><td>你的站点地址</td></tr>
+      <tr><td>Authorization callback URL</td><td><code>https://&lt;项目ref&gt;.supabase.co/auth/v1/callback</code></td></tr>
+    </table>
+    <p>拿到 <b>Client ID</b> 和 <b>Client Secret</b>，填进 Supabase → <b>Authentication → Sign In / Providers → GitHub</b>，打开开关保存。</p>
+    <div class="cal info">
+      <b>填完不用改代码</b>
+      登录页启动时会请求 <code>/auth/v1/settings</code> 探测可用的登录方式：GitHub 没开就自动隐藏按钮，开了就自动出现。
+    </div>
+  </section>
+
+  <!-- ══════ 合并规则 ══════ -->
+  <section class="card" id="merge">
+    <h2><span class="n">MERGE</span>多设备怎么合并</h2>
+    <p class="sub">不会整块覆盖——每次写入都带版本号，撞车就拉下来合并再重试。</p>
+
+    <p>写入时带 <code>revision</code> 做乐观锁：版本号对不上说明别的设备刚写过，于是拉最新 → 按下面的规则合并 → 再重试，最多 3 次。</p>
+
+    <table>
+      <tr><th>数据</th><th>规则</th><th>为什么</th></tr>
+      <tr><td>单词记录</td><td>按 <code>last</code> 取较新那条；听说计数取较大值</td><td>复习等级宁可保留更新的判断，计数不重复累加</td></tr>
+      <tr><td>每日记录</td><td>按日期取并集，同一天的计数取较大值</td><td>两台设备同一天学，求和会重复算</td></tr>
+      <tr><td>徽章</td><td>取并集，解锁日期取较早</td><td>拿到过就是拿到过</td></tr>
+      <tr><td>技能计数</td><td>逐项取 <code>max</code></td><td>同一次练习只该算一次</td></tr>
+      <tr><td>自定义词表</td><td>按单词去重（大小写不敏感）</td><td>两边都导入过同一个词很常见</td></tr>
+      <tr><td>设置</td><td>按 <code>updatedAt</code> 取较新</td><td>换了词库/目标要跟人走</td></tr>
+      <tr><td>XP</td><td>取较大值</td><td>宁可少算，不重复加分</td></tr>
+    </table>
+
+    <p><b>第一次在设备上登录</b>时，如果这台设备还有游客进度，会弹窗让你选：合并 / 只用云端 / 只用本机。选完就写进当前账号的本地命名空间，下次不再问。</p>
+
+    <div class="cal info">
+      <b>本地怎么隔离</b>
+      游客用 <code>wordquest-v1</code>，登录后用 <code>wordquest-v1:&lt;user_id&gt;</code>。
+      共用电脑换账号不会串数据，退出登录回到游客那份。
+    </div>
+  </section>
+
+  <!-- ══════ 自检 ══════ -->
+  <section class="card" id="check">
+    <h2><span class="n">CHECK</span>跑一遍自检</h2>
+    <p class="sub">不用登录，直接查配置和表权限。</p>
+    <button class="btn primary" id="btnCheck"><span class="spin"></span><span class="lbl">检测我的配置</span></button>
+    <div class="res" id="res"></div>
+    <p class="sub" style="margin:14px 0 0;font-size:12px">自检只能验证「配置有没有接上、表在不在、权限对不对」，登录本身还是得你在登录页试一次。</p>
+  </section>
+
+  <!-- ══════ 错误 ══════ -->
+  <section class="card" id="err">
+    <h2><span class="n">ERR</span>常见错误对照</h2>
+    <p class="sub">按页面上的报错原文找。</p>
+    <table>
+      <tr><th>看到什么</th><th>原因</th><th>怎么办</th></tr>
+      <tr><td><code>还没有配置 Supabase</code></td><td>config.js 是空的或没发布</td><td>跑 <code>gen-config.mjs</code>；线上确认 Pages 发布源是 GitHub Actions</td></tr>
+      <tr><td><code>云端还没有 progress 表</code></td><td>第二步的 SQL 没跑，或跑在别的项目里</td><td>回到 SQL Editor 重跑，注意左上角项目对不对</td></tr>
+      <tr><td><code>permission denied for table progress</code></td><td>缺 <code>grant … to authenticated</code></td><td>单独执行最后那行 grant</td></tr>
+      <tr><td>登录后回跳但仍是未登录</td><td>回调地址不在白名单</td><td>URL Configuration 里加上 <code>…/login.html</code></td></tr>
+      <tr><td><code>code verifier not found</code></td><td>邮件链接换了设备打开</td><td>回到发起登录的那台设备重新发一次</td></tr>
+      <tr><td>收不到登录邮件</td><td>免费版发信限流，或进了垃圾箱</td><td>等一分钟再试；长期用请配自己的 SMTP</td></tr>
+      <tr><td>GitHub 按钮不出现</td><td>Provider 没开</td><td>Providers → GitHub 打开并保存，刷新页面</td></tr>
+      <tr><td><code>redirect_uri_mismatch</code></td><td>OAuth App 的回调填成了站点地址</td><td>改成 <code>https://&lt;ref&gt;.supabase.co/auth/v1/callback</code></td></tr>
+    </table>
+  </section>
+
+  <!-- ══════ 安全 ══════ -->
+  <section class="card" id="sec">
+    <h2><span class="n">SEC</span>安全清单</h2>
+    <p class="sub">前三条是硬要求，后面是习惯。</p>
+    <ul>
+      <li><b>service_role / secret key 永远不进前端</b>。它绕过 RLS，放进去等于公开数据库。</li>
+      <li><b>每张用户表都开 RLS</b>，并且用两个账号实际测一次越权：A 读 B 的行应该拿到空数组。</li>
+      <li><b>表级 grant 要单独给</b>。RLS 是「行级」过滤，它管不了「这个角色连表都碰不到」。</li>
+      <li>限制 data 大小（本项目用 <code>check (pg_column_size(data) &lt;= 2097152)</code> 卡在 2 MB）。</li>
+      <li>提供「导出」和「删除云端数据」，用户能自己把数据带走或删掉。</li>
+      <li>公开仓库没问题——前端代码本来就是公开的；要注意的是别把 <code>.env</code>、备份 JSON、用户数据提交上去。</li>
+    </ul>
+    <div class="cal ok">
+      <b>最后一步</b>
+      配完去应用里登录一次，学几个词，再开无痕窗口登录同一个账号——进度能回来，说明整条链路通了。
+    </div>
+  </section>
+
+  <!-- ══════ 清单 ══════ -->
+  <section class="card">
+    <h2><span class="n">TODO</span>做完打勾</h2>
+    <p class="sub">存在本机浏览器，下次打开还在。</p>
+    <label class="check"><input type="checkbox" data-k="p1"><span>建好 Supabase 项目，拿到 Project URL 和 publishable key</span></label>
+    <label class="check"><input type="checkbox" data-k="p2"><span>跑完建表 SQL，Table Editor 里能看到 progress 且 RLS enabled</span></label>
+    <label class="check"><input type="checkbox" data-k="p3"><span>本地生成 config.js，打开页面不再是「纯本地模式」</span></label>
+    <label class="check"><input type="checkbox" data-k="p4"><span>两个 Secret 存进仓库，Pages 发布源改成 GitHub Actions</span></label>
+    <label class="check"><input type="checkbox" data-k="p5"><span>线上 config.js 能打开，内容是 window.WQ_CONFIG</span></label>
+    <label class="check"><input type="checkbox" data-k="p6"><span>Site URL + 两条 Redirect URLs 填好</span></label>
+    <label class="check"><input type="checkbox" data-k="p7"><span>自己登录成功，学几个词</span></label>
+    <label class="check"><input type="checkbox" data-k="p8"><span>无痕窗口登录同一账号，进度自动回来</span></label>
+  </section>
+
+  <footer>
+    词途 · 配置教程 · 对应版本见仓库 README<br>
+    遇到的问题欢迎直接改这份文档 —— 它就在 <code>guide.html</code> 里。
+  </footer>
+</main>
+
+<script src="config.js" onerror="window.__noConfig=true"></script>
+<script>
+"use strict";
+(function () {
+  const $ = (s) => document.querySelector(s);
+  const $$ = (s) => [...document.querySelectorAll(s)];
+  const KEY = "wq-guide-todo-v1";
+
+  /* ── 复制按钮 ── */
+  $$(".copy").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const pre = btn.parentElement.querySelector("pre");
+      const text = pre.innerText;
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (e) {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+      }
+      btn.textContent = "已复制";
+      btn.classList.add("done");
+      setTimeout(() => { btn.textContent = "复制"; btn.classList.remove("done"); }, 1400);
+    });
+  });
+
+  /* ── 清单 ── */
+  let todo = {};
+  try { todo = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { todo = {}; }
+  const boxes = $$('.check input[data-k]');
+  function paint() {
+    boxes.forEach((b) => b.closest(".check").classList.toggle("on", b.checked));
+    const done = boxes.filter((b) => b.checked).length;
+    $("#pbar").style.width = Math.round((done / boxes.length) * 100) + "%";
+    $("#pnum").textContent = `${done} / ${boxes.length} 步`;
+  }
+  boxes.forEach((b) => {
+    b.checked = !!todo[b.dataset.k];
+    b.addEventListener("change", () => {
+      todo[b.dataset.k] = b.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(todo)); } catch (e) { /* 无痕模式忽略 */ }
+      paint();
+    });
+  });
+  paint();
+
+  /* ── 自检 ── */
+  function item(kind, label, detail) {
+    const d = document.createElement("div");
+    d.className = "it " + kind;
+    d.innerHTML = `<span class="ic">${kind === "ok" ? "✓" : kind === "bad" ? "✗" : "!"}</span>
+      <span><div>${label}</div>${detail ? `<div class="d">${detail}</div>` : ""}</span>`;
+    return d;
+  }
+
+  $("#btnCheck").addEventListener("click", async () => {
+    const btn = $("#btnCheck");
+    const box = $("#res");
+    box.innerHTML = "";
+    btn.disabled = true;
+    btn.classList.add("loading");
+    btn.querySelector(".lbl").textContent = "检测中…";
+
+    const cfg = window.WQ_CONFIG || {};
+    const base = String(cfg.supabaseUrl || "").replace(/\/+$/, "");
+    const key = String(cfg.supabaseAnonKey || "");
+    const add = (k, l, d) => box.appendChild(item(k, l, d));
+
+    try {
+      if (!base || !key) {
+        add("bad", "config.js 里没有配置", "先跑 node scripts/gen-config.mjs，或在 GitHub Secrets 里配好再部署");
+        return;
+      }
+      add("ok", "config.js 读到了", base);
+
+      // 1) 项目可访问 + provider
+      let settings = null;
+      try {
+        const r = await fetch(base + "/auth/v1/settings", { headers: { apikey: key } });
+        settings = await r.json();
+        add(r.ok ? "ok" : "bad", "Supabase 项目可访问", r.ok ? "HTTP " + r.status : "HTTP " + r.status + " · 检查 URL 是否写错");
+      } catch (e) {
+        add("bad", "Supabase 项目可访问", "请求失败：" + e.message + "（可能是网络或 URL 写错）");
+      }
+      if (settings && settings.external) {
+        add(settings.external.email ? "ok" : "bad", "邮箱登录", settings.external.email ? "已开启" : "未开启：Providers → Email");
+        add(settings.external.github ? "ok" : "warn", "GitHub 登录（可选）",
+          settings.external.github ? "已开启" : "未开启，只用邮箱也能登录");
+      }
+
+      // 2) 表 + 权限
+      try {
+        const r = await fetch(base + "/rest/v1/progress?select=user_id&limit=1", {
+          headers: { apikey: key, Authorization: "Bearer " + key },
+        });
+        const text = await r.text();
+        if (r.status === 404 && text.indexOf("PGRST205") >= 0) {
+          add("bad", "progress 表不存在", "回到第二步，在 SQL Editor 里跑那段建表语句");
+        } else if (r.status === 401 || r.status === 403 || text.indexOf("42501") >= 0) {
+          add("ok", "progress 表存在，匿名访问被拒绝", "这是正确状态：RLS 生效，只有登录用户能读写自己的行");
+        } else if (r.status === 200) {
+          let n = 0;
+          try { n = JSON.parse(text).length; } catch (e) { n = 0; }
+          add("warn", "progress 表存在，但匿名能读到数据",
+            `匿名请求拿到了 ${n} 行。检查 RLS 是否开启、策略是否写成了 using (true)`);
+        } else {
+          add("warn", "progress 表状态未知", "HTTP " + r.status + " · " + text.slice(0, 120));
+        }
+      } catch (e) {
+        add("bad", "progress 表检查失败", e.message);
+      }
+
+      // 3) 回调地址（只能提示，查不了）
+      add("warn", "回调地址需要你自己核对",
+        "Authentication → URL Configuration 的 Site URL 和 Redirect URLs 里，必须有 …/login.html");
+    } finally {
+      btn.disabled = false;
+      btn.classList.remove("loading");
+      btn.querySelector(".lbl").textContent = "再检测一次";
+    }
+  });
+})();
+</script>
+</body>
+</html>
