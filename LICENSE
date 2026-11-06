@@ -19,13 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-
----
-
-## 数据来源的例外
-
-本仓库中的单词数据（四六级 / 考研 / 雅思词库）来自
-[qwerty-learner](https://github.com/Kaiyiwing/qwerty-learner)，该项目以 GPL-3.0 发布。
-
-代码部分适用上面的 MIT 许可；**词库数据部分仍遵循 GPL-3.0**。
