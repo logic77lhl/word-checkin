@@ -1,55 +1,123 @@
-# 词途 · 背单词打卡
+<div align="center">
 
-在线使用：**https://logic77lhl.github.io/word-checkin/**
+# 词途 · Word Quest
 
-一个参考 [HF 探索打卡](https://logic77lhl.github.io/hf-quest/) 做的单页英语学习打卡应用：暗色界面、每日打卡、连续天数、热力图、间隔复习、10 题小测、听写、跟读和徽章。默认没有后端，数据存在浏览器 `localStorage` 里；登录后可选同步到 Supabase。
+**四六级 / 考研 / 雅思，一个页面，每天 10 分钟。**
+
+免注册 · 离线可用 · 可选云同步 · 单文件、无框架、无后端
+
+[**立即开始 →**](https://logic77lhl.github.io/word-checkin/)　·　[配置教程](guide.html)　·　[English](README.en.md)
+
+[![Live Demo](https://img.shields.io/badge/live-demo-ffd21e?style=flat-square)](https://logic77lhl.github.io/word-checkin/)
+[![License](https://img.shields.io/badge/code-MIT-3ddc84?style=flat-square)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/logic77lhl/word-checkin?style=flat-square&color=ffd21e)](https://github.com/logic77lhl/word-checkin/stargazers)
+[![Last Commit](https://img.shields.io/github/last-commit/logic77lhl/word-checkin?style=flat-square)](https://github.com/logic77lhl/word-checkin/commits/main)
+[![No Backend](https://img.shields.io/badge/backend-none-2d3d4f?style=flat-square)](#数据与隐私)
+
+<img src="docs/assets/screenshot-today.png" alt="词途 · 今日页" width="920">
+
+</div>
+
+## 它解决什么问题
+
+背单词的工具不少，但要真正用起来，通常会卡在三件事上：
+
+- **要先注册、先装 App**，还没背第一个词就流失了；
+- **打开要等**，加载一堆框架和统计脚本；
+- **数据不在自己手里**，换设备、换服务就得重来。
+
+词途是一个**单文件网页应用**：打开就用，关掉就走。默认不需要账号，进度只存在你自己的浏览器里；想跨设备再登录同步，不登录功能完全一样。
+
+## 30 秒上手
+
+1. 打开 **<https://logic77lhl.github.io/word-checkin/>**
+2. 选词库（四级 / 六级 / 考研 / 雅思），设每天 10–50 个新词
+3. 点「开始今日学习」→ 看英文回忆 → 翻开 → 诚实选「认识 / 模糊 / 忘了」
+4. 想练听说就切到「听说」：听写、跟读、句子训练
+
+不用注册，不用安装，不用配置。第一次打开就能背。
 
 ## 功能
 
-- **词库**：内置四级 2607、六级 2345、考研 3727、雅思 3575 词，可切换；也可以粘贴自己的词表。
-- **每日计划**：每天 10 / 15 / 20 / 30 / 50 个新词，随时改。
-- **学习卡片**：先看英文回忆，再点开释义，按「认识 / 模糊 / 忘了」评分。
-- **间隔复习**：按 1、2、4、7、15、30、60、120 天安排下次复习，到期的词会出现在「复习」里。
-- **打卡**：当天学过至少 1 个词就能打卡；完成每日新词目标会自动打卡。连续天数、最长连续、累计天数都会记录。
-- **热力图**：最近 12 周，每格一天，颜色深浅 = 当天碰过的词次。
-- **小测**：从学过的词里随机抽 10 个，看英文选中文；答对 +2 XP，满分再 +10。
-- **听写**：听发音写单词，或听音选义；答对 +3 XP，答错也会记一次练习。
-- **跟读**：听发音 → 录音 → 回放；浏览器支持时自动识别并给词级相似度，不支持时可回放自评。
-- **句子训练**：60 句基础/进阶句子，支持句子听写和影子跟读；听写按词级准确率判定。
-- **统计与徽章**：学习总数、掌握数、30 天柱状图、记忆状态、四技能训练统计、18 个自动判定的徽章。
-- **数据管理**：导出 / 导入 JSON 备份，换设备不丢进度。
-- **账号与同步**（可选）：GitHub 登录或邮箱魔法链接，进度存到 Supabase 单行 JSON，带版本号乐观锁和合并规则；不登录时完全等同纯本地版。
-- **发音**：使用浏览器自带的 `speechSynthesis`，不需要联网。
-- **离线**：未登录时没有第三方依赖，直接双击 `index.html` 也能用（`file://` 下词库脚本同样能加载）。
+| 模块 | 你能做什么 |
+| --- | --- |
+| **学** | 4 个词库共 12,254 词（四级 2607 · 六级 2345 · 考研 3727 · 雅思 3575）；粘贴自己的词表；每日新词 10/15/20/30/50 可调；到期的复习词自动排进队列 |
+| **练** | 10 题小测（看英文选中文）；听写（听音写词 / 听音选义，可慢速重播）；跟读（录音回放，支持时给词级相似度）；60 句句子听写与影子跟读 |
+| **记** | 每日打卡、连续天数、最长连续、累计天数；最近 12 周热力图；30 天柱状图；18 个自动判定的徽章；XP 与等级；记忆状态分布 |
+| **同步** | 导出 / 导入 JSON；可选 Supabase 登录（GitHub / 邮箱魔法链接），带版本号乐观锁和逐字段合并规则 |
+| **离线** | 无第三方依赖，双击 `index.html` 也能用；发音走浏览器自带 `speechSynthesis`，不联网 |
 
-## 听写与跟读
+## 截图
 
-- **词源**：当前词库里学过的词（记忆等级 ≥ 1），优先安排到期词；没学过的词不会出现。
-- **听写**：两种模式——听音写词（拼写）和听音选义（四选一）。可重播、慢速；提交后显示正确拼写、音标和释义。
-- **跟读**：先听正常/慢速，再录音；停止后可以回放。支持 Web Speech API 的浏览器（Chrome / Edge）会做词级识别，给相似度；不支持时用「读对了 / 还不行」自评。
-- **句子训练**：内置 60 句（基础 40 / 进阶 20）。句子听写按词级准确率判定，≥ 85% 通过；影子跟读 ≥ 70% 通过。句子听写 +5 XP，影子跟读 +8 XP。
-- **计分**：听写答对 +3 XP、答错 +1；跟读通过 +5、未通过 +2。都会计入当天「碰过词」和打卡条件，但不会改变单词的复习到期日。
-- **限制**：浏览器语音识别只做词级匹配，不是音素级发音评分；麦克风需要 HTTPS 或 `localhost`（GitHub Pages 满足）。
+| 今日 | 背单词 |
+| --- | --- |
+| <img src="docs/assets/screenshot-today.png" width="440"> | <img src="docs/assets/screenshot-study.png" width="440"> |
+| **统计** | **手机端** |
+| <img src="docs/assets/screenshot-stats.png" width="440"> | <img src="docs/assets/screenshot-mobile.png" width="200"> |
+
+> 截图使用演示数据（14 天连续打卡 / 72 个已学词），不是真实账号。
+
+## 数据与隐私
+
+| 场景 | 会发生什么 |
+| --- | --- |
+| 未登录 | 只写浏览器 `localStorage`，除词库文件外**不发任何网络请求** |
+| 登录后 | 只有两类请求：Supabase Auth、`public.progress` 表 |
+| 云端权限 | 表上开了 RLS，每条策略都是 `auth.uid() = user_id`，只能读写自己那一行 |
+| 前端密钥 | 只用 publishable key；`service_role` / secret key 永远不进前端 |
+| 换设备 | 登录同一账号自动同步；也可以导出 JSON 手动搬 |
+| 清除数据 | 统计页 →「清空全部」（登录时会连云端一起清） |
+
+本地存储 key：游客 `wordquest-v1`，登录后 `wordquest-v1:<user_id>`。同一台电脑换账号不会串数据。
 
 ## 本地运行
 
-```powershell
+```bash
+git clone https://github.com/logic77lhl/word-checkin.git
 cd word-checkin
 node scripts/serve.mjs
 # 打开 http://localhost:4173
 ```
 
-也可以直接双击 `index.html`。用本地服务器打开时，浏览器控制台和自动刷新体验更好。
+没有构建步骤，也没有 `npm install`。也可以直接双击 `index.html`（`file://` 下词库同样能加载）。
 
-## 启用账号同步（Supabase）
+## 复习算法
 
-不配这一段也能用，页面会自动进「纯本地模式」。要开登录和云同步，按下面四步做一遍。
+每个词有一个记忆等级 `b` 和下次复习日期 `due`：
 
-> 也可以直接打开站点里的 **配置教程页**：[`guide.html`](guide.html)，带自检按钮和错误对照表。
+| 评分 | 等级变化 | 下次复习 |
+| --- | --- | --- |
+| 认识 | `b + 1`（最高 8） | 1 / 2 / 4 / 7 / 15 / 30 / 60 / 120 天后 |
+| 模糊 | 保持当前等级（最低 1） | 明天 |
+| 忘了 | 回到 1 | 今天（本轮会再出现一次） |
 
-### 1. 建项目和表
+`b >= 6` 视为「已掌握」（下次间隔 ≥ 30 天）。算法在 `index.html` 的 `grade()` 里，想换成 SM-2 / FSRS 只需要改这一段。
 
-在 [supabase.com](https://supabase.com/dashboard) 新建项目（区域选 Southeast Asia / Singapore 对国内最快），然后在 **SQL Editor** 执行：
+## 自定义词表
+
+在「词库与计划 → 导入自己的词表」里，每行一个词，下面几种写法都认：
+
+```
+abandon 放弃；抛弃
+resilient 有韧性的
+serendipity, 意外发现珍奇事物的运气
+give up	放弃
+```
+
+单词和释义之间用空格、逗号、制表符、`|` 或 `:` 分隔，重复词自动跳过。
+
+## 云同步（可选）
+
+不配置也能用，页面会自动进「纯本地模式」。要用账号和跨设备同步，三步：
+
+1. Supabase 新建项目，在 SQL Editor 建表并开 RLS（完整 SQL 见下方折叠）
+2. Authentication → URL Configuration 填站点地址，按需开 GitHub / Email 登录
+3. 用 `scripts/gen-config.mjs` 从环境变量生成 `config.js`（已在 `.gitignore`）
+
+更细的步骤、自检按钮和错误对照表在 **[配置教程](guide.html)** 里。
+
+<details>
+<summary>建表 SQL（点开复制）</summary>
 
 ```sql
 create table public.progress (
@@ -71,68 +139,26 @@ create policy "own progress update" on public.progress
 create policy "own progress delete" on public.progress
   for delete using (auth.uid() = user_id);
 
--- 给登录用户表权限（RLS 负责限定到「只有自己那一行」）
+-- RLS 负责限定到「只有自己那一行」，所以这里给登录用户表级权限
 grant select, insert, update, delete on public.progress to authenticated;
 ```
 
-RLS 是安全边界：前端只拿 publishable key（等同旧版 anon key），**永远不要把 `service_role` / secret key 写进前端**。
+</details>
 
-### 2. 配置回调地址和登录方式
-
-**Authentication → URL Configuration**
-
-- Site URL：`https://<用户名>.github.io/<仓库名>/`
-- Redirect URLs：再各加一条
-  - `https://<用户名>.github.io/<仓库名>/login.html`
-  - `http://localhost:4173/login.html`
-
-**Authentication → Sign In / Providers**
-
-- **GitHub**：先在 GitHub 建 OAuth App（Homepage 填站点地址，Callback 填 `https://<项目ref>.supabase.co/auth/v1/callback`），把 Client ID / Secret 填回来。
-- **Email**：默认就开着，魔法链接登录，不用存密码。
-  ⚠️ 免费版自带发信服务每小时只能发几封，只适合自己测。要给真实用户用，得在 **Authentication → Emails → SMTP** 换成自己的发信服务。
-
-### 3. 填 URL 和 key（走环境变量，不进仓库）
-
-`config.js` 由脚本从环境变量生成，已在 `.gitignore` 里，不会提交。
-
-本地：
-
-```powershell
-# 方式一：仓库根目录建 .env.local
-WQ_SUPABASE_URL=https://xxxx.supabase.co
-WQ_SUPABASE_ANON_KEY=sb_publishable_xxxx
-
-# 方式二：设成系统环境变量（同名），脚本会优先读它
-node scripts/gen-config.mjs     # 生成 config.js
-```
-
-线上（GitHub Actions 部署时注入）：
-
-```powershell
-gh secret set WQ_SUPABASE_URL --body "https://xxxx.supabase.co"
-gh secret set WQ_SUPABASE_ANON_KEY --body "sb_publishable_xxxx"
-```
-
-### 4. 同步怎么工作
-
-- 本地数据按账号隔离：游客用 `wordquest-v1`，登录后用 `wordquest-v1:<user_id>`，共用电脑不会串号。
-- 改动停下来 1.5 秒后自动上传；切后台 / 关页面时尽力补一次。
-- 写入带 `revision` 乐观锁：版本对不上就拉最新 → 按规则合并 → 重试最多 3 次。
-- 合并规则：单词按 `last` 取较新（听说计数取较大）、每日记录按天取并集且计数取较大、徽章取并集（日期取较早）、技能计数取 `max`、自定义词按单词去重、设置按 `settings.updatedAt` 取新。
-- 第一次在某台设备登录时，如果这台设备还有游客进度，会弹窗让你选「合并 / 只用云端 / 只用本机」。
+**同步怎么工作**：改动停下来 1.5 秒后自动上传；切后台 / 关页面时尽力补一次。写入带 `revision` 乐观锁，版本对不上就拉最新 → 按规则合并 → 重试最多 3 次。合并规则是单词按 `last` 取较新、每日记录按天取并集、徽章取并集、技能计数取 `max`。第一次在设备上登录且本机有游客进度时，会让你选「合并 / 只用云端 / 只用本机」。
 
 ## 部署到 GitHub Pages
 
-站点用 GitHub Actions 部署（因为 `config.js` 要从 Secrets 生成，不能提交）：
+站点通过 GitHub Actions 发布（因为 `config.js` 要从 Secrets 生成，不能提交）：
 
-1. 仓库 Settings → Pages → Source 选 **GitHub Actions**。
-2. 把上面第 3 步的两个 Secret 建好。
-3. push 到 `main`，`.github/workflows/pages.yml` 会自动生成 `config.js` 并发布。
+1. 仓库 Settings → Pages → Source 选 **GitHub Actions**
+2. `gh secret set WQ_SUPABASE_URL` / `gh secret set WQ_SUPABASE_ANON_KEY`
+3. push 到 `main`，`.github/workflows/pages.yml` 自动生成 `config.js` 并发布
 
-只想纯本地部署、不要账号功能，也可以不用 Actions：直接让 Pages 从 `main` 分支根目录发布，不生成 `config.js` 即可（页面会进纯本地模式）。
+只要纯本地版、不要账号功能，也可以让 Pages 直接从 `main` 根目录发布，不生成 `config.js` 即可。
 
-## 目录
+<details>
+<summary>目录结构</summary>
 
 ```
 word-checkin/
@@ -159,71 +185,85 @@ word-checkin/
    └─ build-books.mjs    # 把原始 JSON 压成 data/*.js
 ```
 
-## 词库来源与重建
+</details>
 
-词库来自开源项目 [qwerty-learner](https://github.com/Kaiyiwing/qwerty-learner) 的 `public/dicts`。原始文件体积较大，仓库里只保留了压缩后的 `data/*.js`。
+## 词库来源
 
-需要重建时，把原始 JSON 下载到 `data-src/`：
+词库来自开源项目 [qwerty-learner](https://github.com/Kaiyiwing/qwerty-learner) 的 `public/dicts`。原始文件较大，仓库里只保留压缩后的 `data/*.js`。
+
+需要重建时，把原始 JSON 下载到 `data-src/` 再跑脚本：
 
 ```powershell
 $base = "https://raw.githubusercontent.com/Kaiyiwing/qwerty-learner/master/public/dicts/"
-$dir = "data-src"; New-Item -ItemType Directory -Force $dir | Out-Null
 foreach ($f in "CET4_T.json","CET6_T.json","KaoYan_3_T.json","IELTS_3_T.json") {
-  curl.exe -L -o "$dir/$f" "$base$f"
+  curl.exe -L -o "data-src/$f" "$base$f"
 }
 node scripts/build-books.mjs
 ```
 
-脚本会去重、清理标点、把音标里的 `'` 规范成 `ˈ`，输出成浏览器可以直接 `<script>` 加载的格式。词条结构是 `[单词, 释义, 音标]`，改 `scripts/build-books.mjs` 里的 `books` 数组就能加自己的词库（记得同步 `index.html` 里的 `BOOK_META` 的 `total`）。
+脚本会去重、清理标点、把音标里的 `'` 规范成 `ˈ`，输出浏览器可直接 `<script>` 加载的格式。词条结构是 `[单词, 释义, 音标]`，改 `scripts/build-books.mjs` 里的 `books` 数组就能加词库（记得同步 `index.html` 里 `BOOK_META` 的 `total`）。
 
-## 自定义词表格式
+## 这个项目不是什么
 
-在「词库与计划 → 导入自己的词表」里，每行一个词，支持这些写法：
+- **不是保过班**。它只负责安排复习、记录进度，不承诺提分。
+- **不是词典**。释义和音标来自开源词表，个别条目可能有排版或风格差异，以词典为准。
+- **不是 FSRS**。目前是固定间隔表，想升级看上面的「复习算法」。
+- **不是发音评分器**。跟读只做词级识别，不是音素级打分。
+- **不采集数据**。没有埋点、没有统计脚本、没有第三方字体 CDN。
 
-```
-abandon 放弃；抛弃
-resilient 有韧性的
-serendipity, 意外发现珍奇事物的运气
-give up	放弃
-```
+## 路线图
 
-单词和释义之间用空格、逗号、制表符、`|` 或 `:` 分隔。重复词会自动跳过。
+- [x] 四个词库 + 自定义词表
+- [x] 打卡 / 热力图 / 徽章 / XP
+- [x] 小测、听写、跟读、句子训练
+- [x] Supabase 登录与跨设备同步
+- [ ] 可切换 FSRS 调度
+- [ ] 例句与搭配（现在只有释义和音标）
+- [ ] PWA：安装到桌面 + 离线缓存
+- [ ] 分享卡片：把连续天数和热力图导成图片
+- [ ] 看义选词、拼写提示等更多题型
+- [ ] 移动端手势与长按操作
 
-## 复习算法
+## 参与贡献
 
-每个词有一个 `b`（记忆等级）和 `due`（下次复习日期）：
+| 方式 | 怎么做 |
+| --- | --- |
+| 报 bug | [开 issue](https://github.com/logic77lhl/word-checkin/issues/new)，附浏览器版本、复现步骤、截图 |
+| 词条纠错 | 说明词条 + 错在哪 + 依据（词典截图或链接） |
+| 加词库 | 改 `scripts/build-books.mjs` 的 `books` 与 `BOOK_META`，附数据来源和许可 |
+| 翻译 | 目前有中 / 英两份 README，欢迎补日文、韩文 |
+| 点 Star | 见文末 |
 
-| 评分 | 等级变化 | 下次复习 |
-| --- | --- | --- |
-| 认识 | `b + 1`（最高 8） | 1 / 2 / 4 / 7 / 15 / 30 / 60 / 120 天后 |
-| 模糊 | 保持当前等级（最低 1） | 明天 |
-| 忘了 | 回到 1 | 今天（本轮会再出现一次） |
+提交 PR 前请先开 issue 说明要做什么，一个 PR 只做一件事；改词库请一并给出依据。
 
-`b >= 6` 视为「已掌握」（下次间隔 ≥ 30 天）。算法在 `index.html` 的 `grade()` 里，想换成 SM-2 / FSRS 可以只改这一段。
+## 分享与传播
 
-## 数据
+这个项目没有推广预算，能被人看到全靠使用者转发。如果你觉得有用：
 
-- 存储 key：游客 `wordquest-v1`；登录后 `wordquest-v1:<user_id>`
-- 内容：设置、每个词的等级和到期日、每日记录、XP、徽章、自定义词表
-- 换设备：登录同一个账号自动同步；也可以导出 JSON 手动搬
-- 清空：统计与徽章 → 清空全部（登录时会连云端一起清）
+- **发给一个正在备考的人**，比任何榜单都有效；
+- 复制这段话发到群里 / 朋友圈 / 即刻：
 
-没有登录时不会发出任何网络请求（除了加载词库文件）。登录后只有两类请求：Supabase Auth 和 `public.progress` 表，后者由 RLS 限制成「只能读写自己那一行」。
+  > 找到个免注册的背单词网页，四六级考研雅思都有，打开就能背，数据存在本地，还能登录同步。https://logic77lhl.github.io/word-checkin/
 
-## 可改的地方
+- 在你自己的项目 README 里放个链接或 badge：
 
-- 主题色：`index.html` 顶部 `:root` 里的 `--acc`、`--bg`、`--panel`
-- 词库列表与总词数：`BOOK_META`
-- 每日目标档位：`PLAN` 卡片里的 `goal` 按钮和 `data-n`
-- 打卡判定：`doCheckin()` 和 `maybeAutoCheckin()`
-- 徽章：`BADGES` 数组，每项一个 `test(ctx)` 函数
-- 每日一句：`QUOTES` 数组
+  ```markdown
+  [![词途](https://img.shields.io/badge/背单词-词途-ffd21e?style=flat-square)](https://logic77lhl.github.io/word-checkin/)
+  ```
 
-## 说明
+- 只需要词库？`data/*.js` 可以直接取用（注意遵守上游许可，见下）。
 
-- 释义和音标来自开源词表，个别条目可能有排版或释义风格差异；以词典为准。
-- 发音依赖浏览器语音合成，Chrome / Edge 一般可用；Firefox 需要系统装了英文语音。
-- 打卡日期按设备本地时区计算；跨时区旅行可能出现一天偏差。
+## Star
+
+如果它帮你多背了 10 个词，点个 **Star** 就是最好的鼓励 —— 也是让更多人看到它的唯一方式。
+
+[![Star](https://img.shields.io/github/stars/logic77lhl/word-checkin?style=social)](https://github.com/logic77lhl/word-checkin/stargazers)
+
+## 许可
+
+- **应用代码**：[MIT](LICENSE)
+- **词库数据**：转自 [qwerty-learner](https://github.com/Kaiyiwing/qwerty-learner)，遵循其上游许可（GPL-3.0）。二次分发词库前请自行确认上游条款。
+- **第三方依赖**：`js/vendor/supabase.js` 为 supabase-js v2（MIT）。
 
 ## 调研
 
