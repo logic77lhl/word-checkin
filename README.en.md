@@ -2,9 +2,9 @@
 
 # Word Quest
 
-**CET-4 / CET-6 / Postgraduate / IELTS — one page, 10 minutes a day.**
+<img src="docs/assets/demo.gif" alt="Open the page, hit Start, see a word, reveal the meaning, rate it" width="780">
 
-No sign-up · Works offline · Optional cloud sync · Single file, no framework, no backend
+**Open the link and start.** CET-4 / CET-6 / Postgraduate / IELTS — 12,254 words built in.
 
 [**Open the app →**](https://logic77lhl.github.io/word-checkin/)　·　[Setup guide (zh)](guide.html)　·　[中文](README.md)
 
@@ -13,13 +13,15 @@ No sign-up · Works offline · Optional cloud sync · Single file, no framework,
 [![Stars](https://img.shields.io/github/stars/logic77lhl/word-checkin?style=flat-square&color=ffd21e)](https://github.com/logic77lhl/word-checkin/stargazers)
 [![No Backend](https://img.shields.io/badge/backend-none-2d3d4f?style=flat-square)](#data-and-privacy)
 
-<img src="docs/assets/screenshot-today.png" alt="Word Quest — Today" width="920">
-
 </div>
 
-## Why
+| | |
+| --- | --- |
+| **What** | A vocabulary trainer that is one HTML file. Open it and today's queue is there — no sign-up, no install, no framework to load. |
+| **Who** | Anyone studying for CET-4 / CET-6, the postgraduate entrance exam, or IELTS — and anyone who doesn't want another app for one feature. |
+| **How** | Open the link above, or save the page as `index.html` and double-click it. Works offline. |
 
-Most vocabulary apps ask you to sign up, install something, and wait for a bundle to load before you learn a single word. Word Quest is a **single HTML page**: open it, learn, close it. Progress lives in your own browser by default; sign in only if you want it on another device.
+Progress stays in your own browser. Sign in only when you want it on a second device; without signing in, everything works the same.
 
 ## Quick start
 

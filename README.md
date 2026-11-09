@@ -2,31 +2,26 @@
 
 # 词途 · Word Quest
 
-**四六级 / 考研 / 雅思，一个页面，每天 10 分钟。**
+<img src="docs/assets/demo.gif" alt="打开页面，点「开始今日学习」，看到单词，显示释义，选认识" width="780">
 
-免注册 · 离线可用 · 可选云同步 · 单文件、无框架、无后端
+**打开链接就能背。** 四六级 / 考研 / 雅思，内置 12,254 个词。
 
-[**立即开始 →**](https://logic77lhl.github.io/word-checkin/)　·　[配置教程](guide.html)　·　[English](README.en.md)
+[**立即打开 →**](https://logic77lhl.github.io/word-checkin/)　·　[配置教程](guide.html)　·　[English](README.en.md)
 
 [![Live Demo](https://img.shields.io/badge/live-demo-ffd21e?style=flat-square)](https://logic77lhl.github.io/word-checkin/)
 [![License](https://img.shields.io/badge/code-MIT-3ddc84?style=flat-square)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/logic77lhl/word-checkin?style=flat-square&color=ffd21e)](https://github.com/logic77lhl/word-checkin/stargazers)
-[![Last Commit](https://img.shields.io/github/last-commit/logic77lhl/word-checkin?style=flat-square)](https://github.com/logic77lhl/word-checkin/commits/main)
 [![No Backend](https://img.shields.io/badge/backend-none-2d3d4f?style=flat-square)](#数据与隐私)
-
-<img src="docs/assets/screenshot-today.png" alt="词途 · 今日页" width="920">
 
 </div>
 
-## 它解决什么问题
+| | |
+| --- | --- |
+| **是什么** | 一个 HTML 文件的背单词工具。打开就是今天的队列，不注册、不安装、不加载框架。 |
+| **给谁用** | 在备考四六级 / 考研 / 雅思的人；不想为了背单词再装一个 App 的人。 |
+| **怎么用** | 点上面的链接；或把页面存成 `index.html` 双击打开，离线也能背。 |
 
-背单词的工具不少，但要真正用起来，通常会卡在三件事上：
-
-- **要先注册、先装 App**，还没背第一个词就流失了；
-- **打开要等**，加载一堆框架和统计脚本；
-- **数据不在自己手里**，换设备、换服务就得重来。
-
-词途是一个**单文件网页应用**：打开就用，关掉就走。默认不需要账号，进度只存在你自己的浏览器里；想跨设备再登录同步，不登录功能完全一样。
+进度只存在你自己的浏览器里。换设备再登录同步，不登录功能完全一样。
 
 ## 30 秒上手
 
